@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block title %}Öğrenci Detayı <!-- HIDDEN STUDENT REPORT TEMPLATES -->
+<div id="hidden-report-container" class="report-hidden">
+    <div id="student-detail-report" class="report-container">
+        <div class="report-header">
+            <div class="report-logo">
+                <i class="fas fa-user-graduate"></i>
+            </div>
+            <div class="report-title">
+                <h1>{{ settings.school_name }}</h1>
+                <h2>ÖĞRENCİ KÜTÜPHANE EKSTRESİ</h2>
+            </div>
+            <div class="report-meta">
+                <p>Tarih: {{ now.strftime('%d.%m.%Y') }}</p>
+            </div>
+        </div>
+
+        <div class="report-body">
+            <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
+                <strong>Öğrenci Bilgileri:</strong><br>
+                {{ student.name }} {{ student.surname }} ({{ student.school_number }})<br>
+                Sınıf: {{ student.class_name }}
+            </div>
+
+            <h3>İşlem Geçmişi</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 40%;">Kitap Adı</th>
+                        <th style="width: 20%;">Veriliş Tarihi</th>
+                        <th style="width: 20%;">İade Tarihi</th>
+                        <th style="width: 20%;">Durum</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in history %}
+                    <tr>
+                        <td>{{ loan.book.title }}</td>
+                        <td>{{ loan.issue_date.strftime('%d.%m.%Y') }}</td>
+                        <td>{{ loan.return_date.strftime('%d.%m.%Y') if loan.return_date else '-' }}</td>
+                        <td>{{ 'EMANETTE' if loan.status == 'active' else 'İADE EDİLDİ' }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center;">Kayıt bulunamadı.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="report-footer">
+            <div class="signature-box">
+                <div class="signature-line">
+                    Öğrenci İmza
+                </div>
+            </div>
+            <div class="signature-box">
+                <div class="signature-line">
+                    Kütüphane Sorumlusu
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. ID Card Template (New) -->
+    <div id="hidden-id-card" class="report-hidden">
+        <div id="idCardTemplate"
+            style="width: 85.6mm; height: 54mm; border: 1px solid #000; padding: 0; position: relative; background: url('https://img.freepik.com/free-vector/abstract-blue-geometric-shapes-background_1035-17545.jpg'); background-size: cover; overflow: hidden; font-family: sans-serif;">
+
+            <!-- Header Strip -->
+            <div
+                style="background: rgba(44, 62, 80, 0.9); height: 12mm; display: flex; align-items: center; padding-left: 5mm;">
+                <span style="color: white; font-weight: bold; font-size: 10pt; letter-spacing: 0.5px;">KÜTÜPHANE KİMLİK
+                    KARTI</span>
+            </div>
+
+            <!-- Content -->
+            <div
+                style="padding: 5mm; display: flex; align-items: center; justify-content: space-between; height: 30mm;">
+                <!-- Photo Placeholder -->
+                <div
+                    style="width: 22mm; height: 26mm; background: #fff; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 8pt; color: #ccc;">
+                    FOTO
+                </div>
+
+                <!-- Info -->
+                <div style="flex: 1; padding-left: 5mm;">
+                    <h3 style="margin: 0; font-size: 12pt; color: #2c3e50; text-transform: uppercase;">{{ student.name
+                        }} {{ student.surname }}</h3>
+                    <p style="margin: 2px 0 0; font-size: 9pt; font-weight: bold; color: #e74c3c;">{{ student.class_name
+                        }}</p>
+                    <p style="margin: 2px 0 0; font-size: 8pt; color: #555;">No: {{ student.school_number }}</p>
+                </div>
+            </div>
+
+            <!-- Barcode Footer -->
+            <div
+                style="position: absolute; bottom: 2mm; left: 0; width: 100%; text-align: center; background: rgba(255,255,255,0.8); padding: 2px 0;">
+                <svg id="barcode"></svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+<script>
+    function printStudentStatement() {
+        const element = document.getElementById('student-detail-report').cloneNode(true);
+        element.style.display = 'block';
+
+        const opt = {
+            margin: 0,
+            filename: 'ogrenci_ekstre_{{ student.school_number }}.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    }
+
+    async function printIDCard() {
+        // Generate barcode
+        JsBarcode("#barcode", "{{ student.school_number }}", {
+            format: "CODE128",
+            width: 1.5,
+            height: 30,
+            displayValue: true,
+            fontSize: 10,
+            background: null,
+            margin: 0
+        });
+
+        const element = document.getElementById('idCardTemplate');
+        const clone = element.cloneNode(true);
+
+        // Remove external image background to prevent CORS issues causing blank PDF
+        // Use a nice CSS gradient instead
+        clone.style.backgroundImage = 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)';
+
+        // Positioning for capture
+        clone.style.display = 'block';
+        clone.style.position = 'fixed';
+        clone.style.top = '0';
+        clone.style.left = '0';
+        clone.style.zIndex = '9999'; // On top to ensure visibility
+
+        document.body.appendChild(clone);
+
+        // Wait for DOM to settle
+        await new Promise(r => setTimeout(r, 500));
+
+        const opt = {
+            margin: 0,
+            filename: 'Kimlik_{{ student.school_number }}.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: {
+                scale: 4,
+                useCORS: true,
+                scrollY: 0,
+                scrollX: 0,
+                windowWidth: document.documentElement.offsetWidth,
+                windowHeight: document.documentElement.offsetHeight
+            },
+            jsPDF: { unit: 'mm', format: [85.6, 54], orientation: 'landscape' }
+        };
+
+        html2pdf().set(opt).from(clone).save().then(() => {
+            document.body.removeChild(clone);
+        });
+    }
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-5">
+                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                    style="width: 120px; height: 120px;">
+                    <span class="display-4 fw-bold text-primary">{{ student.name[0] }}{{ student.surname[0] }}</span>
+                </div>
+                <h3 class="fw-bold mb-1">{{ student.name }} {{ student.surname }}</h3>
+                <p class="text-muted mb-4">{{ student.school_number }} - {{ student.class_name }}</p>
+
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Listeye Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i>ÖĞRENCİ
+                        BİLGİLERİ</h5>
+                    <div class="d-flex gap-2">
+                        <button onclick="printStudentStatement()" class="btn btn-sm btn-outline-dark">
+                            <i class="fas fa-file-alt me-2"></i>Ekstre Yazdır
+                        </button>
+                        <a href="{{ url_for('student_id_card', id=student.id) }}" target="_blank"
+                            class="btn btn-sm btn-outline-dark">
+                            <i class="fas fa-id-card me-2"></i>Kimlik Kartı
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="small text-muted fw-bold">E-POSTA</label>
+                        <div class="fw-medium">{{ student.email or '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-muted fw-bold">TELEFON</label>
+                        <div class="fw-medium">{{ student.phone or '-' }}</div>
+                    </div>
+                    <div class="col-12">
+                        <label class="small text-muted fw-bold">ADRES</label>
+                        <div class="fw-medium">{{ student.address or '-' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-history me-2"></i>EMANET GEÇMİŞİ</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Kitap Adı</th>
+                                <th>Veriliş Tarihi</th>
+                                <th>İade Tarihi</th>
+                                <th class="text-end pe-4">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for loan in history %}
+                            <tr>
+                                <td class="ps-4 fw-medium">{{ loan.book.title }}</td>
+                                <td>{{ loan.issue_date.strftime('%d.%m.%Y') }}</td>
+                                <td>
+                                    {% if loan.return_date %}
+                                    {{ loan.return_date.strftime('%d.%m.%Y') }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if loan.status == 'active' %}
+                                    <span class="badge bg-warning text-dark">EMANETTE</span>
+                                    {% else %}
+                                    <span class="badge bg-success">İADE EDİLDİ</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">
+                                    <i class="fas fa-history fa-2x mb-2 d-block opacity-25"></i>
+                                    Henüz işlem kaydı bulunmuyor.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

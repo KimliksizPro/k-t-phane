@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+
+{% block title %}Kitaplar{% endblock %}
+
+{% block content %}
+<!-- DESKTOP VIEW -->
+<div class="desktop-view d-none d-lg-block">
+    <div class="card mb-4">
+        <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 class="card-title mb-0"><i class="fas fa-book me-2"></i>Kitap Listesi</h5>
+                <a href="{{ url_for('add_book') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>Yeni Kitap
+                </a>
+            </div>
+
+            <!-- Search Form -->
+            <form action="{{ url_for('books') }}" method="GET" class="mb-4">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" name="search" class="form-control border-start-0 ps-0 search-input-desktop"
+                        placeholder="Kitap adı, yazar veya ISBN ile ara..." value="{{ search_query }}">
+                    <button class="btn btn-primary" type="submit">Ara</button>
+                    {% if search_query %}
+                    <a href="{{ url_for('books') }}" class="btn btn-outline-secondary">Temizle</a>
+                    {% endif %}
+                </div>
+            </form>
+
+            <!-- Books Table -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="ps-4">ISBN</th>
+                            <th>Kitap Adı</th>
+                            <th>Yazar</th>
+                            <th>Durum</th>
+                            <th class="text-end pe-4">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="desktop-table-body">
+                        {% for book in books.items %}
+                        <tr>
+                            <td class="ps-4 font-monospace text-muted small">{{ book.isbn }}</td>
+                            <td class="fw-medium">{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>
+                                {% if book.is_available %}
+                                <span
+                                    class="badge bg-success-subtle text-success border border-success-subtle px-3">RAFTA</span>
+                                {% else %}
+                                <span
+                                    class="badge bg-warning-subtle text-warning border border-warning-subtle px-3">EMANETTE</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end pe-4">
+                                <a href="{{ url_for('book_detail', id=book.id) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-eye me-1"></i> Detay
+                                </a>
+                                <a href="{{ url_for('edit_book', id=book.id) }}" class="btn btn-sm btn-outline-warning">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form action="{{ url_for('delete_book', id=book.id) }}" method="POST" class="d-inline"
+                                    onsubmit="return confirm('Bu kitabı silmek istediğinizden emin misiniz?');">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger ms-1">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fas fa-book-open fa-3x mb-3 d-block opacity-25"></i>
+                                Kayıtlı kitap bulunamadı.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Desktop -->
+            {% if books.pages > 1 %}
+            <nav aria-label="Sayfalama" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    {% if books.has_prev %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('books', page=books.prev_num, search=search_query) }}"
+                            aria-label="Önceki">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+                    {% endif %}
+
+                    {% for page_num in books.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                    {% if books.page == page_num %}
+                    <li class="page-item active"><span class="page-link">{{ page_num }}</span></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link"
+                            href="{{ url_for('books', page=page_num, search=search_query) }}">{{ page_num }}</a></li>
+                    {% endif %}
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if books.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ url_for('books', page=books.next_num, search=search_query) }}"
+                            aria-label="Sonraki">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- MOBILE VIEW -->
+<div class="d-lg-none" id="mobile-book-container">
+    {% for book in books.items %}
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3">
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="fw-bold text-dark mb-0 text-truncate pe-2">{{ book.title }}</h6>
+                {% if book.is_available %}
+                <span
+                    class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Rafta</span>
+                {% else %}
+                <span
+                    class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">Emanette</span>
+                {% endif %}
+            </div>
+            <p class="text-muted small mb-2"><i class="fas fa-pen-nib me-1"></i> {{ book.author }}</p>
+            <p class="text-muted small mb-3 font-monospace bg-light d-inline-block px-2 py-1 rounded">{{ book.isbn }}
+            </p>
+
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('book_detail', id=book.id) }}"
+                    class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">Detay</a>
+                <a href="{{ url_for('edit_book', id=book.id) }}"
+                    class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">Düzenle</a>
+                <form action="{{ url_for('delete_book', id=book.id) }}" method="POST" class="d-inline flex-fill"
+                    onsubmit="return confirm('Silmek istediğinizden emin misiniz?');">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit"
+                        class="btn btn-sm btn-light w-100 rounded-pill fw-bold text-danger">Sil</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-book-open fa-3x text-muted opacity-25 mb-3"></i>
+        <p class="text-muted">Kitap bulunamadı.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination Mobile -->
+{% if books.pages > 1 %}
+<div class="d-flex justify-content-center mt-4 d-lg-none">
+    <a href="{{ url_for('books', page=books.prev_num) }}"
+        class="btn btn-light rounded-circle shadow-sm me-2 {{ 'disabled' if not books.has_prev }}"
+        style="width: 40px; height: 40px;"><i class="fas fa-chevron-left"></i></a>
+    <span class="d-flex align-items-center fw-bold text-muted px-2">{{ books.page }} / {{ books.pages }}</span>
+    <a href="{{ url_for('books', page=books.next_num) }}"
+        class="btn btn-light rounded-circle shadow-sm ms-2 {{ 'disabled' if not books.has_next }}"
+        style="width: 40px; height: 40px;"><i class="fas fa-chevron-right"></i></a>
+</div>
+{% endif %}
+
+<script>
+    // Targets
+    const searchInputs = document.querySelectorAll('.search-input-desktop, .search-input-mobile');
+    const desktopTableBody = document.getElementById('desktop-table-body');
+    const mobileContainer = document.getElementById('mobile-book-container');
+    let timeout = null;
+
+    searchInputs.forEach(input => {
+        input.addEventListener('input', function (e) {
+            const query = e.target.value;
+
+            // Sync inputs
+            searchInputs.forEach(el => {
+                if (el !== e.target) el.value = query;
+            });
+
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                fetch(`/api/search/books?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // 1. Update Desktop Table
+                        let desktopHtml = '';
+                        if (data.length === 0) {
+                            desktopHtml = `<tr><td colspan="5" class="text-center py-5 text-muted">
+                                <i class="fas fa-search fa-3x mb-3 d-block opacity-25"></i>
+                                Sonuç bulunamadı.
+                            </td></tr>`;
+                        } else {
+                            data.forEach(book => {
+                                const statusBadge = book.is_available ?
+                                    '<span class="badge bg-success-subtle text-success border border-success-subtle px-3">RAFTA</span>' :
+                                    '<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3">EMANETTE</span>';
+
+                                desktopHtml += `
+                                    <tr>
+                                        <td class="ps-4 font-monospace text-muted small">${book.isbn}</td>
+                                        <td class="fw-medium">${book.title}</td>
+                                        <td>${book.author}</td>
+                                        <td>${statusBadge}</td>
+                                        <td class="text-end pe-4">
+                                            <a href="/book/${book.id}" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye me-1"></i> Detay</a>
+                                            <a href="/books/edit/${book.id}" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
+                                            <form action="/books/delete/${book.id}" method="POST" class="d-inline" onsubmit="return confirm('Bu kitabı silmek istediğinizden emin misiniz?');">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger ms-1"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        }
+                        if (desktopTableBody) desktopTableBody.innerHTML = desktopHtml;
+
+                        // 2. Update Mobile Cards
+                        let mobileHtml = '';
+                        if (data.length === 0) {
+                            mobileHtml = `<div class="text-center py-5">
+                                <i class="fas fa-search fa-3x text-muted opacity-25 mb-3"></i>
+                                <p class="text-muted">Sonuç bulunamadı.</p>
+                            </div>`;
+                        } else {
+                            data.forEach(book => {
+                                const statusBadge = book.is_available ?
+                                    '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Rafta</span>' :
+                                    '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">Emanette</span>';
+
+                                mobileHtml += `
+                                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                                        <div class="card-body p-3">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6 class="fw-bold text-dark mb-0 text-truncate pe-2">${book.title}</h6>
+                                                ${statusBadge}
+                                            </div>
+                                            <p class="text-muted small mb-2"><i class="fas fa-pen-nib me-1"></i> ${book.author}</p>
+                                            <p class="text-muted small mb-3 font-monospace bg-light d-inline-block px-2 py-1 rounded">${book.isbn}</p>
+                                            
+                                            <div class="d-flex gap-2">
+                                                <a href="/book/${book.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">Detay</a>
+                                                <a href="/books/edit/${book.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">Düzenle</a>
+                                                <form action="/books/delete/${book.id}" method="POST" class="d-inline flex-fill" onsubmit="return confirm('Silmek istediğinizden emin misiniz?');">
+                                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                    <button type="submit" class="btn btn-sm btn-light w-100 rounded-pill fw-bold text-danger">Sil</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        }
+                        if (mobileContainer) mobileContainer.innerHTML = mobileHtml;
+                    });
+            }, 300);
+        });
+    });
+
+    // Prevent default form submission for the desktop search form if JS is active
+    document.querySelector('.desktop-view form').addEventListener('submit', e => e.preventDefault());
+</script>
+{% endblock %}

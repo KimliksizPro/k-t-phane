@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Kimlik Kartı - {{ student.name }} {{ student.surname }}</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .no-print {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .btn {
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #34495e;
+        }
+
+        .btn-back {
+            background-color: #95a5a6;
+        }
+
+        /* The Actual Card Container */
+        #card-container {
+            width: 85.6mm;
+            height: 54mm;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            /* Standard ID Card Size */
+        }
+
+        /* Design */
+        .id-card {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            border-radius: 4mm;
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .header-strip {
+            background: #2c3e50;
+            height: 10mm;
+            display: flex;
+            align-items: center;
+            padding-left: 4mm;
+            color: white;
+            font-weight: bold;
+            font-size: 9pt;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 4mm;
+            display: flex;
+            gap: 4mm;
+        }
+
+        .photo-area {
+            width: 22mm;
+            height: 26mm;
+            background: white;
+            border: 1px solid #bdc3c7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #bdc3c7;
+            font-size: 24px;
+        }
+
+        .info-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .student-name {
+            font-size: 11pt;
+            font-weight: 800;
+            color: #2c3e50;
+            text-transform: uppercase;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .student-class {
+            font-size: 9pt;
+            color: #e74c3c;
+            font-weight: bold;
+            margin-top: 2px;
+        }
+
+        .student-no {
+            font-size: 8pt;
+            color: #555;
+            margin-top: 2px;
+        }
+
+        .barcode-area {
+            position: absolute;
+            bottom: 3mm;
+            left: 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .school-name {
+            position: absolute;
+            top: 2mm;
+            right: 4mm;
+            font-size: 7pt;
+            color: rgba(255, 255, 255, 0.8);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="no-print">
+        <h1>Kimlik Kartı Önizleme</h1>
+        <p>Kartı gördükten sonra indir butonuna basınız.</p>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <a href="/student/{{ student.id }}" class="btn btn-back">
+                <i class="fas fa-arrow-left"></i> Geri Dön
+            </a>
+            <button onclick="downloadPDF()" class="btn">
+                <i class="fas fa-download"></i> PDF İndir
+            </button>
+        </div>
+    </div>
+
+    <!-- The Card -->
+    <div id="card-container">
+        <div class="id-card">
+            <div class="header-strip">
+                KÜTÜPHANE KİMLİK
+            </div>
+            <!-- School Name watermark if needed -->
+            <!-- <div class="school-name">ATATÜRK LİSESİ</div> -->
+
+            <div class="content">
+                <div class="photo-area">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="info-area">
+                    <h2 class="student-name">{{ student.name }} {{ student.surname }}</h2>
+                    <div class="student-class">{{ student.class_name }}</div>
+                    <div class="student-no">No: {{ student.school_number }}</div>
+                </div>
+            </div>
+
+            <div class="barcode-area">
+                <svg id="barcode"></svg>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script>
+        // Generate Barcode immediately
+        document.addEventListener('DOMContentLoaded', function () {
+            JsBarcode("#barcode", "{{ student.school_number }}", {
+                format: "CODE128",
+                width: 1.4,
+                height: 35,
+                displayValue: true,
+                fontSize: 10,
+                background: "transparent",
+                lineColor: "#000",
+                margin: 0
+            });
+        });
+
+        function downloadPDF() {
+            const element = document.getElementById('card-container');
+
+            const opt = {
+                margin: 0,
+                filename: 'Kimlik_{{ student.school_number }}.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 4,
+                    useCORS: true,
+                    logging: true
+                },
+                jsPDF: { unit: 'mm', format: [85.6, 54], orientation: 'landscape' }
+            };
+
+            // HTML2PDF saves what it sees
+            html2pdf().set(opt).from(element).save();
+        }
+    </script>
+</body>
+
+</html>

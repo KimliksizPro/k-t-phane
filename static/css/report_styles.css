@@ -1,0 +1,116 @@
+/* Print/PDF Report Styles */
+.report-container {
+    width: 210mm;
+    min-height: 297mm;
+    padding: 20mm;
+    margin: 0 auto;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+    font-family: 'Times New Roman', Times, serif;
+    /* Official look */
+    color: #000;
+}
+
+.report-header {
+    border-bottom: 2px solid #000;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-logo {
+    font-size: 24px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.report-title {
+    text-align: center;
+    flex-grow: 1;
+}
+
+.report-title h1 {
+    font-size: 18pt;
+    font-weight: bold;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.report-title h2 {
+    font-size: 14pt;
+    margin: 5px 0 0;
+    font-weight: normal;
+}
+
+.report-meta {
+    font-size: 10pt;
+    text-align: right;
+}
+
+.report-body table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 11pt;
+}
+
+.report-body th,
+.report-body td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+}
+
+.report-body th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.report-footer {
+    margin-top: 50px;
+    display: flex;
+    justify-content: space-between;
+    page-break-inside: avoid;
+}
+
+.signature-box {
+    text-align: center;
+    width: 200px;
+}
+
+.signature-line {
+    border-top: 1px solid #000;
+    margin-top: 50px;
+    padding-top: 5px;
+    font-weight: bold;
+}
+
+/* Hide report container normally */
+.report-hidden {
+    display: none;
+}
+
+/* Print specific overrides */
+@media print {
+    body * {
+        visibility: hidden;
+    }
+
+    .report-container,
+    .report-container * {
+        visibility: visible;
+    }
+
+    .report-container {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        box-shadow: none;
+    }
+}

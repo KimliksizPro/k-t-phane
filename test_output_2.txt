@@ -1,0 +1,183 @@
+/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/app.py:96: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  return dict(settings=settings, now=datetime.utcnow())
+F..EE
+======================================================================
+ERROR: test_login_success (__main__.AuthTestCase.test_login_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/test_auth.py", line 32, in test_login_success
+    response = self.app.post('/login', data=dict(
+        username='testadmin',
+        password='testpass'
+    ), follow_redirects=True)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1165, in post
+    return self.open(*args, **kw)
+           ~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/testing.py", line 232, in open
+    response = super().open(
+        request,
+        buffered=buffered,
+        follow_redirects=follow_redirects,
+    )
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1148, in open
+    response = self.resolve_redirect(response, buffered=buffered)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1054, in resolve_redirect
+    return self.open(builder, buffered=buffered)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/testing.py", line 232, in open
+    response = super().open(
+        request,
+        buffered=buffered,
+        follow_redirects=follow_redirects,
+    )
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1114, in open
+    response = self.run_wsgi_app(request.environ, buffered=buffered)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 986, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1262, in run_wsgi_app
+    app_rv = app(environ, start_response)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/app.py", line 146, in index
+    return render_template('students.html', students=all_students, search_query=search_query)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/templating.py", line 133, in _render
+    rv = template.render(context)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/templates/students.html", line 1, in top-level template code
+    {% extends 'base.html' %}
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/templates/base.html", line 27, in top-level template code
+    <a href="{{ url_for('students') }}"
+    ^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1071, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1060, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/routing/map.py", line 919, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'students'. Did you mean 'add_student' instead?
+
+======================================================================
+ERROR: test_logout (__main__.AuthTestCase.test_logout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/test_auth.py", line 49, in test_logout
+    self.app.post('/login', data=dict(
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+        username='testadmin',
+        ^^^^^^^^^^^^^^^^^^^^^
+        password='testpass'
+        ^^^^^^^^^^^^^^^^^^^
+    ), follow_redirects=True)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1165, in post
+    return self.open(*args, **kw)
+           ~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/testing.py", line 232, in open
+    response = super().open(
+        request,
+        buffered=buffered,
+        follow_redirects=follow_redirects,
+    )
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1148, in open
+    response = self.resolve_redirect(response, buffered=buffered)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1054, in resolve_redirect
+    return self.open(builder, buffered=buffered)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/testing.py", line 232, in open
+    response = super().open(
+        request,
+        buffered=buffered,
+        follow_redirects=follow_redirects,
+    )
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1114, in open
+    response = self.run_wsgi_app(request.environ, buffered=buffered)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 986, in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/test.py", line 1262, in run_wsgi_app
+    app_rv = app(environ, start_response)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1478, in __call__
+    return self.wsgi_app(environ, start_response)
+           ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1458, in wsgi_app
+    response = self.handle_exception(e)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1455, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 869, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 867, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 852, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/app.py", line 146, in index
+    return render_template('students.html', students=all_students, search_query=search_query)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/templating.py", line 152, in render_template
+    return _render(app, template, context)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/templating.py", line 133, in _render
+    rv = template.render(context)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/templates/students.html", line 1, in top-level template code
+    {% extends 'base.html' %}
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/templates/base.html", line 27, in top-level template code
+    <a href="{{ url_for('students') }}"
+    ^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1071, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/flask/app.py", line 1060, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+        endpoint,
+    ...<3 lines>...
+        force_external=_external,
+    )
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/venv_linux/lib/python3.13/site-packages/werkzeug/routing/map.py", line 919, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'students'. Did you mean 'add_student' instead?
+
+======================================================================
+FAIL: test_dashboard_access_denied (__main__.AuthTestCase.test_dashboard_access_denied)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/semih/My Fİles/MyApps/Kütüphane Otomasyonu/test_auth.py", line 59, in test_dashboard_access_denied
+    self.assertIn(b'Giri\xc5\x9f Yap', response.data)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'Giri\xc5\x9f Yap' not found in b'<!DOCTYPE html>\n<html lang="tr">\n\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>K\xc3\xbct\xc3\xbcphane Y\xc3\xb6netim Sistemi</title>\n    <link href="/static/css/bootstrap.min.css" rel="stylesheet">\n    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">\n    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">\n    <link href="/static/css/custom.css" rel="stylesheet">\n</head>\n\n<body>\n    \n    <!-- Login Page Container (Full Screen) -->\n    \n<div class="d-flex align-items-center justify-content-center"\n    style="min-height: 100vh; background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);">\n    <div class="container">\n        <div class="row justify-content-center">\n            <div class="col-md-5 col-lg-4">\n                <div class="card border-0 shadow-lg" style="border-radius: 20px; overflow: hidden;">\n                    <div class="card-body p-5">\n                        <div class="text-center mb-4">\n                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3"\n                                style="width: 80px; height: 80px; box-shadow: 0 5px 15px rgba(78, 84, 200, 0.3);">\n                                <i class="fas fa-book-reader fa-3x"></i>\n                            </div>\n                            <h3 class="fw-bold text-dark mb-1">Ho\xc5\x9f Geldiniz</h3>\n                            <p class="text-muted small">K\xc3\xbct\xc3\xbcphane Otomasyon Sistemi</p>\n                        </div>\n\n                        <!-- Flash Messages -->\n                        \n                        \n                        \n                        <div class="alert alert-message alert-dismissible fade show shadow-sm border-0 mb-4"\n                            role="alert">\n                            <i class="fas fa-info-circle me-2"></i> Please log in to access this page.\n                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>\n                        </div>\n                        \n                        \n                        \n\n                        <form method="POST">\n                            <input type="hidden" name="csrf_token" value="ImY2NDBhMzBkMjIwZDYxZjZlYWEwM2Y0MmQzNWFhZTQ2MmExNTczM2Ii.aTmVsw.jsEKbnR4GiXZZNn-dvZyA40W49k">\n\n                            <div class="form-floating mb-3">\n                                <input type="text" class="form-control bg-light border-0" id="username" name="username"\n                                    placeholder="Kullan\xc4\xb1c\xc4\xb1 Ad\xc4\xb1" required style="border-radius: 10px;">\n                                <label for="username" class="text-muted"><i class="fas fa-user me-2"></i>Kullan\xc4\xb1c\xc4\xb1\n                                    Ad\xc4\xb1</label>\n                            </div>\n\n                            <div class="form-floating mb-4">\n                                <input type="password" class="form-control bg-light border-0" id="password"\n                                    name="password" placeholder="\xc5\x9eifre" required style="border-radius: 10px;">\n                                <label for="password" class="text-muted"><i class="fas fa-lock me-2"></i>\xc5\x9eifre</label>\n                            </div>\n\n                            <div class="d-grid gap-2 mb-4">\n                                <button class="btn btn-primary btn-lg py-3 fw-bold" type="submit"\n                                    style="border-radius: 10px; letter-spacing: 1px;">\n                                    G\xc4\xb0R\xc4\xb0\xc5\x9e YAP\n                                </button>\n                            </div>\n\n                            <div class="text-center">\n                                <small class="text-muted">Varsay\xc4\xb1lan: <strong>admin</strong> /\n                                    <strong>admin123</strong></small>\n                            </div>\n                        </form>\n                    </div>\n                </div>\n            </div>\n        </div>\n    </div>\n</div>\n\n    \n\n    <script src="/static/js/bootstrap.bundle.min.js"></script>\n</body>\n\n</html>'
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.211s
+
+FAILED (failures=1, errors=2)
+<sys>:0: ResourceWarning: unclosed database in <sqlite3.Connection object at 0x7fd4bef98400>

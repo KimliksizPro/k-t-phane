@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Kitap Detayı{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-5">
+                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4"
+                    style="width: 120px; height: 120px;">
+                    <i class="fas fa-book fa-4x text-primary"></i>
+                </div>
+                <h3 class="fw-bold mb-1">{{ book.title }}</h3>
+                <p class="text-muted mb-4">{{ book.author }}</p>
+
+                <div class="mb-4">
+                    {% if book.is_available %}
+                    <span class="badge bg-success fs-6 px-3 py-2">RAFTA</span>
+                    {% else %}
+                    <span class="badge bg-warning text-dark fs-6 px-3 py-2">EMANETTE</span>
+                    {% endif %}
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{{ url_for('books') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i> Listeye Dön
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i>KİTAP BİLGİLERİ
+                </h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="small text-muted fw-bold">ISBN</label>
+                        <div class="fw-medium font-monospace">{{ book.isbn }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-muted fw-bold">KATEGORİ</label>
+                        <div class="fw-medium">{{ book.category or '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-muted fw-bold">YAYINEVİ</label>
+                        <div class="fw-medium">{{ book.publisher or '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-muted fw-bold">BASIM YILI</label>
+                        <div class="fw-medium">{{ book.publication_year or '-' }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="small text-muted fw-bold">SAYFA SAYISI</label>
+                        <div class="fw-medium">{{ book.page_count or '-' }}</div>
+                    </div>
+
+                    {% if book.description %}
+                    <div class="col-12 mt-4">
+                        <label class="small text-muted fw-bold mb-2">AÇIKLAMA</label>
+                        <p class="text-secondary mb-0">{{ book.description }}</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom">
+                <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-history me-2"></i>HAREKET GEÇMİŞİ</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="ps-4">Öğrenci</th>
+                                <th>Veriliş Tarihi</th>
+                                <th>İade Tarihi</th>
+                                <th class="text-end pe-4">Durum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for loan in history %}
+                            <tr>
+                                <td class="ps-4 fw-medium">{{ loan.student.name }} {{ loan.student.surname }}</td>
+                                <td>{{ loan.issue_date.strftime('%d.%m.%Y') }}</td>
+                                <td>
+                                    {% if loan.return_date %}
+                                    {{ loan.return_date.strftime('%d.%m.%Y') }}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if loan.status == 'active' %}
+                                    <span class="badge bg-warning text-dark">EMANETTE</span>
+                                    {% else %}
+                                    <span class="badge bg-success">İADE EDİLDİ</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-4 text-muted">
+                                    <i class="fas fa-history fa-2x mb-2 d-block opacity-25"></i>
+                                    Henüz işlem kaydı bulunmuyor.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Kitap Düzenle{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-white py-3">
+                <h5 class="card-title mb-0"><i class="fas fa-edit me-2"></i>Kitap Bilgilerini Düzenle</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="title" class="form-label">Kitap Adı</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ book.title }}"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="author" class="form-label">Yazar</label>
+                            <input type="text" class="form-control" id="author" name="author" value="{{ book.author }}"
+                                required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="isbn" class="form-label">ISBN</label>
+                            <input type="text" class="form-control" id="isbn" name="isbn" value="{{ book.isbn }}"
+                                required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="category" class="form-label">Kategori</label>
+                            <input type="text" class="form-control" id="category" name="category"
+                                value="{{ book.category }}">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="publisher" class="form-label">Yayınevi</label>
+                            <input type="text" class="form-control" id="publisher" name="publisher"
+                                value="{{ book.publisher }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="publication_year" class="form-label">Yayın Yılı</label>
+                            <input type="number" class="form-control" id="publication_year" name="publication_year"
+                                value="{{ book.publication_year }}">
+                        </div>
+
+                        <div class="col-12">
+                            <label for="description" class="form-label">Açıklama</label>
+                            <textarea class="form-control" id="description" name="description"
+                                rows="3">{{ book.description }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4 gap-2">
+                        <a href="{{ url_for('books') }}" class="btn btn-light border">İptal</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Değişiklikleri Kaydet
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

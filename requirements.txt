@@ -1,0 +1,17 @@
+Flask==3.0.0
+Flask-SQLAlchemy==3.1.1
+Flask-WTF==1.2.1
+Flask-Talisman==1.1.0
+Flask-Limiter==3.5.0
+WTForms==3.1.1
+SQLAlchemy==2.0.36
+Werkzeug==3.0.1
+pandas
+openpyxl
+Flask-Login==0.6.3
+psycopg2-binary
+python-dotenv
+xhtml2pdf
+reportlab
+requests
+pyopenssl

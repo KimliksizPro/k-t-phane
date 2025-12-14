@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Kütüphane Yönetim Sistemi{% endblock %} - Kütüphane Otomasyonu</title>
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/report_styles.css') }}" rel="stylesheet">
+    <style>
+        /* Easy Mode Styles */
+        body.easy-mode {
+            font-size: 18px !important;
+        }
+
+        body.easy-mode .sidebar {
+            width: 280px;
+        }
+
+        body.easy-mode .nav-link {
+            padding: 16px 20px !important;
+            font-size: 1.1rem !important;
+            margin-bottom: 8px !important;
+        }
+
+        body.easy-mode .main-content {
+            margin-left: 280px;
+        }
+
+        body.easy-mode .card {
+            border: 2px solid #e0e0e0 !important;
+            box-shadow: none !important;
+            border-radius: 16px !important;
+        }
+
+        body.easy-mode .btn {
+            padding: 12px 24px !important;
+            font-size: 1.1rem !important;
+            border-radius: 12px !important;
+        }
+
+        body.easy-mode .table td,
+        body.easy-mode .table th {
+            padding: 16px !important;
+            font-size: 1.05rem !important;
+        }
+
+        body.easy-mode .form-control,
+        body.easy-mode .form-select {
+            padding: 14px !important;
+            font-size: 1.1rem !important;
+            border-width: 2px !important;
+        }
+
+        /* Hide complex elements in Easy Mode if needed */
+        body.easy-mode .text-muted.small {
+            font-size: 0.95rem !important;
+            color: #666 !important;
+        }
+
+        /* Dashboard Toggles */
+        body.easy-mode .regular-dashboard {
+            display: none !important;
+        }
+
+        body.easy-mode .easy-mode-dashboard {
+            display: flex !important;
+        }
+
+        body.easy-mode .sidebar {
+            display: none !important;
+        }
+
+        body.easy-mode .main-content {
+            margin-left: 0 !important;
+            padding: 20px;
+        }
+
+        .easy-mode-dashboard {
+            display: none;
+        }
+
+        /* Mobile Bottom Nav Styles */
+        .mobile-bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 25px 0;
+            /* Extra padding for modern phones safe area */
+            z-index: 1040;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .mobile-bottom-nav .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #9aa0ac;
+            font-size: 0.75rem;
+            transition: all 0.2s ease;
+            width: 25%;
+        }
+
+        .mobile-bottom-nav .nav-item i {
+            font-size: 1.4rem;
+            margin-bottom: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .mobile-bottom-nav .nav-item.active {
+            color: #4e54c8;
+            font-weight: 600;
+        }
+
+        .mobile-bottom-nav .nav-item.active i {
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Visibility */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                display: none;
+                /* Hide sidebar on mobile */
+            }
+
+            .main-content {
+                margin-left: 0;
+                /* Reset margin */
+                padding-bottom: 90px;
+                /* Space for bottom nav */
+            }
+
+            .mobile-bottom-nav {
+                display: flex;
+                /* Ensure it overrides d-lg-none if needed, though class handles it */
+            }
+
+            /* Hide user profile in top navbar on mobile to save space */
+            .top-navbar .user-profile {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="{{ settings.theme }}">
+    <!-- Global Page Loader -->
+    <div id="u-loader"
+        class="d-none position-fixed top-0 start-0 w-100 h-100 bg-white d-flex align-items-center justify-content-center"
+        style="z-index: 9999; opacity: 0; transition: opacity 0.3s ease-in-out;">
+        <div class="text-center">
+            <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                <span class="visually-hidden">Yükleniyor...</span>
+            </div>
+            <h6 class="fw-bold text-muted animate__animated animate__pulse animate__infinite">Yükleniyor...</h6>
+        </div>
+    </div>
+
+    <script>
+        // Apply Easy Mode class immediately to prevent flash
+        if (localStorage.getItem('kutuphane_easy_mode') === 'true') {
+            document.body.classList.add('easy-mode');
+        }
+
+        // Global Loader Logic
+        document.addEventListener("DOMContentLoaded", function () {
+            const loader = document.getElementById('u-loader');
+
+            // Show loader on page transition
+            window.addEventListener('beforeunload', function (e) {
+                if (loader) {
+                    loader.classList.remove('d-none');
+                    // Small delay to allow opacity transition to fire
+                    requestAnimationFrame(() => {
+                        loader.style.opacity = '1';
+                    });
+                }
+            });
+
+            // Hide loader when page shows (handles back button cache)
+            window.addEventListener('pageshow', function (e) {
+                if (loader) {
+                    loader.style.opacity = '0';
+                    setTimeout(() => {
+                        loader.classList.add('d-none');
+                    }, 300);
+                }
+            });
+        });
+    </script>
+    {% if current_user.is_authenticated %}
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a href="{{ url_for('index') }}" class="sidebar-brand">
+                <i class="fas fa-book-reader me-2"></i>KÜTÜPHANE
+            </a>
+        </div>
+        <div class="sidebar-nav">
+            <a href="{{ url_for('index') }}" class="nav-link {{ 'active' if request.endpoint == 'index' else '' }}">
+                <i class="fas fa-home"></i> Genel Bakış
+            </a>
+            <a href="{{ url_for('students') }}"
+                class="nav-link {{ 'active' if 'students' in request.endpoint else '' }}">
+                <i class="fas fa-user-graduate"></i> Öğrenciler
+            </a>
+            <a href="{{ url_for('books') }}" class="nav-link {{ 'active' if 'books' in request.endpoint else '' }}">
+                <i class="fas fa-book"></i> Kitaplar
+            </a>
+            <a href="{{ url_for('loans') }}" class="nav-link {{ 'active' if 'loans' in request.endpoint else '' }}">
+                <i class="fas fa-exchange-alt"></i> Emanet İşlemleri
+            </a>
+
+            {% if current_user.role != 'watcher' %}
+            <a href="{{ url_for('statistics') }}"
+                class="nav-link {{ 'active' if 'statistics' in request.endpoint else '' }}">
+                <i class="fas fa-chart-bar"></i> İstatistikler
+            </a>
+            <a href="{{ url_for('reports') }}" class="nav-link {{ 'active' if 'reports' in request.endpoint else '' }}">
+                <i class="fas fa-file-alt"></i> Raporlar
+            </a>
+            {% endif %}
+
+            <a href="{{ url_for('settings') }}"
+                class="nav-link {{ 'active' if 'settings' in request.endpoint else '' }}">
+                <i class="fas fa-cog"></i> Ayarlar
+            </a>
+
+            <div class="mt-4 px-4">
+                <a href="{{ url_for('logout') }}" class="btn btn-outline-light w-100 btn-sm">
+                    <i class="fas fa-sign-out-alt me-2"></i> Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Navbar -->
+        <div class="top-navbar">
+            <h1 class="page-title">{{ self.title() }}</h1>
+            <div class="user-profile">
+                <div class="text-end d-none d-md-block">
+                    <div class="fw-bold text-dark">{{ current_user.username }}</div>
+                    <small class="text-muted">Sistem Yöneticisi</small>
+                </div>
+                <div class="user-avatar">
+                    {{ current_user.username[0] | upper }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm border-0" role="alert">
+            <i class="fas fa-info-circle me-2"></i> {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- EASY MODE DESKTOP BACK BUTTON -->
+        {% if request.endpoint != 'index' %}
+        <div class="easy-mode-back-btn-container d-none d-lg-block mb-4" style="display: none;">
+            <a href="{{ url_for('index') }}" class="btn btn-secondary btn-lg rounded-pill shadow-sm px-4 fw-bold">
+                <i class="fas fa-arrow-left me-2"></i> Ana Menüye Dön
+            </a>
+        </div>
+        <style>
+            /* Default hidden */
+            .easy-mode-back-btn-container {
+                display: none !important;
+            }
+
+            /* Show only when body has easy-mode AND device is desktop (handled by d-lg-block) */
+            body.easy-mode .easy-mode-back-btn-container {
+                display: block !important;
+            }
+        </style>
+        {% endif %}
+
+        <!-- Page Content -->
+        {% block content %}{% endblock %}
+    </div>
+    <!-- Check for Watcher Restriction -->
+    {% if current_user.is_authenticated and current_user.role == 'watcher' and not
+    session.get('watcher_restricted_student') %}
+    <!-- Watcher Restriction Modal (Cannot be closed) -->
+    <div class="modal fade show" id="watcherRestrictionModal" data-bs-backdrop="static" data-bs-keyboard="false"
+        tabindex="-1" aria-hidden="true" style="display: block; background: rgba(0,0,0,0.8);">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content rounded-4 border-0 shadow-lg">
+                <div class="modal-body p-5 text-center">
+                    <div class="bg-danger bg-opacity-10 p-3 rounded-circle d-inline-flex mb-4">
+                        <i class="fas fa-user-lock text-danger fa-3x"></i>
+                    </div>
+                    <h3 class="fw-bold mb-3">Nöbetçi Girişi</h3>
+                    <p class="text-muted mb-4">
+                        Nöbetçi sistemini aktif etmek için lütfen <strong>Kendi Okul Numaranızı</strong> giriniz.
+                        <br><small class="text-danger fw-bold">(.)</small>
+                    </p>
+
+                    <form id="watcherRestrictionForm">
+                        <div class="input-group input-group-lg mb-4 shadow-sm">
+                            <span class="input-group-text bg-light border-0"><i
+                                    class="fas fa-id-card text-muted"></i></span>
+                            <input type="number" class="form-control bg-light border-0 fw-bold"
+                                id="watcher_student_number" placeholder="Örn: 1234" required autofocus>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 btn-lg rounded-pill fw-bold shadow">
+                            <i class="fas fa-check-circle me-2"></i> Sisteme Giriş Yap
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Focus on input
+            const input = document.getElementById('watcher_student_number');
+            if (input) input.focus();
+
+            const form = document.getElementById('watcherRestrictionForm');
+            if (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const num = document.getElementById('watcher_student_number').value;
+
+                    fetch("{{ url_for('set_watcher_restriction') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRFToken": "{{ csrf_token() }}"
+                        },
+                        body: JSON.stringify({ student_number: num })
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                location.reload(); // Refresh to remove modal
+                            } else {
+                                alert("Hata: " + data.message);
+                            }
+                        })
+                        .catch(err => alert("Bir hata oluştu: " + err));
+                });
+            }
+        });
+    </script>
+    {% endif %}
+
+    {% else %}
+    <!-- Login Page Container (Full Screen) -->
+    {% block login_content %}{% endblock %}
+    {% endif %}
+
+    <!-- Mobile Bottom Navigation (Visible only on Mobile) -->
+    <nav class="mobile-bottom-nav d-lg-none">
+        <a href="{{ url_for('index') }}" class="nav-item {{ 'active' if request.endpoint == 'index' else '' }}">
+            <i class="fas fa-home"></i>
+            <span>Ana Sayfa</span>
+        </a>
+        <a href="{{ url_for('loans') }}" class="nav-item {{ 'active' if 'loans' in request.endpoint else '' }}">
+            <i class="fas fa-exchange-alt"></i>
+            <span>Emanet</span>
+        </a>
+        <a href="{{ url_for('books') }}" class="nav-item {{ 'active' if 'books' in request.endpoint else '' }}">
+            <i class="fas fa-book"></i>
+            <span>Kitaplar</span>
+        </a>
+        <!-- More Button triggers Offcanvas -->
+        <a href="#" class="nav-item" data-bs-toggle="offcanvas" data-bs-target="#mobileMenuOffcanvas">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>Diğer</span>
+        </a>
+    </nav>
+
+    <!-- Mobile Offcanvas Menu -->
+    <div class="offcanvas offcanvas-bottom rounded-top-4 h-auto" tabindex="-1" id="mobileMenuOffcanvas"
+        style="max-height: 80vh;">
+        <div class="offcanvas-header pb-0">
+            <h5 class="offcanvas-title fw-bold text-primary"><i class="fas fa-bars me-2"></i>Menü</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+        </div>
+        <div class="offcanvas-body pt-3">
+            <div class="d-grid gap-2">
+                <a href="{{ url_for('students') }}" class="btn btn-light text-start py-3 fw-bold border-0 shadow-sm">
+                    <i class="fas fa-user-graduate me-3 text-primary fa-lg" style="width: 25px;"></i>Öğrenciler
+                </a>
+                <a href="{{ url_for('statistics') }}" class="btn btn-light text-start py-3 fw-bold border-0 shadow-sm">
+                    <i class="fas fa-chart-bar me-3 text-success fa-lg" style="width: 25px;"></i>İstatistikler
+                </a>
+                <a href="{{ url_for('reports') }}" class="btn btn-light text-start py-3 fw-bold border-0 shadow-sm">
+                    <i class="fas fa-file-alt me-3 text-warning fa-lg" style="width: 25px;"></i>Raporlar
+                </a>
+                <hr class="my-2">
+                <a href="{{ url_for('settings') }}" class="btn btn-light text-start py-3 fw-bold border-0 shadow-sm">
+                    <i class="fas fa-cog me-3 text-secondary fa-lg" style="width: 25px;"></i>Ayarlar
+                </a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger text-start py-3 fw-bold shadow-sm mt-2">
+                    <i class="fas fa-sign-out-alt me-3 fa-lg" style="width: 25px;"></i>Çıkış Yap
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+</body>
+
+</html>

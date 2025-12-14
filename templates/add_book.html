@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+{% block title %}Kitap Ekle{% endblock %}
+
+{% block content %}
+<!-- HTML5-QRCode Library -->
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3 border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-book-medical me-2"></i>YENİ KİTAP
+                        EKLE</h5>
+
+                </div>
+            </div>
+            <div class="card-body p-4">
+
+                <!-- Camera Scanner Container (Hidden by default) -->
+                <div id="reader-container" class="d-none mb-4 p-3 bg-light rounded shadow-sm text-center">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="fw-bold m-0"><i class="fas fa-camera me-2"></i>Barkod Okutun</h6>
+                        <button type="button" class="btn btn-sm btn-close" id="btnCloseCamera"
+                            aria-label="Kapat"></button>
+                    </div>
+
+                    <div id="secure-context-alert" class="alert alert-danger d-none small text-start">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Kamera açılamıyor!</strong><br>
+                        Güvenlik gereği kamera sadece <b>HTTPS</b> bağlantısı ile çalışır.<br>
+                        Lütfen adres çubuğundaki adresi <code>http://</code> yerine <code>https://</code> olarak
+                        değiştirip tekrar girin.
+                    </div>
+
+                    <div id="reader" style="width: 100%; min-height: 250px;"></div>
+                    <div class="small text-muted mt-2">Kamerayı barkoda tutun. Otomatik algılanacaktır.</div>
+                </div>
+
+                <form method="POST">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="col-md-12">
+                        <label for="isbn" class="form-label fw-bold small text-muted">ISBN / BARKOD</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light border-end-0"><i
+                                    class="fas fa-barcode text-dark"></i></span>
+                            <input type="text" class="form-control border-start-0" id="isbn" name="isbn"
+                                placeholder="Barkod okutun veya ISBN girin..." required autofocus>
+
+                            <!-- Camera Button -->
+                            <button class="btn btn-outline-dark" type="button" id="btnScanQr">
+                                <i class="fas fa-camera"></i>
+                            </button>
+
+                            <button class="btn btn-outline-primary" type="button" id="btnFetchBook">
+                                <span class="spinner-border spinner-border-sm d-none" id="fetchSpinner" role="status"
+                                    aria-hidden="true"></span>
+                                <span id="fetchBtnText">Bilgileri Getir</span>
+                            </button>
+                        </div>
+                        <div class="form-text text-primary" id="isbnHelp"><i class="fas fa-magic me-1"></i>Barkodu
+                            okuttuğunuzda kitap bilgileri otomatik dolacaktır.</div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="title" class="form-label fw-bold small text-muted">KİTAP ADI</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="author" class="form-label fw-bold small text-muted">YAZAR</label>
+                        <input type="text" class="form-control" id="author" name="author" required>
+                    </div>
+
+                    <div class="col-12">
+                        <hr class="my-4 text-muted opacity-25">
+                        <h6 class="text-muted mb-3 small fw-bold text-uppercase">Detaylı Bilgiler (Otomatik Dolar)</h6>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="category" class="form-label fw-bold small text-muted">KATEGORİ</label>
+                        <input type="text" class="form-control" id="category" name="category">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="publisher" class="form-label fw-bold small text-muted">YAYINEVİ</label>
+                        <input type="text" class="form-control" id="publisher" name="publisher">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="publication_year" class="form-label fw-bold small text-muted">BASIM YILI</label>
+                        <input type="number" class="form-control" id="publication_year" name="publication_year">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="page_count" class="form-label fw-bold small text-muted">SAYFA SAYISI</label>
+                        <input type="number" class="form-control" id="page_count" name="page_count">
+                    </div>
+                    <div class="col-12">
+                        <label for="description" class="form-label fw-bold small text-muted">AÇIKLAMA</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-5">
+                <button type="submit" class="btn btn-primary py-2 fw-bold">
+                    <i class="fas fa-save me-2"></i> KAYDET
+                </button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isbnInput = document.getElementById('isbn');
+        const btnFetch = document.getElementById('btnFetchBook');
+        const spinner = document.getElementById('fetchSpinner');
+        const btnText = document.getElementById('fetchBtnText');
+        const helpText = document.getElementById('isbnHelp');
+
+        // Camera Elements
+        const btnScan = document.getElementById('btnScanQr');
+        const readerContainer = document.getElementById('reader-container');
+        const btnCloseCamera = document.getElementById('btnCloseCamera');
+        let html5QrcodeScanner = null;
+
+        // --- Camera Logic ---
+        function onScanSuccess(decodedText, decodedResult) {
+            // Handle the scanned code as you like, for example:
+            // console.log(`Code matched = ${decodedText}`, decodedResult);
+
+            // 1. Play a beep sound (Optional)
+            // const audio = new Audio('/static/beep.mp3'); audio.play().catch(e=>{});
+
+            // 2. Stop Scanner
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().then(_ => {
+                    readerContainer.classList.add('d-none');
+                    // 3. Fill Input
+                    isbnInput.value = decodedText;
+                    // 4. Trigger Fetch
+                    fetchBookData(decodedText);
+                }).catch(error => {
+                    console.error("Failed to clear html5QrcodeScanner. ", error);
+                });
+            }
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+            // for example:
+            // console.warn(`Code scan error = ${error}`);
+        }
+
+        btnScan.addEventListener('click', function () {
+            // Check Secure Context (HTTPS or Localhost)
+            if (!window.isSecureContext) {
+                document.getElementById('secure-context-alert').classList.remove('d-none');
+                return;
+            } else {
+                document.getElementById('secure-context-alert').classList.add('d-none');
+            }
+
+            readerContainer.classList.remove('d-none');
+
+            // To prevent multiple instances
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().catch(e => console.log(e));
+            }
+
+            html5QrcodeScanner = new Html5QrcodeScanner(
+                "reader",
+                { fps: 10, qrbox: { width: 250, height: 150 } },
+                /* verbose= */ false);
+
+            html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+        });
+
+        btnCloseCamera.addEventListener('click', function () {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.clear().then(_ => {
+                    readerContainer.classList.add('d-none');
+                }).catch(error => {
+                    console.error("Failed to clear html5QrcodeScanner. ", error);
+                    readerContainer.classList.add('d-none'); // Force hide
+                });
+            } else {
+                readerContainer.classList.add('d-none');
+            }
+        });
+
+
+        // --- Existing Logic ---
+        // Function to fetch book data
+        async function fetchBookData(isbn) {
+            if (!isbn || isbn.length < 10) return;
+
+            // UI Loading State
+            btnFetch.disabled = true;
+            spinner.classList.remove('d-none');
+            btnText.textContent = 'Aranıyor...';
+            helpText.className = 'form-text text-muted';
+            helpText.textContent = 'Veritabanı taranıyor...';
+
+            try {
+                // Use internal API to avoid CORS/CSP issues
+                const response = await fetch(`/api/get-book-details?isbn=${isbn}`);
+
+                if (!response.ok) {
+                    throw new Error('Book not found');
+                }
+
+                const data = await response.json();
+
+                // Auto-fill fields (using snake_case keys from our API)
+                document.getElementById('title').value = data.title || '';
+                document.getElementById('author').value = data.authors || '';
+                document.getElementById('publisher').value = data.publisher || '';
+                document.getElementById('publication_year').value = data.published_date ? data.published_date.substring(0, 4) : '';
+                document.getElementById('page_count').value = data.page_count || '';
+                document.getElementById('category').value = (data.categories && data.categories.length > 0) ? data.categories[0] : '';
+                document.getElementById('description').value = data.description || '';
+
+                // Success Feedback
+                helpText.className = 'form-text text-success fw-bold';
+                helpText.innerHTML = '<i class="fas fa-check-circle me-1"></i>Kitap bulundu ve bilgiler dolduruldu!';
+
+                // Flash animation for visual confirmation
+                document.getElementById('title').classList.add('bg-success', 'bg-opacity-10');
+                setTimeout(() => document.getElementById('title').classList.remove('bg-success', 'bg-opacity-10'), 1000);
+
+            } catch (error) {
+                console.error('API Error:', error);
+                helpText.className = 'form-text text-warning fw-bold';
+                helpText.innerHTML = '<i class="fas fa-info-circle me-1"></i>Kayıt bulunamadı. Lütfen bilgileri manuel giriniz.';
+                // Focus on title to encourage manual entry
+                document.getElementById('title').focus();
+            } finally {
+                // Reset UI
+                btnFetch.disabled = false;
+                spinner.classList.add('d-none');
+                btnText.textContent = 'Bilgileri Getir';
+            }
+        }
+
+        // Trigger on "Enter" key (Scanner usually sends Enter at the end)
+        isbnInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submit
+                fetchBookData(this.value);
+            }
+        });
+
+        // Trigger on Button Click
+        btnFetch.addEventListener('click', function () {
+            fetchBookData(isbnInput.value);
+        });
+
+        // Optional: Trigger on paste or change if scanner acts fast
+        isbnInput.addEventListener('change', function () {
+            if (this.value.length >= 10) fetchBookData(this.value);
+        });
+    });
+</script>
+{% endblock %}

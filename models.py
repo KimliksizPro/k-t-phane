@@ -1,0 +1,70 @@
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
+from datetime import datetime
+
+db = SQLAlchemy()
+
+class Student(db.Model):
+    __table_args__ = (
+        db.Index('idx_student_search', 'name', 'surname', 'school_number'),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    surname = db.Column(db.String(100), nullable=False)
+    school_number = db.Column(db.String(20), unique=True, nullable=False)
+    class_name = db.Column(db.String(20), nullable=False)
+    email = db.Column(db.String(120))
+    phone = db.Column(db.String(20))
+    address = db.Column(db.Text)
+    transactions = db.relationship('Transaction', backref='student', lazy=True, cascade="all, delete-orphan")
+
+class Book(db.Model):
+    __table_args__ = (
+        db.Index('idx_book_search', 'title', 'author', 'isbn'),
+        db.Index('idx_book_availability', 'is_available'),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), nullable=False)
+    author = db.Column(db.String(100), nullable=False)
+    isbn = db.Column(db.String(20), unique=True, nullable=False)
+    category = db.Column(db.String(50))
+    publisher = db.Column(db.String(100))
+    publication_year = db.Column(db.Integer)
+    page_count = db.Column(db.Integer)
+    description = db.Column(db.Text)
+    is_available = db.Column(db.Boolean, default=True)
+    transactions = db.relationship('Transaction', backref='book', lazy=True, cascade="all, delete-orphan")
+
+class Transaction(db.Model):
+    __table_args__ = (
+        db.Index('idx_transaction_status', 'status'),
+        db.Index('idx_transaction_dates', 'issue_date', 'due_date'),
+    )
+    id = db.Column(db.Integer, primary_key=True)
+    student_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
+    book_id = db.Column(db.Integer, db.ForeignKey('book.id'), nullable=False)
+    issue_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    due_date = db.Column(db.DateTime, nullable=False)
+    return_date = db.Column(db.DateTime)
+    status = db.Column(db.String(20), default='active') # active, returned
+
+class Settings(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    loan_period = db.Column(db.Integer, default=15) # Days
+    school_name = db.Column(db.String(100), default='Kütüphane Otomasyonu')
+    theme = db.Column(db.String(20), default='blue') # blue, red
+    active_watcher_id = db.Column(db.Integer, nullable=True) # ID of the currently active watcher
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    role = db.Column(db.String(20), default='admin') # admin, watcher
+    password_hash = db.Column(db.String(255), nullable=False)
+
+    def set_password(self, password):
+        from werkzeug.security import generate_password_hash
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        from werkzeug.security import check_password_hash
+        return check_password_hash(self.password_hash, password)
