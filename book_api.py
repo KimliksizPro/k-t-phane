@@ -57,49 +57,7 @@ def fetch_google_books(isbn):
         print(f"Google Books API Error: {e}")
     return None
 
-def fetch_loc(isbn):
-    """
-    Fetches from Library of Congress (LOC)
-    https://www.loc.gov/books/?fo=json&isbn={ISBN}
-    """
-    try:
-        url = f"https://www.loc.gov/books/?fo=json&isbn={isbn}"
-        response = requests.get(url, timeout=6)
-        if response.status_code == 200:
-            data = response.json()
-            results = data.get("results")
-            if results:
-                item = results[0]
-                
-                # Extract fields with fallback logic
-                title = item.get("title", [])
-                if isinstance(title, list) and title: title = title[0]
-                
-                contributors = item.get("contributor", [])
-                author = ", ".join(contributors) if contributors else ""
-                
-                date = item.get("date", "")
-                
-                description = item.get("description", [])
-                if isinstance(description, list): description = " ".join(description) # LOC descriptions are often lists
-                
-                # LOC thumbnails are tricky, often in 'image_url' list
-                images = item.get("image_url", [])
-                thumbnail = images[0] if images else ""
 
-                return {
-                    "title": str(title),
-                    "author": str(author),
-                    "publisher": "", # LOC often doesn't give publisher easily in summary
-                    "publication_year": str(date)[:4],
-                    "page_count": 0, # LOC often doesn't have page count in summary
-                    "description": str(description),
-                    "thumbnail_url": str(thumbnail),
-                    "isbn": isbn
-                }
-    except Exception as e:
-        print(f"LOC API Error: {e}")
-    return None
 
 def fetch_open_library(isbn):
     """
@@ -222,12 +180,7 @@ def get_book_details(isbn, api_key=None):
         print("Found in Google Books API!")
         return res
         
-    # 3. Try Library of Congress (NEW)
-    print("Trying Library of Congress API...")
-    res = fetch_loc(clean_isbn)
-    if res and res['title']:
-        print("Found in Library of Congress!")
-        return res
+
 
     # 4. Try Open Library (Revised Endpoint)
     print("Trying Open Library API...")
