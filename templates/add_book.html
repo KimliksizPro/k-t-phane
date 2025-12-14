@@ -6,6 +6,7 @@
 <!-- HTML5-QRCode Library -->
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
+
 <div class="row justify-content-center">
     <div class="col-lg-8">
         <div class="card border-0 shadow-sm">
@@ -38,6 +39,8 @@
                     <div class="small text-muted mt-2">Kamerayı barkoda tutun. Otomatik algılanacaktır.</div>
                 </div>
 
+
+
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
@@ -53,6 +56,8 @@
                             <button class="btn btn-outline-dark" type="button" id="btnScanQr">
                                 <i class="fas fa-camera"></i>
                             </button>
+
+
 
                             <button class="btn btn-outline-primary" type="button" id="btnFetchBook">
                                 <span class="spinner-border spinner-border-sm d-none" id="fetchSpinner" role="status"
@@ -191,8 +196,6 @@
             }
         });
 
-
-        // --- Existing Logic ---
         // Function to fetch book data
         async function fetchBookData(isbn) {
             if (!isbn || isbn.length < 10) return;
@@ -216,9 +219,9 @@
 
                 // Auto-fill fields (using snake_case keys from our API)
                 document.getElementById('title').value = data.title || '';
-                document.getElementById('author').value = data.authors || '';
+                document.getElementById('author').value = data.authors || data.author || ''; // Fallback for author key
                 document.getElementById('publisher').value = data.publisher || '';
-                document.getElementById('publication_year').value = data.published_date ? data.published_date.substring(0, 4) : '';
+                document.getElementById('publication_year').value = data.published_date ? data.published_date.substring(0, 4) : (data.publication_year || '');
                 document.getElementById('page_count').value = data.page_count || '';
                 document.getElementById('category').value = (data.categories && data.categories.length > 0) ? data.categories[0] : '';
                 document.getElementById('description').value = data.description || '';
