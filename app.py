@@ -1137,7 +1137,6 @@ def export_report_pdf(type):
         flash('Geçersiz rapor türü.', 'danger')
         return redirect(url_for('reports'))
 
-    # Render Template as Preview (Frontend PDF generation)
     return render_template('pdf_report.html', 
                            title=title, 
                            school_name=school_name,
@@ -1159,43 +1158,17 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     
-    # Auto-open browser if running as EXE
+
     if not DEBUG_MODE:
         Timer(1.5, open_browser).start()
     
-    # If debug is True (development), browser open is optional/manual
-    # to avoid annoying popping up on every reload.
+
+
     if DEBUG_MODE:
-         # Optional: Remove comments below to auto-open in dev too
-         # Timer(1.5, open_browser).start()
+
+
          pass
 
-    # SSL Context for Camera Access (Requires pip install pyopenssl)
-    # SSL Context for Camera Access (Requires pip install pyopenssl)
-    try:
-        import socket
-        try:
-            hostname = socket.gethostname()
-            local_ip = socket.gethostbyname(hostname)
-        except:
-            local_ip = "127.0.0.1"
 
-        print("\n" + "="*60)
-        print(f"✅ SUNUCU BAŞLATILIYOR (HTTPS)...")
-        print(f"👉 Yerel Erişim:   https://127.0.0.1:5000")
-        print(f"👉 Ağ Erişimi:     https://{local_ip}:5000  (Telefondan buna girin)")
-        print(f"⚠️  UYARI: Tarayıcı 'Güvenli Değil' diyebilir. 'Gelişmiş -> Siteye İlerle' seçin.")
-        print("="*60 + "\n")
 
-        # Try to use persistent certificate if exists
-        import os
-        if os.path.exists("cert.pem") and os.path.exists("key.pem"):
-            print("🔒 Sabit Sertifika Bulundu (cert.pem, key.pem).")
-            app.run(host='0.0.0.0', debug=DEBUG_MODE, ssl_context=('cert.pem', 'key.pem'))
-        else:
-            print("⚠️ Sabit sertifika yok, geçici (adhoc) sertifika kullanılıyor...")
-            app.run(host='0.0.0.0', debug=DEBUG_MODE, ssl_context='adhoc')
-            
-    except Exception as e:
-        print(f"SSL Context başlatılamadı, HTTP olarak devam ediliyor: {e}")
-        app.run(host='0.0.0.0', debug=DEBUG_MODE)
+    app.run(host='0.0.0.0', debug=DEBUG_MODE)
