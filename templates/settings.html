@@ -299,90 +299,97 @@
                 <button type="submit"
                     class="btn btn-primary w-100 btn-lg rounded-pill fw-bold shadow d-flex align-items-center justify-content-center">
                     <i class="fas fa-check-circle me-2"></i> KAYDET
-                    <div class="card-body p-4">
-                        <h6 class="fw-bold mb-3 text-danger d-flex align-items-center">
-                            <div class="bg-danger bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
-                                style="width:32px; height:32px;">
-                                <i class="fas fa-lock"></i>
-                            </div>
-                            Şifre Değiştir
-                        </h6>
-                        <form method="POST">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                            <input type="hidden" name="change_password_submit" value="1">
-
-                            <div class="mb-3">
-                                <input type="password" class="form-control form-control-lg bg-light border-0"
-                                    placeholder="Mevcut Şifre" name="current_password" required>
-                            </div>
-                            <div class="mb-3">
-                                <input type="password" class="form-control form-control-lg bg-light border-0"
-                                    placeholder="Yeni Şifre" name="new_password" required>
-                            </div>
-                            <div class="mb-4">
-                                <input type="password" class="form-control form-control-lg bg-light border-0"
-                                    placeholder="Yeni Şifre (Tekrar)" name="confirm_password" required>
-                            </div>
-
-                            <button type="submit" class="btn btn-danger w-100 btn-lg rounded-pill fw-bold shadow">
-                                <i class="fas fa-sync-alt me-2"></i> GÜNCELLE
-                            </button>
-                        </form>
-                    </div>
+                </button>
+            </form>
         </div>
-
-        <!-- Bulk Import Card -->
-        <div class="card border-0 shadow-sm rounded-4">
-            <div class="card-body p-4">
-                <h6 class="fw-bold mb-3 text-success d-flex align-items-center">
-                    <div class="bg-success bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
-                        style="width:32px; height:32px;">
-                        <i class="fas fa-file-upload"></i>
-                    </div>
-                    Öğrenci Aktarımı
-                </h6>
-
-                <form method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                    <div class="mb-3">
-                        <label class="form-label text-muted small fw-bold ms-1">EXCEL DOSYASI</label>
-                        <input class="form-control form-control-lg rounded-4 shadow-sm border-0 bg-light" type="file"
-                            id="import_file_mobile" name="import_file" accept=".xlsx, .xls" required>
-                    </div>
-
-                    <button type="submit"
-                        class="btn btn-success w-100 btn-lg rounded-pill fw-bold shadow d-flex align-items-center justify-content-center">
-                        <i class="fas fa-cloud-upload-alt me-2"></i> YÜKLE
-                    </button>
-                </form>
-            </div>
-        </div>
-
-        <!-- Book Import Card Mobile -->
-        <div class="card border-0 shadow-sm rounded-4 mt-4">
-            <div class="card-body p-4">
-                <h6 class="fw-bold mb-3 text-warning d-flex align-items-center">
-                    <div class="bg-warning bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
-                        style="width:32px; height:32px;">
-                        <i class="fas fa-book"></i>
-                    </div>
-                    Kitap Aktarımı
-                </h6>
-                <form method="POST" enctype="multipart/form-data">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                    <div class="mb-3">
-                        <input class="form-control form-control-lg rounded-4 shadow-sm border-0 bg-light" type="file"
-                            name="import_books_file" accept=".xlsx, .xls" required>
-                    </div>
-
-                    <button type="submit" class="btn btn-warning w-100 btn-lg rounded-pill fw-bold shadow text-white">
-                        <i class="fas fa-upload me-2"></i> KİTAPLARI YÜKLE
-                    </button>
-                </form>
-            </div>
-        </div>
-        {% endif %}
     </div>
-    {% endblock %}
+
+    <!-- Password Change Card Mobile -->
+    <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3 text-danger d-flex align-items-center">
+                <div class="bg-danger bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
+                    style="width:32px; height:32px;">
+                    <i class="fas fa-lock"></i>
+                </div>
+                Şifre Değiştir
+            </h6>
+            <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <input type="hidden" name="change_password_submit" value="1">
+
+                <div class="mb-3">
+                    <input type="password" class="form-control form-control-lg bg-light border-0"
+                        placeholder="Mevcut Şifre" name="current_password" required>
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control form-control-lg bg-light border-0"
+                        placeholder="Yeni Şifre" name="new_password" required>
+                </div>
+                <div class="mb-4">
+                    <input type="password" class="form-control form-control-lg bg-light border-0"
+                        placeholder="Yeni Şifre (Tekrar)" name="confirm_password" required>
+                </div>
+
+                <button type="submit" class="btn btn-danger w-100 btn-lg rounded-pill fw-bold shadow">
+                    <i class="fas fa-sync-alt me-2"></i> GÜNCELLE
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Bulk Import Card -->
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3 text-success d-flex align-items-center">
+                <div class="bg-success bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
+                    style="width:32px; height:32px;">
+                    <i class="fas fa-file-upload"></i>
+                </div>
+                Öğrenci Aktarımı
+            </h6>
+
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold ms-1">EXCEL DOSYASI</label>
+                    <input class="form-control form-control-lg rounded-4 shadow-sm border-0 bg-light" type="file"
+                        id="import_file_mobile" name="import_file" accept=".xlsx, .xls" required>
+                </div>
+
+                <button type="submit"
+                    class="btn btn-success w-100 btn-lg rounded-pill fw-bold shadow d-flex align-items-center justify-content-center">
+                    <i class="fas fa-cloud-upload-alt me-2"></i> YÜKLE
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Book Import Card Mobile -->
+    <div class="card border-0 shadow-sm rounded-4 mt-4">
+        <div class="card-body p-4">
+            <h6 class="fw-bold mb-3 text-warning d-flex align-items-center">
+                <div class="bg-warning bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
+                    style="width:32px; height:32px;">
+                    <i class="fas fa-book"></i>
+                </div>
+                Kitap Aktarımı
+            </h6>
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="mb-3">
+                    <input class="form-control form-control-lg rounded-4 shadow-sm border-0 bg-light" type="file"
+                        name="import_books_file" accept=".xlsx, .xls" required>
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100 btn-lg rounded-pill fw-bold shadow text-white">
+                    <i class="fas fa-upload me-2"></i> KİTAPLARI YÜKLE
+                </button>
+            </form>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
