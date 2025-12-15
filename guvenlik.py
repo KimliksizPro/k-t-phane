@@ -291,17 +291,27 @@ class FingerprintVault:
         if not ShieldConfig.SESSION_FINGERPRINT_CHECK:
             return True
             
+        current_fp = SecurityUtils.generate_fingerprint(request)
+        
+        # Initial fingerprinting
         if 'client_fingerprint' not in session_obj:
-            session_obj['client_fingerprint'] = SecurityUtils.generate_fingerprint(request)
+            session_obj['client_fingerprint'] = current_fp
+            session_obj['created_ip'] = request.remote_addr # Store IP inside session
             return True
             
-        current_fp = SecurityUtils.generate_fingerprint(request)
-        stored_fp = session_obj['client_fingerprint']
+        stored_fp = session_obj.get('client_fingerprint')
+        created_ip = session_obj.get('created_ip')
         
+        # 1. Fingerprint Check (UA + Headers)
         if current_fp != stored_fp:
-            return False
+            return False, "Fingerprint Mismatch"
             
-        return True
+        # 2. IP Lock Check (If IP changes within same session -> Suspicious in Strict Mode)
+        if created_ip and created_ip != request.remote_addr:
+             # In strict security environments, session is bound to IP.
+             return False, "IP Address Change detected"
+             
+        return True, "OK"
 
 class ForensicsLogger:
     def __init__(self):
@@ -486,6 +496,24 @@ class SecurityGuardian:
         """Manually unbans an IP."""
         self.reputation.manual_unban(ip)
         
+    def punish_hijacker(self, ip, details="Session Tampering"):
+        """Instantly bans the IP for Session Hijacking with Maximum Penalty."""
+        reason = f"KRITIK: OTURUM SALDIRISI ({details})"
+        
+        # 1. Log forensic event
+        self.forensics.log_threat({
+            "event": "SESSION_HIJACK_DETECTED",
+            "ip": ip,
+            "details": details,
+            "action": "PERMANENT_BAN"
+        })
+        
+        # 2. Permanent Ban (Score 1000)
+        self.reputation.ban(ip, reason, 1000)
+        
+        # 3. Defensive Response (Abort 403)
+        abort(403, description="TITANIUM: OTURUM SALDIRISI TESPIT EDILDI.")
+
     def reset_ip_status(self, ip):
         """Clears all tracking data for an IP (Traffic, Behavior, Ban)."""
         # 1. Remove from Ban List
@@ -517,9 +545,18 @@ class SecurityGuardian:
             abort(429, description="TITANIUM KALKANI: Cok Fazla Istek (Hiz Limiti)")
             
         if session:
-            if not self.fingerprint.check_integrity(session):
+            is_valid, reason = self.fingerprint.check_integrity(session)
+            if not is_valid:
                 session.clear()
-                abort(403, description="TITANIUM KALKANI: Oturum Ihlali (Session Hijacking)")
+                # If session is invalid due to Hijack (IP mismatch), we can ban here too.
+                # But to avoid false positives on legitimate network switch (if not strict),
+                # we might just clear session.
+                # However, user requested "Strict Ban".
+                # If reason implies hijacking:
+                if "IP Address" in reason or "Fingerprint" in reason:
+                     self.punish_hijacker(client_ip, reason)
+                else:
+                     abort(403, description=f"TITANIUM KALKANI: {reason}")
 
         payloads = [
             request.path,

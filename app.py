@@ -84,10 +84,33 @@ csrf = CSRFProtect(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+login_manager.session_protection = 'strong' # Protect against session hijacking (IP/User-Agent check)
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    user = User.query.get(int(user_id))
+    if user:
+        # STRICT SESSION SECURITY (IP Binding)
+        # If the stored login IP is different from the current IP, we consider it a potential hijack.
+        # However, we must be careful with mobile users switching from WiFi to 4G.
+        # But per user request "permanent ban if doing this", we will be strict.
+        
+        # We use a helper from guardian to check if the session fingerprint matches
+        # Actually, we can just check stored last_login_ip vs current remote_addr
+        if user.last_login_ip and user.last_login_ip != request.remote_addr:
+            # Check if this might be a valid device switch (in allowed_devices)
+            # But duplicate session cookie usage implies SAME session token on NEW IP.
+            # If session token is same, but IP changed -> Hijack or Network Switch.
+            # If user explicitly said "ban", we treat as Hijack for now or log threat.
+            
+            # Let's verify via Guardian
+            is_valid, reason = guardian.fingerprint.check_integrity(session)
+            if not is_valid:
+                 # Trigger Ban via Guardian
+                 guardian.punish_hijacker(request.remote_addr, f"Session Hijack: {reason}")
+                 return None
+                 
+    return user
 
 csp = {
     'default-src': '\'self\'',
@@ -204,9 +227,9 @@ def login():
                     if (datetime.utcnow() - user.last_activity).total_seconds() < 300:
                         is_session_active = True
                 
-                # If NO active session is found, we TRUST this new device immediately.
+                # If NO active session is found OR usage is DISABLED by user, we TRUST this new device immediately.
                 # This solves the "locked out" issue if you are the first one logging in.
-                if not is_session_active:
+                if not is_session_active or not getattr(user, 'device_verification_enabled', True):
                     # Auto-Register Device
                     try:
                         allowed = json.loads(user.allowed_devices)
@@ -1149,6 +1172,16 @@ def settings():
             settings.loan_period = int(request.form['loan_period'])
             if 'theme' in request.form:
                 settings.theme = request.form['theme']
+            
+            # Device Verification Toggle
+            if 'device_verification_toggle' in request.form:
+                 current_user.device_verification_enabled = True
+            else:
+                 # Checkbox not sent implies False
+                 # Only if this form submission is about main settings (check for school_name existence)
+                 if 'school_name' in request.form:
+                     current_user.device_verification_enabled = False
+
             db.session.commit()
             flash('Ayarlar güncellendi!', 'success')
             

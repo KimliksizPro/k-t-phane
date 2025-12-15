@@ -66,6 +66,7 @@ class User(UserMixin, db.Model):
     last_activity = db.Column(db.DateTime, nullable=True)
     allowed_devices = db.Column(db.Text, default='[]') # JSON list of device tokens
     is_locked = db.Column(db.Boolean, default=False)
+    device_verification_enabled = db.Column(db.Boolean, default=True) # If False, skips new device check
 
     def set_password(self, password):
         from werkzeug.security import generate_password_hash

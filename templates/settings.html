@@ -1,97 +1,86 @@
 {% extends 'base.html' %}
-
-{% block title %}Sistem Ayarları{% endblock %}
-
+{% block title %}Ayarlar{% endblock %}
 {% block content %}
-<!-- DESKTOP VIEW -->
-<div class="desktop-view d-none d-lg-block">
+<div class="container-fluid pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-0">Sistem Ayarları</h1>
+            <p class="text-muted small mb-0">Genel yapılandırma ve güvenlik tercihleri</p>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card border-0 shadow-sm h-100 rounded-4">
                 <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-cog me-2"></i>SİSTEM AYARLARI</h5>
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-cog me-2"></i>Genel Ayarlar</h5>
                 </div>
                 <div class="card-body p-4">
                     <form method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
+                        <div class="mb-4 bg-light p-3 rounded-3 border">
+                            <label class="fw-bold text-dark mb-2 d-block"><i
+                                    class="fas fa-shield-alt me-2 text-primary"></i>Güvenlik Tercihleri</label>
+                            <div class="form-check form-switch p-0 d-flex justify-content-between align-items-center">
+                                <label class="form-check-label text-secondary" for="device_verification_toggle">
+                                    Farklı Cihaz Doğrulaması
+                                    <div class="small text-muted fw-normal">Yeni cihazlardan girişte kod iste</div>
+                                </label>
+                                <input class="form-check-input ms-0" type="checkbox" id="device_verification_toggle"
+                                    name="device_verification_toggle" style="width: 3em; height: 1.5em;" {% if
+                                    current_user.device_verification_enabled %}checked{% endif %}>
+                            </div>
+                        </div>
+
                         {% if current_user.role != 'watcher' %}
                         <div class="mb-3">
-                            <label for="school_name" class="form-label fw-bold small text-muted">OKUL / KÜTÜPHANE
-                                ADI</label>
-                            <input type="text" class="form-control" id="school_name" name="school_name"
-                                value="{{ settings.school_name }}" required>
+                            <label for="school_name" class="form-label fw-bold small text-muted">OKUL ADI</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0" id="school_name"
+                                name="school_name" value="{{ settings.school_name }}" required>
                         </div>
 
                         <div class="mb-3">
-                            <label for="loan_period" class="form-label fw-bold small text-muted">KİTAP ÖDÜNÇ SÜRESİ
+                            <label for="loan_period" class="form-label fw-bold small text-muted">ÖDÜNÇ SÜRESİ
                                 (GÜN)</label>
-                            <input type="number" class="form-control" id="loan_period" name="loan_period"
-                                value="{{ settings.loan_period }}" min="1" required>
-                            <div class="form-text">Öğrencilerin kitabı teslim etmesi gereken gün sayısı.</div>
+                            <input type="number" class="form-control form-control-lg bg-light border-0" id="loan_period"
+                                name="loan_period" value="{{ settings.loan_period }}" min="1" required>
                         </div>
 
                         <div class="mb-4">
-                            <label for="theme" class="form-label fw-bold small text-muted">TEMA RENGİ</label>
-                            <select class="form-select" id="theme" name="theme">
-                                <option value="blue" {% if settings.theme=='blue' %}selected{% endif %}>Açık (Light)
-                                </option>
+                            <label for="theme" class="form-label fw-bold small text-muted">TEMA</label>
+                            <select class="form-select form-select-lg bg-light border-0" id="theme" name="theme">
+                                <option value="blue" {% if settings.theme=='blue' %}selected{% endif %}>Açık Tema
+                                    (Varsayılan)</option>
                             </select>
                         </div>
-                        <hr class="my-4">
                         {% endif %}
 
-                        <!-- Easy Mode Toggle (Visible to All) -->
-                        <div class="mb-4">
-                            <div
-                                class="form-check form-switch p-0 d-flex justify-content-between align-items-center border rounded-3 p-3 bg-light">
+                        <div class="mb-4 pt-3 border-top">
+                            <div class="form-check form-switch p-0 d-flex justify-content-between align-items-center">
                                 <label class="form-check-label fw-bold text-dark" for="easy_mode">
                                     <i class="fas fa-magic me-2 text-warning"></i>Kolay Mod
-                                    <div class="text-muted small fw-normal mt-1">Daha basitleştirilmiş arayüz görünümü
-                                        (Beta)</div>
+                                    <div class="small text-muted fw-normal">Basitleştirilmiş arayüz</div>
                                 </label>
                                 <input class="form-check-input ms-0" type="checkbox" id="easy_mode" name="easy_mode"
                                     style="width: 3em; height: 1.5em;">
                             </div>
                         </div>
 
-                        <script>
-                            // Simple persistence for Easy Mode toggle using localStorage
-                            document.addEventListener('DOMContentLoaded', function () {
-                                const easyModeToggle = document.getElementById('easy_mode');
-                                const savedState = localStorage.getItem('kutuphane_easy_mode');
-
-                                if (savedState === 'true') {
-                                    easyModeToggle.checked = true;
-                                }
-
-                                easyModeToggle.addEventListener('change', function () {
-                                    localStorage.setItem('kutuphane_easy_mode', this.checked);
-                                    if (this.checked) {
-                                        window.location.href = "{{ url_for('index') }}";
-                                    }
-                                });
-                            });
-                        </script>
-
-                        <button type="submit" class="btn btn-primary fw-bold">
-                            <i class="fas fa-save me-2"></i> Ayarları Kaydet
+                        <button type="submit" class="btn btn-primary w-100 btn-lg rounded-pill fw-bold shadow-sm">
+                            <i class="fas fa-save me-2"></i>Değişiklikleri Kaydet
                         </button>
 
-                        <!-- SUPER ADMIN SHORTCUTS -->
                         {% if current_user.username == 'admin' %}
-                        <div class="mt-4 pt-4 border-top">
-                            <h6 class="fw-bold text-dark mb-3"><i
-                                    class="fas fa-user-shield me-2 text-primary"></i>Yönetici İşlemleri</h6>
-                            <div class="d-flex gap-2">
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="fw-bold text-dark mb-3 small opacity-75">YÖNETİCİ KISAYOLLARI</h6>
+                            <div class="d-grid gap-2 d-md-flex">
                                 <a href="{{ url_for('register') }}"
-                                    class="btn btn-outline-primary btn-sm rounded-pill fw-bold">
-                                    <i class="fas fa-user-plus me-1"></i> Öğretmen Ekle
-                                </a>
+                                    class="btn btn-outline-primary btn-sm rounded-pill px-3 fw-bold flex-fill"><i
+                                        class="fas fa-user-plus me-1"></i>Öğretmen</a>
                                 <a href="{{ url_for('create_watcher') }}"
-                                    class="btn btn-outline-warning btn-sm rounded-pill fw-bold">
-                                    <i class="fas fa-user-clock me-1"></i> Nöbetçi Ekle
-                                </a>
+                                    class="btn btn-outline-warning btn-sm rounded-pill px-3 fw-bold flex-fill"><i
+                                        class="fas fa-user-clock me-1"></i>Nöbetçi</a>
                             </div>
                         </div>
                         {% endif %}
@@ -101,115 +90,76 @@
         </div>
 
         {% if current_user.role != 'watcher' %}
-        <div class="col-lg-6 mt-4">
-            <div class="card border-0 shadow-sm h-100">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-sm h-100 rounded-4 mb-4">
                 <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold text-danger">
-                        <i class="fas fa-lock me-2"></i>ŞİFRE DEĞİŞTİRME
-                    </h5>
+                    <h5 class="card-title mb-0 fw-bold text-danger"><i class="fas fa-key me-2"></i>Şifre İşlemleri</h5>
                 </div>
                 <div class="card-body p-4">
                     <form method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <input type="hidden" name="change_password_submit" value="1">
-
                         <div class="mb-3">
-                            <label for="current_password" class="form-label fw-bold small text-muted">MEVCUT
-                                ŞİFRE</label>
-                            <input type="password" class="form-control" id="current_password" name="current_password"
-                                required>
+                            <input type="password" class="form-control form-control-lg bg-light border-0"
+                                placeholder="Mevcut Şifre" name="current_password" required>
                         </div>
                         <div class="mb-3">
-                            <label for="new_password" class="form-label fw-bold small text-muted">YENİ ŞİFRE</label>
-                            <input type="password" class="form-control" id="new_password" name="new_password" required>
+                            <input type="password" class="form-control form-control-lg bg-light border-0"
+                                placeholder="Yeni Şifre" name="new_password" required>
                         </div>
                         <div class="mb-4">
-                            <label for="confirm_password" class="form-label fw-bold small text-muted">YENİ ŞİFRE
-                                (TEKRAR)</label>
-                            <input type="password" class="form-control" id="confirm_password" name="confirm_password"
-                                required>
+                            <input type="password" class="form-control form-control-lg bg-light border-0"
+                                placeholder="Yeni Şifre (Tekrar)" name="confirm_password" required>
                         </div>
-
-                        <button type="submit" class="btn btn-danger fw-bold w-100">
-                            <i class="fas fa-check-circle me-2"></i> Şifreyi Güncelle
+                        <button type="submit" class="btn btn-danger w-100 btn-lg rounded-pill fw-bold shadow-sm">
+                            <i class="fas fa-check-circle me-2"></i>Şifreyi Güncelle
                         </button>
                     </form>
                 </div>
             </div>
-        </div>
 
-
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
+            <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold text-success"><i class="fas fa-file-excel me-2"></i>TOPLU ÖĞRENCİ
-                        AKTARIMI</h5>
+                    <h5 class="card-title mb-0 fw-bold text-success"><i class="fas fa-database me-2"></i>Veri Aktarımı
+                    </h5>
                 </div>
                 <div class="card-body p-4">
-                    <div class="alert alert-info d-flex align-items-center mb-4 border-0 shadow-sm">
-                        <i class="fas fa-info-circle fa-2x me-3"></i>
-                        <div>
-                            <strong>Bilgi:</strong> Excel dosyanızın sütun başlıkları şu şekilde olmalıdır:<br>
-                            <code>No, Ad, Soyad, Sınıf, Email, Telefon, Adres</code>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-4 bg-light h-100 text-center">
+                                <h6 class="fw-bold text-success mb-3"><i class="fas fa-user-graduate me-2"></i>Öğrenci
+                                    Listesi</h6>
+                                <form method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input class="form-control form-control-sm mb-3" type="file" name="import_file"
+                                        accept=".xlsx, .xls" required>
+                                    <button type="submit"
+                                        class="btn btn-success btn-sm w-100 rounded-pill fw-bold">Yükle</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 border rounded-4 bg-light h-100 text-center">
+                                <h6 class="fw-bold text-warning mb-3"><i class="fas fa-book me-2"></i>Kitap Listesi</h6>
+                                <form method="POST" enctype="multipart/form-data">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <input class="form-control form-control-sm mb-3" type="file"
+                                        name="import_books_file" accept=".xlsx, .xls" required>
+                                    <button type="submit"
+                                        class="btn btn-warning text-white btn-sm w-100 rounded-pill fw-bold">Yükle</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
-
-                    <form method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                        <div class="mb-4">
-                            <label for="import_file" class="form-label fw-bold small text-muted">EXCEL DOSYASI SEÇ
-                                (.xlsx)</label>
-                            <input class="form-control" type="file" id="import_file" name="import_file"
-                                accept=".xlsx, .xls" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-success fw-bold">
-                            <i class="fas fa-file-import me-2"></i> Öğrencileri İçe Aktar
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-6 mt-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold text-warning"><i class="fas fa-book me-2"></i>TOPLU KİTAP
-                        AKTARIMI</h5>
-                </div>
-                <div class="card-body p-4">
-                    <div class="alert alert-info d-flex align-items-center mb-4 border-0 shadow-sm">
-                        <i class="fas fa-info-circle fa-2x me-3"></i>
-                        <div>
-                            <strong>Bilgi:</strong> Excel sütunları:<br>
-                            <code>KitapAdı, Yazar, ISBN, [Yayınevi, Kategori, BasımYılı, Sayfa]</code>
-                        </div>
-                    </div>
-
-                    <form method="POST" enctype="multipart/form-data">
-                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                        <div class="mb-4">
-                            <label for="import_books_file" class="form-label fw-bold small text-muted">KİTAP DOSYASI
-                                (.xlsx)</label>
-                            <input class="form-control" type="file" id="import_books_file" name="import_books_file"
-                                accept=".xlsx, .xls" required>
-                        </div>
-
-                        <button type="submit" class="btn btn-warning fw-bold text-white w-100">
-                            <i class="fas fa-file-import me-2"></i> Kitapları İçe Aktar
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
 
-        <!-- Banned IPs (Security) -->
-        <div class="col-12 mt-4">
-            <div class="card border-0 shadow-sm h-100">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0 fw-bold text-dark"><i class="fas fa-shield-alt me-2"></i>YASAKLI IP
-                        ADRESLERİ (GÜVENLİK DUVARI)</h5>
+                    <h5 class="card-title mb-0 fw-bold text-dark"><i class="fas fa-ban me-2 text-danger"></i>Yasaklı IP
+                        Listesi (Titanium Guardian)</h5>
                     <span class="badge bg-danger rounded-pill">{{ banned_ips|length }}</span>
                 </div>
                 <div class="card-body p-0">
@@ -226,18 +176,14 @@
                                 {% for ip in banned_ips %}
                                 <tr>
                                     <td class="ps-4 fw-bold font-monospace">{{ ip }}</td>
-                                    <td><span class="badge bg-danger">Yasaklı (WAF)</span></td>
-                                    <td class="text-end pe-4">
-                                        <button class="btn btn-sm btn-outline-secondary" disabled>Kaldır
-                                            (Manuel)</button>
-                                    </td>
+                                    <td><span class="badge bg-danger">Engellendi</span></td>
+                                    <td class="text-end pe-4"><button class="btn btn-sm btn-outline-secondary"
+                                            disabled>Kaldır</button></td>
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <td colspan="3" class="text-center py-4 text-muted">
-                                        <i class="fas fa-check-circle text-success me-2"></i>Herhangi bir yasaklı IP
-                                        bulunmuyor.
-                                    </td>
+                                    <td colspan="3" class="text-center py-4 text-muted small">Herhangi bir yasaklı IP
+                                        bulunmuyor. Sistem güvenli.</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -249,147 +195,16 @@
         {% endif %}
     </div>
 </div>
-<!-- DESKTOP VIEW END -->
 
-<!-- MOBILE VIEW -->
-<div class="mobile-view d-lg-none pb-5">
-    <!-- Header -->
-    <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
-        <div>
-            <h1 class="h3 fw-bold text-dark mb-0">Ayarlar</h1>
-            <p class="text-muted small mb-0">Sistemi Kişiselleştir</p>
-        </div>
-    </div>
-
-    <!-- Settings Form -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-body p-4">
-
-            {% if current_user.role != 'watcher' %}
-            <h6 class="fw-bold mb-3 text-primary d-flex align-items-center">
-                <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
-                    style="width:32px; height:32px;">
-                    <i class="fas fa-school"></i>
-                </div>
-                Okul Bilgileri
-            </h6>
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                <div class="mb-3">
-                    <label for="school_name_mobile" class="form-label text-muted small fw-bold ms-1">OKUL ADI</label>
-                    <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
-                        <span class="input-group-text bg-light border-0"><i
-                                class="fas fa-building text-muted"></i></span>
-                        <input type="text" class="form-control bg-light border-0 fw-bold" id="school_name_mobile"
-                            name="school_name" value="{{ settings.school_name }}" required>
-                    </div>
-                </div>
-
-                <div class="mb-4">
-                    <label for="loan_period_mobile" class="form-label text-muted small fw-bold ms-1">ÖDÜNÇ SÜRESİ
-                        (GÜN)</label>
-                    <div class="input-group input-group-lg shadow-sm rounded-4 overflow-hidden">
-                        <span class="input-group-text bg-light border-0"><i class="fas fa-clock text-muted"></i></span>
-                        <input type="number" class="form-control bg-light border-0 fw-bold" id="loan_period_mobile"
-                            name="loan_period" value="{{ settings.loan_period }}" min="1" required>
-                    </div>
-                </div>
-
-                <button type="submit"
-                    class="btn btn-primary w-100 btn-lg rounded-pill fw-bold shadow d-flex align-items-center justify-content-center">
-                    <i class="fas fa-check-circle me-2"></i> KAYDET
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Password Change Card Mobile -->
-    <div class="card border-0 shadow-sm rounded-4 mb-4">
-        <div class="card-body p-4">
-            <h6 class="fw-bold mb-3 text-danger d-flex align-items-center">
-                <div class="bg-danger bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
-                    style="width:32px; height:32px;">
-                    <i class="fas fa-lock"></i>
-                </div>
-                Şifre Değiştir
-            </h6>
-            <form method="POST">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <input type="hidden" name="change_password_submit" value="1">
-
-                <div class="mb-3">
-                    <input type="password" class="form-control form-control-lg bg-light border-0"
-                        placeholder="Mevcut Şifre" name="current_password" required>
-                </div>
-                <div class="mb-3">
-                    <input type="password" class="form-control form-control-lg bg-light border-0"
-                        placeholder="Yeni Şifre" name="new_password" required>
-                </div>
-                <div class="mb-4">
-                    <input type="password" class="form-control form-control-lg bg-light border-0"
-                        placeholder="Yeni Şifre (Tekrar)" name="confirm_password" required>
-                </div>
-
-                <button type="submit" class="btn btn-danger w-100 btn-lg rounded-pill fw-bold shadow">
-                    <i class="fas fa-sync-alt me-2"></i> GÜNCELLE
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Bulk Import Card -->
-    <div class="card border-0 shadow-sm rounded-4">
-        <div class="card-body p-4">
-            <h6 class="fw-bold mb-3 text-success d-flex align-items-center">
-                <div class="bg-success bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
-                    style="width:32px; height:32px;">
-                    <i class="fas fa-file-upload"></i>
-                </div>
-                Öğrenci Aktarımı
-            </h6>
-
-            <form method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                <div class="mb-3">
-                    <label class="form-label text-muted small fw-bold ms-1">EXCEL DOSYASI</label>
-                    <input class="form-control form-control-lg rounded-4 shadow-sm border-0 bg-light" type="file"
-                        id="import_file_mobile" name="import_file" accept=".xlsx, .xls" required>
-                </div>
-
-                <button type="submit"
-                    class="btn btn-success w-100 btn-lg rounded-pill fw-bold shadow d-flex align-items-center justify-content-center">
-                    <i class="fas fa-cloud-upload-alt me-2"></i> YÜKLE
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Book Import Card Mobile -->
-    <div class="card border-0 shadow-sm rounded-4 mt-4">
-        <div class="card-body p-4">
-            <h6 class="fw-bold mb-3 text-warning d-flex align-items-center">
-                <div class="bg-warning bg-opacity-10 p-2 rounded-circle me-2 d-flex align-items-center justify-content-center"
-                    style="width:32px; height:32px;">
-                    <i class="fas fa-book"></i>
-                </div>
-                Kitap Aktarımı
-            </h6>
-            <form method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                <div class="mb-3">
-                    <input class="form-control form-control-lg rounded-4 shadow-sm border-0 bg-light" type="file"
-                        name="import_books_file" accept=".xlsx, .xls" required>
-                </div>
-
-                <button type="submit" class="btn btn-warning w-100 btn-lg rounded-pill fw-bold shadow text-white">
-                    <i class="fas fa-upload me-2"></i> KİTAPLARI YÜKLE
-                </button>
-            </form>
-        </div>
-    </div>
-    {% endif %}
-</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const easyModeToggle = document.getElementById('easy_mode');
+        const savedState = localStorage.getItem('kutuphane_easy_mode');
+        if (savedState === 'true') easyModeToggle.checked = true;
+        easyModeToggle.addEventListener('change', function () {
+            localStorage.setItem('kutuphane_easy_mode', this.checked);
+            if (this.checked) window.location.href = "{{ url_for('index') }}";
+        });
+    });
+</script>
 {% endblock %}
