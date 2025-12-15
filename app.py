@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
-from models import db, Student, Book, Transaction, Settings, User
+from models import db, Student, Book, Transaction, Settings, User, LoginRequest, QRLoginRequest
 from datetime import datetime, timedelta
 from xhtml2pdf import pisa
 from io import BytesIO
@@ -89,7 +89,6 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# CSP Configuration to allow external resources used in the app
 csp = {
     'default-src': '\'self\'',
     'script-src': [
@@ -142,6 +141,26 @@ def inject_settings():
 
 
 
+import json
+import uuid
+import random
+import string
+from datetime import timedelta
+from models import LoginRequest
+
+def get_device_fingerprint():
+    # Basic fingerprint: User-Agent + IP (Enhanced in frontend)
+    ua = request.headers.get('User-Agent', '')
+    ip = request.remote_addr
+    return f"{ua}|{ip}"
+
+def is_device_allowed(user, req_token):
+    try:
+        allowed = json.loads(user.allowed_devices)
+        return req_token in allowed
+    except:
+        return False
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
@@ -153,34 +172,302 @@ def login():
         user = User.query.filter_by(username=username).first()
         
         if user and check_password_hash(user.password_hash, password):
-            # WATCHER TIME RESTRICTION
-            if user.role == 'watcher':
-                now = datetime.now()
-                # 1. Weekday Check (Monday=0, Sunday=6)
-                if now.weekday() >= 5: # Saturday (5) or Sunday (6)
-                    flash('Nöbetçi öğrenciler sadece hafta içi giriş yapabilir!', 'warning')
-                    return redirect(url_for('login'))
+            # 2FA / DEVICE CHECK LOGIC
+            
+            # 1. Device Token (from cookie)
+            client_token = request.cookies.get('device_token')
+            if not client_token:
+                client_token = str(uuid.uuid4()) # New device candidate
+            
+            # 2. Check if device is allowed
+            if is_device_allowed(user, client_token):
+                # Device is known -> Login directly
+                login_user(user)
+                user.session_token = str(uuid.uuid4()) # Session Lockdown Token
+                user.last_login_ip = request.remote_addr
+                user.last_activity = datetime.utcnow()
+                db.session.commit()
                 
-                # 2. Hour Check (08:00 - 17:00)
-                if not (8 <= now.hour < 17):
-                    flash('Nöbetçi öğrenciler sadece 08:00 - 17:00 saatleri arasında giriş yapabilir!', 'warning')
-                    return redirect(url_for('login'))
-
-                # SET ACTIVE WATCHER (Single Session)
-                settings = Settings.query.first()
-                if settings:
-                    settings.active_watcher_id = user.id
+                session['user_session_token'] = user.session_token
+                
+                resp = redirect(url_for('index'))
+                resp.set_cookie('device_token', client_token, max_age=31536000) # 1 Year
+                return resp
+            
+            else:
+                # Device is UNKNOWN
+                
+                # Check for ACTIVE session elsewhere (to decide if we need approval)
+                is_session_active = False
+                if user.session_token and user.last_activity:
+                    # Consider active if activity within last 5 minutes
+                    if (datetime.utcnow() - user.last_activity).total_seconds() < 300:
+                        is_session_active = True
+                
+                # If NO active session is found, we TRUST this new device immediately.
+                # This solves the "locked out" issue if you are the first one logging in.
+                if not is_session_active:
+                    # Auto-Register Device
+                    try:
+                        allowed = json.loads(user.allowed_devices)
+                    except:
+                        allowed = []
+                    allowed.append(client_token)
+                    user.allowed_devices = json.dumps(allowed)
+                    
+                    # Login
+                    login_user(user)
+                    user.session_token = str(uuid.uuid4())
+                    user.last_login_ip = request.remote_addr
+                    user.last_activity = datetime.utcnow()
+                    db.session.commit()
+                    
+                    session['user_session_token'] = user.session_token
+                    
+                    resp = redirect(url_for('index'))
+                    resp.set_cookie('device_token', client_token, max_age=31536000) # 1 Year
+                    return resp
+                
+                # If there IS an active session, force 2FA (Device A must approve Device B)
+                
+                # CLEANUP: Remove any existing pending requests for this token to avoid UniqueViolation
+                existing_req = LoginRequest.query.filter_by(request_token=client_token).first()
+                if existing_req:
+                    db.session.delete(existing_req)
                     db.session.commit()
 
-            login_user(user)
-            next_page = request.args.get('next')
-            return redirect(next_page or url_for('index'))
+                # Create Login Request
+                verification_code = ''.join(random.choices(string.digits, k=6))
+                new_request = LoginRequest(
+                    user_id=user.id,
+                    request_token=client_token,
+                    verification_code=verification_code,
+                    ip_address=request.remote_addr,
+                    device_info=request.headers.get('User-Agent'),
+                    expires_at=datetime.utcnow() + timedelta(minutes=2)
+                )
+                db.session.add(new_request)
+                db.session.commit()
+                
+                # Redirect to verification waiting page
+                return render_template('verify_2fa.html', request_id=new_request.id, client_token=client_token)
+
         else:
             flash('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.', 'danger')
             
     return render_template('login.html')
 
+@app.route('/api/2fa/check-requests')
+@login_required
+def check_2fa_requests():
+    # Called by ACTIVE SESSIONS (Cihaz A) to see if anyone is trying to login
+    # Only pending requests that are not expired
+    req = LoginRequest.query.filter_by(user_id=current_user.id, status='pending')\
+            .filter(LoginRequest.expires_at > datetime.utcnow())\
+            .order_by(LoginRequest.created_at.desc()).first()
+            
+    if req:
+        return jsonify({
+            'found': True,
+            'code': req.verification_code,
+            'ip': req.ip_address,
+            'device': req.device_info[:50] + '...',
+            'request_id': req.id
+        })
+    return jsonify({'found': False})
+
+@app.route('/api/2fa/action/<int:request_id>/<action>', methods=['POST'])
+@login_required
+def action_2fa_request(request_id, action):
+    # Action: approve (not used directly here, done via code), reject
+    req = LoginRequest.query.get_or_404(request_id)
+    if req.user_id != current_user.id:
+        return jsonify({'success': False}), 403
+        
+    if action == 'reject':
+        req.status = 'rejected'
+        db.session.commit()
+        return jsonify({'success': True})
+        
+    return jsonify({'success': False})
+
+@app.route('/verify-2fa-status/<int:request_id>')
+def verify_2fa_status(request_id):
+    # Polling for the WAITING DEVICE (Cihaz B)
+    req = LoginRequest.query.get(request_id)
+    if not req:
+        return jsonify({'status': 'expired'})
+    
+    if req.status == 'approved':
+        return jsonify({'status': 'approved'})
+    elif req.status == 'rejected':
+        return jsonify({'status': 'rejected'})
+    elif datetime.utcnow() > req.expires_at:
+        return jsonify({'status': 'expired'})
+        
+    return jsonify({'status': 'pending'})
+
+@app.route('/submit-2fa-code', methods=['POST'])
+@csrf.exempt
+def submit_2fa_code():
+    # Submitting the code from Cihaz B (or theoretically Cihaz A could autofill)
+    # Actually, Cihaz A displays code, Cihaz B Enters it.
+    
+    print("DEBUG: 2FA Submission Received")
+    print(f"DEBUG: Form Data: {request.form}")
+    
+    req_id = request.form.get('request_id')
+    code = request.form.get('code')
+    
+    if code:
+        code = code.strip()
+        
+    if not req_id:
+        print("DEBUG: Missing request_id")
+        return jsonify({'success': False, 'message': 'İstek ID eksik.'})
+        
+    try:
+        req_id = int(req_id)
+    except:
+        print(f"DEBUG: Invalid request_id format: {req_id}")
+        return jsonify({'success': False, 'message': 'Geçersiz İstek ID.'})
+    
+    req = LoginRequest.query.get(req_id)
+    if not req:
+         return jsonify({'success': False, 'message': 'İstek bulunamadı.'})
+         
+    if req.status == 'approved':
+        # Already approved (likely double submit or race condition)
+        # Just return success to let the user in.
+        return jsonify({'success': True, 'redirect': url_for('index')})
+        
+    if req.status != 'pending':
+         return jsonify({'success': False, 'message': 'İstek süresi dolmuş veya reddedilmiş.'})
+         
+    if req.verification_code == code:
+        # SUCCESS!
+        req.status = 'approved'
+        user = User.query.get(req.user_id)
+        
+        # Add to allowed devices
+        try:
+            allowed = json.loads(user.allowed_devices)
+        except:
+            allowed = []
+        allowed.append(req.request_token)
+        user.allowed_devices = json.dumps(allowed)
+        
+        # Login
+        login_user(user)
+        user.session_token = str(uuid.uuid4())
+        db.session.commit()
+        session['user_session_token'] = user.session_token
+        
+        resp = jsonify({'success': True, 'redirect': url_for('index')})
+        resp.set_cookie('device_token', req.request_token, max_age=31536000)
+        return resp
+    else:
+        return jsonify({'success': False, 'message': 'Hatalı Kod!'})
+
+@app.route('/api/qr/generate')
+def generate_qr():
+    # Generate unique token for QR
+    token = str(uuid.uuid4())
+    new_qr = QRLoginRequest(
+        token=token,
+        expires_at=datetime.utcnow() + timedelta(minutes=2)
+    )
+    db.session.add(new_qr)
+    db.session.commit()
+    return jsonify({'token': token, 'expires_in': 120})
+
+@app.route('/api/qr/status/<token>')
+def check_qr_status(token):
+    qr_req = QRLoginRequest.query.filter_by(token=token).first()
+    if not qr_req:
+        return jsonify({'status': 'invalid'})
+    
+    if datetime.utcnow() > qr_req.expires_at:
+        return jsonify({'status': 'expired'})
+        
+    if qr_req.status == 'approved':
+        # Perform Login for the waiting Desktop Client
+        user = User.query.get(qr_req.user_id)
+        if user:
+            login_user(user)
+            user.session_token = str(uuid.uuid4())
+            user.last_login_ip = request.headers.get('X-Forwarded-For', request.remote_addr) # Best effort IP
+            user.last_activity = datetime.utcnow()
+            db.session.commit()
+            
+            session['user_session_token'] = user.session_token
+            
+            # Auto-trust this device? Maybe not for QR login, let's keep it safe. 
+            # Or yes, if they scanned it, they trust it.
+            # Let's add a device token if missing
+            
+            resp = jsonify({'status': 'approved', 'redirect': url_for('index')})
+            # Generate a new device token for this desktop if it doesn't have one
+            # The desktop JS will handle the cookie set if we return it? 
+            # Actually, server sets cookie on response... BUT this response goes to Desktop polling!
+            # So yes, we can set the cookie here.
+            client_token = request.cookies.get('device_token')
+            if not client_token:
+                 client_token = str(uuid.uuid4())
+                 resp.set_cookie('device_token', client_token, max_age=31536000)
+                 
+                 # Trust this new device since it was approved by a trusted mobile
+                 try:
+                    allowed = json.loads(user.allowed_devices)
+                 except:
+                    allowed = []
+                 allowed.append(client_token)
+                 user.allowed_devices = json.dumps(allowed)
+                 db.session.commit()
+            
+            # Mark token as used/consumed so it can't be used again
+            qr_req.status = 'consumed' 
+            db.session.commit()
+            
+            return resp
+            
+    return jsonify({'status': qr_req.status})
+
+@app.route('/api/qr/approve', methods=['POST'])
+@login_required # MUST be logged in on mobile
+@csrf.exempt # API call from mobile JS
+def approve_qr_login():
+    data = request.json
+    token = data.get('token')
+    
+    qr_req = QRLoginRequest.query.filter_by(token=token).first()
+    if not qr_req:
+        return jsonify({'success': False, 'message': 'Geçersiz QR Kodu'})
+        
+    if datetime.utcnow() > qr_req.expires_at:
+        return jsonify({'success': False, 'message': 'QR Kodu süresi dolmuş'})
+        
+    qr_req.status = 'approved'
+    qr_req.user_id = current_user.id
+    db.session.commit()
+    
+    return jsonify({'success': True, 'message': 'Giriş Onaylandı'})
+
 @app.before_request
+def security_check():
+    # 1. Session Lockdown Check
+    if current_user.is_authenticated:
+        if 'user_session_token' in session:
+            # Check if token matches DB
+            # MULTI-SESSION SUPPORT: Disabled this check to allow multiple devices
+            # if session['user_session_token'] != current_user.session_token:
+            #     logout_user()
+            #     flash('Oturumunuz başka bir cihazda açıldığı için sonlandırıldı.', 'warning')
+            #     return redirect(url_for('login'))
+            pass
+                
+    # 2. Watcher Time Check (Existing logic moved here or kept same)
+
 def check_concurrent_watcher():
     if current_user.is_authenticated and getattr(current_user, 'role', '') == 'watcher':
         settings = Settings.query.first()

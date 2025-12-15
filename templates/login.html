@@ -69,7 +69,14 @@
                             <input class="form-check-input" type="checkbox" id="remember">
                             <label class="form-check-label small text-muted" for="remember">Beni hatırla</label>
                         </div>
-                        <a href="#" class="small text-primary text-decoration-none fw-bold">Şifremi Unuttum?</a>
+                        <div class="d-flex align-items-center gap-2">
+                            <a href="#" class="small text-secondary text-decoration-none fw-bold"
+                                onclick="showQRModal(event)">
+                                <i class="fas fa-qrcode me-1"></i> Hızlı Giriş
+                            </a>
+                            <span class="text-muted small">|</span>
+                            <a href="#" class="small text-primary text-decoration-none fw-bold">Şifremi Unuttum?</a>
+                        </div>
                     </div>
 
                     <button class="btn-login" type="submit">
@@ -340,6 +347,104 @@
             icon.classList.remove('fa-eye-slash');
             icon.classList.add('fa-eye');
         }
+    }
+</script>
+
+<!-- QR Login Modal -->
+<div class="modal fade" id="qrLoginModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-body p-5 text-center">
+                <h3 class="fw-bold mb-3">Hızlı Giriş</h3>
+                <p class="text-muted mb-4 small">Mobil uygulamanızdan QR kodu taratarak anında giriş yapın.</p>
+
+                <div class="bg-light p-4 rounded-3 d-inline-block mb-3 position-relative">
+                    <div id="qrcode"></div>
+                    <div id="qrLoader"
+                        class="position-absolute top-0 start-0 w-100 h-100 bg-light d-flex align-items-center justify-content-center"
+                        style="opacity: 0.8">
+                        <div class="spinner-border text-primary" role="status"></div>
+                    </div>
+                </div>
+
+                <p class="text-muted simple-timer small">Kalan Süre: <span id="qrTimer">120</span> sn</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+    let qrPollInterval;
+    let qrTimerInterval;
+    let qrModal;
+
+    function showQRModal(e) {
+        e.preventDefault();
+
+        const modalEl = document.getElementById('qrLoginModal');
+        qrModal = new bootstrap.Modal(modalEl);
+        qrModal.show();
+
+        generateQR();
+
+        // Cleanup on close
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            clearInterval(qrPollInterval);
+            clearInterval(qrTimerInterval);
+        });
+    }
+
+    function generateQR() {
+        const qrContainer = document.getElementById('qrcode');
+        const loader = document.getElementById('qrLoader');
+        qrContainer.innerHTML = '';
+        loader.classList.remove('d-none');
+
+        fetch('/api/qr/generate')
+            .then(r => r.json())
+            .then(data => {
+                const token = data.token;
+
+                // Generate QR
+                new QRCode(qrContainer, {
+                    text: token, // The token itself is what we scan
+                    width: 180,
+                    height: 180
+                });
+
+                loader.classList.add('d-none');
+
+                // Start Timer
+                let timeLeft = 120;
+                document.getElementById('qrTimer').innerText = timeLeft;
+                clearInterval(qrTimerInterval);
+                qrTimerInterval = setInterval(() => {
+                    timeLeft--;
+                    document.getElementById('qrTimer').innerText = timeLeft;
+                    if (timeLeft <= 0) {
+                        clearInterval(qrTimerInterval);
+                        qrModal.hide();
+                        alert("QR Kod süresi doldu.");
+                    }
+                }, 1000);
+
+                // Start Polling
+                clearInterval(qrPollInterval);
+                qrPollInterval = setInterval(() => {
+                    fetch('/api/qr/status/' + token)
+                        .then(r => r.json())
+                        .then(res => {
+                            if (res.status === 'approved' && res.redirect) {
+                                window.location.href = res.redirect;
+                            } else if (res.status === 'expired') {
+                                clearInterval(qrPollInterval);
+                                alert("QR Kod süresi doldu.");
+                                qrModal.hide();
+                            }
+                        });
+                }, 2000);
+            });
     }
 </script>
 {% endblock %}

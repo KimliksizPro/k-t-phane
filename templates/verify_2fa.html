@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doğrulama Gerekli - Kütüphane Sistemi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #f0f2f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .verify-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.25em;
+        }
+
+        .status-box {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .code-input {
+            font-size: 2rem;
+            letter-spacing: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="verify-card">
+        <div class="mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="#0d6efd" class="bi bi-shield-lock"
+                viewBox="0 0 16 16">
+                <path
+                    d="M5.338 1.545C6.125.49 7.228 0 8.272 0c1.043 0 2.147.49 2.935 1.545.717.965 1.157 2.126 1.157 3.395 0 1.259-.425 2.408-1.127 3.364a.5.5 0 0 1-.396.195H5.155a.5.5 0 0 1-.396-.195C4.04 7.35 3.615 6.2 3.615 4.94c0-1.269.44-2.43 1.157-3.395zM2.872 1.546C1.986 2.628 1.415 4.103 1.415 5.568c0 1.636.568 3.109 1.488 4.282A8.96 8.96 0 0 1 8 8.6c2.479 0 4.67 1.055 6.097 2.25.92-1.173 1.488-2.646 1.488-4.282 0-1.465-.57-2.94-1.456-4.022C12.78 1.15 10.748 0 8.272 0 5.797 0 3.765 1.15 2.872 1.546z" />
+                <path d="M7.5 7h1v4h-1zM8 12.5a.5.5 0 1 1 0 1 .5.5 0 0 1 0-1z" />
+            </svg>
+        </div>
+
+        <h4>Giriş Onayı Bekleniyor</h4>
+        <p class="text-muted">Lütfen <strong>diğer cihazınızda (Aktif Oturum)</strong> beliren 6 haneli doğrulama kodunu
+            giriniz.</p>
+
+        <div id="loadingInfo">
+            <div class="spinner-border text-primary spinner" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-primary">Diğer cihazdan yanıt bekleniyor...</p>
+        </div>
+
+        <div id="codeEntry" style="display:none;">
+            <input type="text" id="code" class="form-control code-input" maxlength="6" placeholder="000000"
+                autocomplete="off">
+            <button onclick="submitCode()" class="btn btn-primary w-100 btn-lg">Kodu Onayla</button>
+        </div>
+
+        <div id="statusMessage" class="status-box"></div>
+    </div>
+
+    <script>
+        const requestId = parseInt("{{ request_id }}");
+        let checkInterval;
+
+        function checkStatus() {
+            fetch(`/verify-2fa-status/${requestId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const statusBox = document.getElementById('statusMessage');
+                    const loadingInfo = document.getElementById('loadingInfo');
+                    const codeEntry = document.getElementById('codeEntry');
+
+                    if (data.status === 'approved') {
+                        // Cihaz A onayladı (veya kod girildi) -> Yönlendir
+                        window.location.href = "{{ url_for('index') }}";
+                    } else if (data.status === 'rejected') {
+                        statusBox.className = 'status-box alert alert-danger';
+                        statusBox.innerHTML = 'Giriş isteği reddedildi!';
+                        statusBox.style.display = 'block';
+                        loadingInfo.style.display = 'none';
+                        clearInterval(checkInterval);
+                    } else if (data.status === 'expired') {
+                        statusBox.className = 'status-box alert alert-warning';
+                        statusBox.innerHTML = 'Kodun süresi doldu.';
+                        statusBox.style.display = 'block';
+                        loadingInfo.style.display = 'none';
+                        clearInterval(checkInterval);
+                    } else {
+                        // Still pending, show code input after a slight delay to allow User A to see popup
+                        // Actually, User needs to enter code HERE from User A's screen.
+                        // So we should show input immediately?
+                        // User A sees code. User B enters code.
+                        loadingInfo.style.display = 'none';
+                        codeEntry.style.display = 'block';
+                    }
+                });
+        }
+
+        function submitCode() {
+            const btn = document.querySelector('button');
+            btn.disabled = true;
+            btn.innerHTML = 'Kontrol Ediliyor...';
+
+            const code = document.getElementById('code').value;
+            const formData = new FormData();
+            formData.append('request_id', requestId);
+            formData.append('code', code);
+            formData.append('csrf_token', "{{ csrf_token() }}"); // Include CSRF Token
+
+            fetch('/submit-2fa-code', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': "{{ csrf_token() }}"
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = data.redirect;
+                    } else {
+                        btn.disabled = false;
+                        btn.innerHTML = 'Kodu Onayla';
+                        alert(data.message);
+                    }
+                })
+                .catch(err => {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Kodu Onayla';
+                    alert("Bir hata oluştu.");
+                });
+        }
+
+        checkInterval = setInterval(checkStatus, 2000);
+        checkStatus(); // Initial check
+    </script>
+
+</body>
+
+</html>

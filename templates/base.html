@@ -151,9 +151,11 @@
             }
         }
     </style>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 </head>
 
-<body data-theme="{{ settings.theme }}">
+<body data-theme="{{ settings.theme }}" data-auth="{{ 'true' if current_user.is_authenticated else 'false' }}"
+    data-csrf="{{ csrf_token() }}">
     <!-- Global Page Loader -->
     <div id="u-loader"
         class="d-none position-fixed top-0 start-0 w-100 h-100 bg-white d-flex align-items-center justify-content-center"
@@ -249,6 +251,13 @@
         <!-- Top Navbar -->
         <div class="top-navbar">
             <h1 class="page-title">{{ self.title() }}</h1>
+
+            <!-- Mobile QR Scanner Icon -->
+            <button class="btn btn-link text-dark d-lg-none ms-auto me-3 p-0" onclick="openQRScanner()"
+                style="font-size: 1.5rem;">
+                <i class="fas fa-qrcode"></i>
+            </button>
+
             <div class="user-profile">
                 <div class="text-end d-none d-md-block">
                     <div class="fw-bold text-dark">{{ current_user.username }}</div>
@@ -418,7 +427,238 @@
         </div>
     </div>
 
+    <!-- 2FA Request Modal (Device A) -->
+    <div class="modal fade" id="request2FAModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        style="background: rgba(0,0,0,0.9); z-index: 10000;">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 bg-dark text-white shadow-lg">
+                <div class="modal-body text-center p-5">
+                    <div class="spinner-grow text-warning mb-4" role="status" style="width: 3rem; height: 3rem;"></div>
+                    <h2 class="fw-bold mb-3">YENİ GİRİŞ İSTEĞİ!</h2>
+                    <p class="text-white-50 fs-5 mb-4">
+                        Hesabınıza yeni bir cihazdan giriş yapılmak isteniyor.
+                        <br>
+                        <strong id="reqDeviceInfo" class="text-white"></strong>
+                        <br>
+                        <small id="reqIpInfo" class="text-white-50"></small>
+                    </p>
+
+                    <div class="bg-white text-dark rounded-3 p-4 mb-4">
+                        <small class="text-uppercase fw-bold text-muted letter-spacing-2">GİRİŞ KODU</small>
+                        <div id="reqCodeDisplay" class="display-1 fw-bold font-monospace" style="letter-spacing: 5px;">
+                            ---</div>
+                    </div>
+
+                    <p class="text-white-50 small mb-4">Bu kodu yeni cihaza girdiğinizde oturum açılacaktır.</p>
+
+                    <button onclick="reject2FARequest()" class="btn btn-danger btn-lg w-100 rounded-pill fw-bold">
+                        <i class="fas fa-times-circle me-2"></i> İSTEĞİ REDDET / İPTAL ET
+                    </button>
+                    <input type="hidden" id="currentRequestId">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const bodyData = document.body.dataset;
+            const isAuthenticated = bodyData.auth === 'true';
+            const csrfToken = bodyData.csrf;
+
+            if (isAuthenticated) {
+                // 2FA Poller (Looking for NEW requests)
+                let pollInterval = setInterval(checkFor2FARequests, 3000);
+                let statusCheckInterval; // Polls STATUS of current request when modal is open
+
+                function checkFor2FARequests() {
+                    fetch('/api/2fa/check-requests')
+                        .then(function (r) {
+                            if (r.redirected || r.status === 401 || r.status === 403) {
+                                clearInterval(pollInterval);
+                                location.reload(); // Force full reload to go to login page
+                                return { found: false };
+                            }
+                            return r.json();
+                        })
+                        .then(function (data) {
+                            if (data.found) {
+                                // Stop looking for new requests
+                                clearInterval(pollInterval);
+
+                                // Show Modal
+                                const modalEl = document.getElementById('request2FAModal');
+                                if (modalEl) {
+                                    // Use Bootstrap 5 API correctly
+                                    let bsModal = bootstrap.Modal.getInstance(modalEl);
+                                    if (!bsModal) {
+                                        bsModal = new bootstrap.Modal(modalEl);
+                                    }
+
+                                    document.getElementById('reqCodeDisplay').innerText = data.code;
+                                    document.getElementById('reqDeviceInfo').innerText = data.device;
+                                    document.getElementById('reqIpInfo').innerText = data.ip;
+                                    document.getElementById('currentRequestId').value = data.request_id; // Hidden input
+
+                                    bsModal.show();
+
+                                    // Start checking if this specific request is approved/rejected
+                                    if (statusCheckInterval) clearInterval(statusCheckInterval);
+                                    statusCheckInterval = setInterval(function () {
+                                        checkRequestStatus(data.request_id, bsModal);
+                                    }, 2000);
+                                }
+                            }
+                        })
+                        .catch(console.error);
+                }
+
+                function checkRequestStatus(requestId, bsModal) {
+                    // Endpoint to check status of a specific request
+                    fetch('/verify-2fa-status/' + requestId)
+                        .then(r => r.json())
+                        .then(data => {
+                            if (data.status === 'approved' || data.status === 'rejected' || data.status === 'expired') {
+                                // Request finalized -> Close modal and resume polling for new ones
+                                bsModal.hide();
+                                clearInterval(statusCheckInterval);
+                                pollInterval = setInterval(checkFor2FARequests, 3000);
+
+                                if (data.status === 'approved') {
+                                    // Optional: Show a small toast "Giriş Onaylandı"
+                                    alert("Yeni cihaz girişi onaylandı!");
+                                }
+                            }
+                        });
+                }
+
+                window.reject2FARequest = function () {
+                    const reqId = document.getElementById('currentRequestId').value;
+
+                    fetch('/api/2fa/action/' + reqId + '/reject', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': csrfToken
+                        }
+                    })
+                        .then(function (r) { return r.json(); })
+                        .then(function (data) {
+                            location.reload();
+                        });
+                };
+            }
+        });
+    </script>
+
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <!-- Mobile QR Scanner Modal -->
+    <div class="modal fade" id="mobileQRScannerModal" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen-sm-down modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border-0">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-qrcode me-2"></i>QR Tarayıcı</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-0 d-flex flex-column align-items-center justify-content-center bg-black">
+                    <div id="reader" style="width: 100%; max-width: 400px;"></div>
+                    <p class="mt-3 text-white-50 text-center px-3 small">
+                        Masaüstü ekrandaki QR kodu okutarak hızlı giriş yapabilirsiniz.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let html5QrcodeScanner;
+
+        function openQRScanner() {
+            const modalEl = document.getElementById('mobileQRScannerModal');
+            const bsModal = new bootstrap.Modal(modalEl);
+            bsModal.show();
+
+            modalEl.addEventListener('shown.bs.modal', function () {
+                startScanner();
+            });
+
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                stopScanner();
+            });
+        }
+
+        function startScanner() {
+            if (html5QrcodeScanner) return; // Already running
+
+            // Check for Secure Context (HTTPS or localhost)
+            // Browsers block camera on insecure origins (HTTP) except localhost
+            if (!window.isSecureContext && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                alert("HATA: Güvenlik nedeniyle (HTTPS protokolü gerekli), tarayıcı kamera erişimini engelliyor.\n\n" +
+                    "Çözüm (Chrome/Android):\n" +
+                    "1. 'chrome://flags' adresine gidin.\n" +
+                    "2. 'Insecure origins treated as secure' ayarını bulun.\n" +
+                    "3. Bu sitenin IP adresini (" + window.location.origin + ") ekleyin.\n" +
+                    "4. 'Enabled' seçip tarayıcıyı yeniden başlatın.");
+                return;
+            }
+
+            html5QrcodeScanner = new Html5Qrcode("reader");
+            const config = { fps: 10, qrbox: { width: 250, height: 250 } };
+
+            // First check if permissions/devices exist
+            Html5Qrcode.getCameras().then(devices => {
+                if (devices && devices.length) {
+                    html5QrcodeScanner.start({ facingMode: "environment" }, config, onScanSuccess)
+                        .catch(err => {
+                            console.error("Kamera başlatma hatası:", err);
+                            alert("Kamera başlatılamadı: " + err + "\n\nLütfen tarayıcı izinlerini kontrol edin.");
+                        });
+                } else {
+                    alert("Kamera cihazı bulunamadı. Lütfen izinlerinizi kontrol edin.");
+                }
+            }).catch(err => {
+                console.error("Kamera listesi alınamadı:", err);
+                alert("Kamera erişimi reddedildi veya desteklenmiyor.\nEğer yerel ağdan bağlanıyorsanız, tarayıcı güvenliği kamerayı engellemiş olabilir.");
+            });
+        }
+
+        function stopScanner() {
+            if (html5QrcodeScanner) {
+                html5QrcodeScanner.stop().then(() => {
+                    html5QrcodeScanner.clear();
+                    html5QrcodeScanner = null;
+                }).catch(err => console.error(err));
+            }
+        }
+
+        function onScanSuccess(decodedText, decodedResult) {
+            // Stop scanning immediately
+            stopScanner();
+
+            // Close modal
+            const modalEl = document.getElementById('mobileQRScannerModal');
+            const bsModal = bootstrap.Modal.getInstance(modalEl);
+            if (bsModal) bsModal.hide();
+
+            // Send to server
+            fetch('/api/qr/approve', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.body.dataset.csrf
+                },
+                body: JSON.stringify({ token: decodedText })
+            })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Giriş Başarıyla Onaylandı!");
+                    } else {
+                        alert("Hata: " + data.message);
+                    }
+                })
+                .catch(err => alert("Bağlantı hatası: " + err));
+        }
+    </script>
 </body>
 
 </html>

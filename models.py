@@ -61,6 +61,12 @@ class User(UserMixin, db.Model):
     role = db.Column(db.String(20), default='admin') # admin, watcher
     password_hash = db.Column(db.String(255), nullable=False)
 
+    session_token = db.Column(db.String(100), nullable=True)
+    last_login_ip = db.Column(db.String(50), nullable=True)
+    last_activity = db.Column(db.DateTime, nullable=True)
+    allowed_devices = db.Column(db.Text, default='[]') # JSON list of device tokens
+    is_locked = db.Column(db.Boolean, default=False)
+
     def set_password(self, password):
         from werkzeug.security import generate_password_hash
         self.password_hash = generate_password_hash(password)
@@ -68,3 +74,24 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         from werkzeug.security import check_password_hash
         return check_password_hash(self.password_hash, password)
+
+class LoginRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    request_token = db.Column(db.String(100), unique=True, nullable=False)
+    verification_code = db.Column(db.String(10), nullable=False)
+    ip_address = db.Column(db.String(50))
+    device_info = db.Column(db.String(200))
+    status = db.Column(db.String(20), default='pending') # pending, approved, rejected, expired
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    
+    user = db.relationship('User', backref=db.backref('login_requests', lazy=True))
+
+class QRLoginRequest(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(100), unique=True, nullable=False)
+    status = db.Column(db.String(20), default='pending') # pending, approved, expired, rejected
+    user_id = db.Column(db.Integer, nullable=True) # Set when approved
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    expires_at = db.Column(db.DateTime, nullable=False)
