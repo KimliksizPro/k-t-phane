@@ -19,6 +19,22 @@ from book_api import get_book_details # Import Book API Helper
 
 app = Flask(__name__)
 
+@app.before_request
+def global_security_check():
+    # 1. Guardian Firewall Execution
+    guardian.execute_defense_protocol()
+    
+    # 2. Strict Session Hijacking Prevention for Authenticated Users
+    if current_user.is_authenticated:
+        if 'client_fingerprint' in session:
+            # Re-verify fingerprint on EVERY request
+            is_valid, reason = guardian.fingerprint.check_integrity(session)
+            if not is_valid:
+                 # Hijack Detected!
+                 guardian.punish_hijacker(request.remote_addr, f"Hijack Blocked: {reason}")
+                 logout_user() # Should not be reached due to abort(403) in punish, but safety first.
+                 return None
+
 # CONFIGURATION FOR EXE & PERSISTENCE
 import sys, os, webbrowser
 from threading import Timer
@@ -84,7 +100,7 @@ csrf = CSRFProtect(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
-login_manager.session_protection = 'strong' # Protect against session hijacking (IP/User-Agent check)
+login_manager.session_protection = None # We handle this manually in load_user/before_request to BAN hijackers instead of just logout.
 
 @login_manager.user_loader
 def load_user(user_id):
