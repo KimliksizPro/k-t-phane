@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Öğretmen Hesabı Ekle{% endblock %}
+{% block title %}{{ _('Öğretmen Hesabı Ekle') }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -11,25 +11,26 @@
                     <div class="bg-primary bg-opacity-10 p-3 rounded-circle d-inline-flex mb-3">
                         <i class="fas fa-chalkboard-teacher text-primary fa-2x"></i>
                     </div>
-                    <h2 class="fw-bold text-gray-800">Öğretmen Ekle</h2>
-                    <p class="text-muted">Sistemi kullanacak yeni bir yetkili hesabı oluşturun.</p>
+                    <h2 class="fw-bold text-gray-800">{{ _('Öğretmen Ekle') }}</h2>
+                    <p class="text-muted">{{ _('Sistemi kullanacak yeni bir yetkili hesabı oluşturun.') }}</p>
                 </div>
 
                 <form method="POST">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="mb-4">
-                        <label for="username" class="form-label fw-bold small text-muted">KULLANICI ADI</label>
+                        <label for="username" class="form-label fw-bold small text-muted">{{ _('KULLANICI ADI')
+                            }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-0"><i
                                     class="fas fa-user text-muted"></i></span>
                             <input type="text" class="form-control bg-light border-0" id="username" name="username"
-                                placeholder="Örn: ahmet_hoca" required>
+                                placeholder="{{ _('Örn: ahmet_hoca') }}" required>
                         </div>
                     </div>
 
                     <div class="mb-4">
-                        <label for="password" class="form-label fw-bold small text-muted">ŞİFRE</label>
+                        <label for="password" class="form-label fw-bold small text-muted">{{ _('ŞİFRE') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-0"><i
                                     class="fas fa-lock text-muted"></i></span>
@@ -40,9 +41,10 @@
 
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary rounded-pill py-2 fw-bold shadow-sm">
-                            <i class="fas fa-plus-circle me-2"></i> Hesabı Oluştur
+                            <i class="fas fa-plus-circle me-2"></i> {{ _('Hesabı Oluştur') }}
                         </button>
-                        <a href="{{ url_for('settings') }}" class="btn btn-light rounded-pill py-2 text-muted">İptal</a>
+                        <a href="{{ url_for('settings') }}" class="btn btn-light rounded-pill py-2 text-muted">{{
+                            _('İptal') }}</a>
                     </div>
                 </form>
             </div>

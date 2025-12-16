@@ -1,0 +1,197 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-12-16 18:26+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: templates/base.html:208
+msgid "KÜTÜPHANE"
+msgstr ""
+
+#: templates/base.html:213
+msgid "Genel Bakış"
+msgstr ""
+
+#: templates/base.html:217
+msgid "Öğrenciler"
+msgstr ""
+
+#: templates/base.html:220
+msgid "Kitaplar"
+msgstr ""
+
+#: templates/base.html:223
+msgid "Emanet İşlemleri"
+msgstr ""
+
+#: templates/base.html:229
+msgid "İstatistikler"
+msgstr ""
+
+#: templates/base.html:232
+msgid "Raporlar"
+msgstr ""
+
+#: templates/base.html:238
+msgid "Ayarlar"
+msgstr ""
+
+#: templates/base.html:243
+msgid "Çıkış Yap"
+msgstr ""
+
+#: templates/settings.html:8
+msgid "Sistem Ayarları"
+msgstr ""
+
+#: templates/settings.html:9
+msgid "Genel yapılandırma ve güvenlik tercihleri"
+msgstr ""
+
+#: templates/settings.html:17
+msgid ""
+"Genel\n"
+"                        Ayarlar"
+msgstr ""
+
+#: templates/settings.html:26
+msgid "Güvenlik Tercihleri"
+msgstr ""
+
+#: templates/settings.html:30
+msgid "Farklı Cihaz Doğrulaması"
+msgstr ""
+
+#: templates/settings.html:31
+msgid "Yeni cihazlardan girişte kod iste"
+msgstr ""
+
+#: templates/settings.html:42
+msgid "OKUL ADI"
+msgstr ""
+
+#: templates/settings.html:49
+msgid ""
+"ÖDÜNÇ SÜRESİ\n"
+"                                (GÜN)"
+msgstr ""
+
+#: templates/settings.html:56
+msgid "TEMA"
+msgstr ""
+
+#: templates/settings.html:58
+msgid ""
+"Açık Tema\n"
+"                                    (Varsayılan)"
+msgstr ""
+
+#: templates/settings.html:67
+msgid "Kolay Mod"
+msgstr ""
+
+#: templates/settings.html:68
+msgid "Basitleştirilmiş arayüz"
+msgstr ""
+
+#: templates/settings.html:76
+msgid "Değişiklikleri Kaydet"
+msgstr ""
+
+#: templates/settings.html:81
+msgid "YÖNETİCİ KISAYOLLARI"
+msgstr ""
+
+#: templates/settings.html:85
+msgid "Öğretmen"
+msgstr ""
+
+#: templates/settings.html:88
+msgid "Nöbetçi"
+msgstr ""
+
+#: templates/settings.html:101
+msgid ""
+"Şifre\n"
+"                        İşlemleri"
+msgstr ""
+
+#: templates/settings.html:110
+msgid "Mevcut Şifre"
+msgstr ""
+
+#: templates/settings.html:114
+msgid "Yeni Şifre"
+msgstr ""
+
+#: templates/settings.html:118
+msgid "Yeni Şifre (Tekrar)"
+msgstr ""
+
+#: templates/settings.html:121
+msgid "Şifreyi Güncelle"
+msgstr ""
+
+#: templates/settings.html:129
+msgid ""
+"Veri\n"
+"                        Aktarımı"
+msgstr ""
+
+#: templates/settings.html:138
+msgid "Öğrenci Listesi"
+msgstr ""
+
+#: templates/settings.html:144 templates/settings.html:158
+msgid "Yükle"
+msgstr ""
+
+#: templates/settings.html:150
+msgid ""
+"Kitap\n"
+"                                    Listesi"
+msgstr ""
+
+#: templates/settings.html:171
+msgid "Yasaklı IP Listesi (Titanium Guardian)"
+msgstr ""
+
+#: templates/settings.html:179
+msgid "IP Adresi"
+msgstr ""
+
+#: templates/settings.html:180
+msgid "Durum"
+msgstr ""
+
+#: templates/settings.html:181
+msgid "İşlem"
+msgstr ""
+
+#: templates/settings.html:188
+msgid "Engellendi"
+msgstr ""
+
+#: templates/settings.html:190
+msgid "Kaldır"
+msgstr ""
+
+#: templates/settings.html:194
+msgid ""
+"Herhangi bir yasaklı\n"
+"                                        IP bulunmuyor. Sistem güvenli."
+msgstr ""
+

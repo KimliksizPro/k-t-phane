@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Kitap Ekle{% endblock %}
+{% block title %}{{ _('Kitap Ekle') }}{% endblock %}
 
 {% block content %}
 <!-- HTML5-QRCode Library -->
@@ -12,9 +12,8 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3 border-bottom">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-book-medical me-2"></i>YENİ KİTAP
-                        EKLE</h5>
-
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-book-medical me-2"></i>{{ _('YENİ
+                        KİTAP EKLE') }}</h5>
                 </div>
             </div>
             <div class="card-body p-4">
@@ -22,21 +21,21 @@
                 <!-- Camera Scanner Container (Hidden by default) -->
                 <div id="reader-container" class="d-none mb-4 p-3 bg-light rounded shadow-sm text-center">
                     <div class="d-flex justify-content-between align-items-center mb-2">
-                        <h6 class="fw-bold m-0"><i class="fas fa-camera me-2"></i>Barkod Okutun</h6>
+                        <h6 class="fw-bold m-0"><i class="fas fa-camera me-2"></i>{{ _('Barkod Okutun') }}</h6>
                         <button type="button" class="btn btn-sm btn-close" id="btnCloseCamera"
-                            aria-label="Kapat"></button>
+                            aria-label="{{ _('Kapat') }}"></button>
                     </div>
 
                     <div id="secure-context-alert" class="alert alert-danger d-none small text-start">
                         <i class="fas fa-exclamation-triangle me-2"></i>
-                        <strong>Kamera açılamıyor!</strong><br>
-                        Güvenlik gereği kamera sadece <b>HTTPS</b> bağlantısı ile çalışır.<br>
-                        Lütfen adres çubuğundaki adresi <code>http://</code> yerine <code>https://</code> olarak
-                        değiştirip tekrar girin.
+                        <strong>{{ _('Kamera açılamıyor!') }}</strong><br>
+                        {{ _('Güvenlik gereği kamera sadece <b>HTTPS</b> bağlantısı ile çalışır.') }}<br>
+                        {{ _('Lütfen adres çubuğundaki adresi <code>http://</code> yerine <code>https://</code> olarak
+                        değiştirip tekrar girin.') }}
                     </div>
 
                     <div id="reader" style="width: 100%; min-height: 250px;"></div>
-                    <div class="small text-muted mt-2">Kamerayı barkoda tutun. Otomatik algılanacaktır.</div>
+                    <div class="small text-muted mt-2">{{ _('Kamerayı barkoda tutun. Otomatik algılanacaktır.') }}</div>
                 </div>
 
 
@@ -45,12 +44,12 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="col-md-12">
-                        <label for="isbn" class="form-label fw-bold small text-muted">ISBN / BARKOD</label>
+                        <label for="isbn" class="form-label fw-bold small text-muted">{{ _('ISBN / BARKOD') }}</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light border-end-0"><i
                                     class="fas fa-barcode text-dark"></i></span>
                             <input type="text" class="form-control border-start-0" id="isbn" name="isbn"
-                                placeholder="Barkod okutun veya ISBN girin..." required autofocus>
+                                placeholder="{{ _('Barkod okutun veya ISBN girin...') }}" required autofocus>
 
                             <!-- Camera Button -->
                             <button class="btn btn-outline-dark" type="button" id="btnScanQr">
@@ -62,53 +61,62 @@
                             <button class="btn btn-outline-primary" type="button" id="btnFetchBook">
                                 <span class="spinner-border spinner-border-sm d-none" id="fetchSpinner" role="status"
                                     aria-hidden="true"></span>
-                                <span id="fetchBtnText">Bilgileri Getir</span>
+                                <span id="fetchBtnText">{{ _('Bilgileri Getir') }}</span>
                             </button>
                         </div>
-                        <div class="form-text text-primary" id="isbnHelp"><i class="fas fa-magic me-1"></i>Barkodu
-                            okuttuğunuzda kitap bilgileri otomatik dolacaktır.</div>
+                        <div class="form-text text-primary" id="isbnHelp"><i class="fas fa-magic me-1"></i>{{ _('Barkodu
+                            okuttuğunuzda kitap bilgileri otomatik dolacaktır.') }}</div>
                     </div>
 
                     <div class="col-md-12">
-                        <label for="title" class="form-label fw-bold small text-muted">KİTAP ADI</label>
+                        <label for="title" class="form-label fw-bold small text-muted">{{ _('KİTAP ADI') }}</label>
                         <input type="text" class="form-control" id="title" name="title" required>
                     </div>
 
                     <div class="col-md-6">
-                        <label for="author" class="form-label fw-bold small text-muted">YAZAR</label>
+                        <label for="author" class="form-label fw-bold small text-muted">{{ _('YAZAR') }}</label>
                         <input type="text" class="form-control" id="author" name="author" required>
                     </div>
 
                     <div class="col-12">
                         <hr class="my-4 text-muted opacity-25">
-                        <h6 class="text-muted mb-3 small fw-bold text-uppercase">Detaylı Bilgiler (Otomatik Dolar)</h6>
+                        <h6 class="text-muted mb-3 small fw-bold text-uppercase">{{ _('Detaylı Bilgiler (Otomatik
+                            Dolar)') }}</h6>
                     </div>
 
                     <div class="col-md-6">
-                        <label for="category" class="form-label fw-bold small text-muted">KATEGORİ</label>
+                        <label for="category" class="form-label fw-bold small text-muted">{{ _('KATEGORİ') }}</label>
                         <input type="text" class="form-control" id="category" name="category">
                     </div>
                     <div class="col-md-6">
-                        <label for="publisher" class="form-label fw-bold small text-muted">YAYINEVİ</label>
+                        <label for="publisher" class="form-label fw-bold small text-muted">{{ _('YAYINEVİ') }}</label>
                         <input type="text" class="form-control" id="publisher" name="publisher">
                     </div>
                     <div class="col-md-6">
-                        <label for="publication_year" class="form-label fw-bold small text-muted">BASIM YILI</label>
+                        <label for="publication_year" class="form-label fw-bold small text-muted">{{ _('BASIM YILI')
+                            }}</label>
                         <input type="number" class="form-control" id="publication_year" name="publication_year">
                     </div>
                     <div class="col-md-6">
-                        <label for="page_count" class="form-label fw-bold small text-muted">SAYFA SAYISI</label>
+                        <label for="page_count" class="form-label fw-bold small text-muted">{{ _('SAYFA SAYISI')
+                            }}</label>
                         <input type="number" class="form-control" id="page_count" name="page_count">
                     </div>
                     <div class="col-12">
-                        <label for="description" class="form-label fw-bold small text-muted">AÇIKLAMA</label>
+                        <label for="description" class="form-label fw-bold small text-muted">
+                            {{ _('AÇIKLAMA') }}
+                            <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 ms-2"
+                                id="btnAiSummarize" onclick="aiSummarize()">
+                                <i class="fas fa-magic text-warning"></i> {{ _('AI ile Özetle') }}
+                            </button>
+                        </label>
                         <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                     </div>
             </div>
 
             <div class="d-grid gap-2 mt-5">
                 <button type="submit" class="btn btn-primary py-2 fw-bold">
-                    <i class="fas fa-save me-2"></i> KAYDET
+                    <i class="fas fa-save me-2"></i> {{ _('KAYDET') }}
                 </button>
             </div>
             </form>
@@ -203,9 +211,9 @@
             // UI Loading State
             btnFetch.disabled = true;
             spinner.classList.remove('d-none');
-            btnText.textContent = 'Aranıyor...';
+            btnText.textContent = '{{ _("Aranıyor...") }}';
             helpText.className = 'form-text text-muted';
-            helpText.textContent = 'Veritabanı taranıyor...';
+            helpText.textContent = '{{ _("Veritabanı taranıyor...") }}';
 
             try {
                 // Use internal API to avoid CORS/CSP issues
@@ -228,7 +236,7 @@
 
                 // Success Feedback
                 helpText.className = 'form-text text-success fw-bold';
-                helpText.innerHTML = '<i class="fas fa-check-circle me-1"></i>Kitap bulundu ve bilgiler dolduruldu!';
+                helpText.innerHTML = '<i class="fas fa-check-circle me-1"></i>{{ _("Kitap bulundu ve bilgiler dolduruldu!") }}';
 
                 // Flash animation for visual confirmation
                 document.getElementById('title').classList.add('bg-success', 'bg-opacity-10');
@@ -237,14 +245,14 @@
             } catch (error) {
                 console.error('API Error:', error);
                 helpText.className = 'form-text text-warning fw-bold';
-                helpText.innerHTML = '<i class="fas fa-info-circle me-1"></i>Kayıt bulunamadı. Lütfen bilgileri manuel giriniz.';
+                helpText.innerHTML = '<i class="fas fa-info-circle me-1"></i>{{ _("Kayıt bulunamadı. Lütfen bilgileri manuel giriniz.") }}';
                 // Focus on title to encourage manual entry
                 document.getElementById('title').focus();
             } finally {
                 // Reset UI
                 btnFetch.disabled = false;
                 spinner.classList.add('d-none');
-                btnText.textContent = 'Bilgileri Getir';
+                btnText.textContent = '{{ _("Bilgileri Getir") }}';
             }
         }
 
@@ -266,5 +274,52 @@
             if (this.value.length >= 10) fetchBookData(this.value);
         });
     });
+
+    // --- AI SUMMARIZE FUNCTION ---
+    async function aiSummarize() {
+        const title = document.getElementById('title').value;
+        const author = document.getElementById('author').value;
+        const descField = document.getElementById('description');
+        const btn = document.getElementById('btnAiSummarize');
+
+        if (!title) {
+            alert('{{ _("Lütfen önce kitap adını girin.") }}');
+            return;
+        }
+
+        // Loading State
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> {{ _("Özetleniyor...") }}';
+
+        try {
+            const response = await fetch('/api/ai/summarize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ title: title, author: author })
+            });
+
+            const data = await response.json();
+
+            if (data.summary) {
+                descField.value = data.summary;
+                // Visual feedback
+                descField.classList.add('is-valid');
+                setTimeout(() => descField.classList.remove('is-valid'), 2000);
+            } else {
+                alert('{{ _("Özet oluşturulamadı.") }}');
+            }
+
+        } catch (error) {
+            console.error('AI Error:', error);
+            alert('{{ _("Yapay zeka servisine erişilemedi.") }}');
+        } finally {
+            // Reset Button
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-magic text-warning"></i> {{ _("AI ile Özetle") }}';
+        }
+    }
 </script>
 {% endblock %}

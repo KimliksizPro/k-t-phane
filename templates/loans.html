@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Emanet İşlemleri{% endblock %}
+{% block title %}{{ _('Emanet İşlemleri') }}{% endblock %}
 
 {% block content %}
 <!-- DESKTOP VIEW -->
@@ -10,39 +10,95 @@
         <div class="col-lg-4">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold text-primary"><i
-                            class="fas fa-hand-holding-heart me-2"></i>EMANET
-                        VERME</h5>
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-hand-holding-heart me-2"></i>{{
+                        _('EMANET VERME') }}</h5>
                 </div>
                 <div class="card-body p-4">
                     <form method="POST">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                         <div class="mb-3">
-                            <label for="student_id_desktop" class="form-label fw-bold small text-muted">ÖĞRENCİ
-                                SEÇİNİZ</label>
-                            <select name="student_id" id="student_id_desktop" class="form-select" required>
-                                <option value="">-- Öğrenci Seçiniz --</option>
-                                {% for student in students %}
-                                <option value="{{ student.id }}">{{ student.school_number }} - {{ student.name }} {{
-                                    student.surname }}</option>
-                                {% endfor %}
-                            </select>
+                            <label class="form-label fw-bold small text-muted">{{ _('ÖĞRENCİ SEÇİNİZ VEYA EKLEYİNİZ')
+                                }}</label>
+
+                            <!-- DESKTOP STUDENT SMART SEARCH -->
+                            <div id="smart-student-search-container-desktop" class="position-relative">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-muted"><i
+                                            class="fas fa-search"></i></span>
+                                    <input type="text" id="smart_student_search_desktop" name="search_student_input"
+                                        class="form-control" placeholder="{{ _('Öğrenci Ara veya Okul No...') }}"
+                                        autocomplete="off">
+                                    <input type="hidden" name="student_id" id="selected_student_id_desktop">
+                                </div>
+                                <div id="smart-student-results-desktop"
+                                    class="list-group shadow-sm mt-1 position-absolute w-100"
+                                    style="z-index: 1050; display: none;"></div>
+                            </div>
+
+                            <!-- DESKTOP NEW STUDENT FORM -->
+                            <div id="new-student-form-desktop" class="mt-3 p-3 bg-light rounded border d-none">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold text-primary mb-0 small"><i class="fas fa-user-plus me-1"></i>{{
+                                        _('Yeni Öğrenci') }}</h6>
+                                    <button type="button" class="btn btn-sm btn-link text-muted"
+                                        onclick="toggleStudentModeDesktop()">{{ _('İptal') }}</button>
+                                </div>
+                                <div class="row g-2 mb-2">
+                                    <div class="col-6">
+                                        <input type="text" name="new_student_name" id="new_student_name_desktop"
+                                            class="form-control form-control-sm" placeholder="{{ _('Ad') }}" disabled>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" name="new_student_surname" id="new_student_surname_desktop"
+                                            class="form-control form-control-sm" placeholder="{{ _('Soyad') }}">
+                                    </div>
+                                </div>
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <input type="text" name="new_student_no" id="new_student_no_desktop"
+                                            class="form-control form-control-sm" placeholder="{{ _('Okul No') }}">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" name="new_student_class" id="new_student_class_desktop"
+                                            class="form-control form-control-sm"
+                                            placeholder="{{ _('Sınıf (Örn: 9-A)') }}">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="book_id_desktop" class="form-label fw-bold small text-muted">KİTAP
-                                SEÇİNİZ</label>
-                            <select name="book_id" id="book_id_desktop" class="form-select" required>
-                                <option value="">-- Kitap Seçiniz --</option>
-                                {% for book in books %}
-                                <option value="{{ book.id }}">{{ book.title }} ({{ book.author }})</option>
-                                {% endfor %}
-                            </select>
+                            <label class="form-label fw-bold small text-muted">{{ _('KİTAP SEÇİNİZ VEYA EKLEYİNİZ')
+                                }}</label>
+
+                            <!-- DESKTOP SMART SEARCH -->
+                            <div id="smart-book-search-container-desktop" class="position-relative">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-white text-muted"><i
+                                            class="fas fa-search"></i></span>
+                                    <input type="text" id="smart_book_search_desktop" name="search_book_input"
+                                        class="form-control" placeholder="{{ _('Kitap Ara veya Barkod Okut...') }}"
+                                        autocomplete="off">
+                                    <input type="hidden" name="book_id" id="selected_book_id_desktop">
+                                </div>
+                                <div id="smart-search-results-desktop"
+                                    class="list-group shadow-sm mt-1 position-absolute w-100"
+                                    style="z-index: 1050; display: none;"></div>
+                            </div>
+
+                            <!-- DESKTOP NEW BOOK FORM (HIDDEN INPUTS FOR BACKEND) -->
+                            <!-- Values will be populated from the Modal via JS -->
+                            <div id="hidden-new-book-fields">
+                                <input type="hidden" name="new_book_isbn" id="hidden_new_book_isbn">
+                                <input type="hidden" name="new_book_title" id="hidden_new_book_title">
+                                <input type="hidden" name="new_book_author" id="hidden_new_book_author">
+                                <input type="hidden" name="new_book_page_count" id="hidden_new_book_page_count">
+                            </div>
                         </div>
 
                         <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
-                            <i class="fas fa-check me-2"></i> EMANET VER
+                            <i class="fas fa-check me-2"></i> {{ _('EMANET VER') }}
                         </button>
                     </form>
                 </div>
@@ -53,19 +109,19 @@
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm h-100">
                 <div class="card-header bg-white py-3 border-bottom">
-                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-list-alt me-2"></i>AKTİF EMANET
-                        LİSTESİ</h5>
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-list-alt me-2"></i>{{ _('AKTİF
+                        EMANET LİSTESİ') }}</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light">
                                 <tr>
-                                    <th class="ps-4">Öğrenci</th>
-                                    <th>Kitap</th>
-                                    <th>Veriliş</th>
-                                    <th>Teslim</th>
-                                    <th class="text-end pe-4">İşlem</th>
+                                    <th class="ps-4">{{ _('Öğrenci') }}</th>
+                                    <th>{{ _('Kitap') }}</th>
+                                    <th>{{ _('Veriliş') }}</th>
+                                    <th>{{ _('Teslim') }}</th>
+                                    <th class="text-end pe-4">{{ _('İşlem') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -86,10 +142,10 @@
                                     <td class="text-end pe-4">
                                         <form action="{{ url_for('return_book', transaction_id=loan.id) }}"
                                             method="POST" class="d-inline"
-                                            onsubmit="return confirm('Bu iadeyi geri almak istediğinize emin misiniz?');">
+                                            onsubmit="return confirm('{{ _('Bu iadeyi geri almak istediğinize emin misiniz?') }}');">
                                             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                             <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-undo me-1"></i> İade
+                                                <i class="fas fa-undo me-1"></i> {{ _('İade') }}
                                             </button>
                                         </form>
                                     </td>
@@ -98,7 +154,7 @@
                                 <tr>
                                     <td colspan="5" class="text-center py-5 text-muted">
                                         <i class="fas fa-check-circle fa-3x mb-3 d-block opacity-25"></i>
-                                        Aktif emanet kaydı bulunmamaktadır.
+                                        {{ _('Aktif emanet kaydı bulunmamaktadır.') }}
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -116,8 +172,8 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
         <div>
-            <h1 class="h3 fw-bold text-dark mb-0">Emanet İşlemleri</h1>
-            <p class="text-muted small mb-0">Aktif İşlem: {{ loans|length }}</p>
+            <h1 class="h3 fw-bold text-dark mb-0">{{ _('Emanet İşlemleri') }}</h1>
+            <p class="text-muted small mb-0">{{ _('Aktif İşlem') }}: {{ loans|length }}</p>
         </div>
         <button class="btn btn-primary rounded-circle shadow-sm d-flex align-items-center justify-content-center"
             data-bs-toggle="modal" data-bs-target="#mobileLoanModal" style="width: 45px; height: 45px;">
@@ -142,7 +198,8 @@
                                 }}</p>
                         </div>
                     </div>
-                    {% if loan.due_date < now %} <span class="badge bg-danger rounded-pill px-3 py-2">Gecikmiş</span>
+                    {% if loan.due_date < now %} <span class="badge bg-danger rounded-pill px-3 py-2">{{ _('Gecikmiş')
+                        }}</span>
                         {% else %}
                         <span class="badge bg-light text-dark border rounded-pill small px-3 py-2">{{
                             loan.due_date.strftime('%d.%m') }}</span>
@@ -151,14 +208,15 @@
 
                 <div class="d-flex justify-content-between align-items-center pt-2 border-top">
                     <div class="text-muted" style="font-size: 0.75rem;">
-                        <i class="fas fa-calendar-alt me-1"></i> Veriliş: {{ loan.issue_date.strftime('%d.%m.%Y') }}
+                        <i class="fas fa-calendar-alt me-1"></i> {{ _('Veriliş') }}: {{
+                        loan.issue_date.strftime('%d.%m.%Y') }}
                     </div>
                     <form action="{{ url_for('return_book', transaction_id=loan.id) }}" method="POST" class="d-inline"
-                        onsubmit="return confirm('Bu iadeyi geri almak istediğinize emin misiniz?');">
+                        onsubmit="return confirm('{{ _('Bu iadeyi geri almak istediğinize emin misiniz?') }}');">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit"
                             class="btn btn-sm btn-outline-danger rounded-pill px-3 fw-bold d-flex align-items-center justify-content-center">
-                            <i class="fas fa-undo me-1"></i> İade Et
+                            <i class="fas fa-undo me-1"></i> {{ _('İade Et') }}
                         </button>
                     </form>
                 </div>
@@ -169,8 +227,8 @@
             <div class="bg-light rounded-circle d-inline-flex p-4 mb-3 align-items-center justify-content-center">
                 <i class="fas fa-folder-open fa-2x text-muted opacity-50"></i>
             </div>
-            <h6 class="text-muted fw-bold">Henüz emanet kaydı yok</h6>
-            <p class="text-muted small mb-0">Hemen sağ üstteki + butonuna basarak ekleyin.</p>
+            <h6 class="text-muted fw-bold">{{ _('Henüz emanet kaydı yok') }}</h6>
+            <p class="text-muted small mb-0">{{ _('Hemen sağ üstteki + butonuna basarak ekleyin.') }}</p>
         </div>
         {% endfor %}
     </div>
@@ -181,7 +239,7 @@
     <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
         <div class="modal-content border-0 shadow-lg rounded-4">
             <div class="modal-header border-0 pb-0">
-                <h5 class="modal-title fw-bold text-primary">Yeni Emanet Ver</h5>
+                <h5 class="modal-title fw-bold text-primary">{{ _('Yeni Emanet Ver') }}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body pt-4">
@@ -189,14 +247,14 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="mb-4">
-                        <label for="student_id_mobile" class="form-label fw-bold small text-secondary">ÖĞRENCİ
-                            SEÇİNİZ</label>
+                        <label for="student_id_mobile" class="form-label fw-bold small text-secondary">{{ _('ÖĞRENCİ
+                            SEÇİNİZ') }}</label>
                         <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
                             <span class="input-group-text bg-white border-end-0 text-primary"><i
                                     class="fas fa-user-graduate"></i></span>
                             <select name="student_id" id="student_id_mobile" class="form-select border-start-0"
                                 required>
-                                <option value="">Bir öğrenci seçin...</option>
+                                <option value="">{{ _('Bir öğrenci seçin...') }}</option>
                                 {% for student in students %}
                                 <option value="{{ student.id }}">{{ student.name }} {{ student.surname }} ({{
                                     student.school_number }})</option>
@@ -206,13 +264,13 @@
                     </div>
 
                     <div class="mb-5">
-                        <label for="book_id_mobile" class="form-label fw-bold small text-secondary">KİTAP
-                            SEÇİNİZ</label>
+                        <label for="book_id_mobile" class="form-label fw-bold small text-secondary">{{ _('KİTAP
+                            SEÇİNİZ') }}</label>
                         <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
                             <span class="input-group-text bg-white border-end-0 text-success"><i
                                     class="fas fa-book"></i></span>
                             <select name="book_id" id="book_id_mobile" class="form-select border-start-0" required>
-                                <option value="">Bir kitap seçin...</option>
+                                <option value="">{{ _('Bir kitap seçin...') }}</option>
                                 {% for book in books %}
                                 <option value="{{ book.id }}">{{ book.title }}</option>
                                 {% endfor %}
@@ -222,15 +280,316 @@
 
                     <button type="submit"
                         class="btn btn-primary w-100 btn-lg rounded-pill fw-bold shadow d-flex align-items-center justify-content-center">
-                        <i class="fas fa-check-circle me-2"></i> EMANETİ ONAYLA
+                        <i class="fas fa-check-circle me-2"></i> {{ _('EMANETİ ONAYLA') }}
                     </button>
                     <button type="button" class="btn btn-light w-100 btn-lg rounded-pill fw-bold mt-3 text-muted"
                         data-bs-dismiss="modal">
-                        Vazgeç
+                        {{ _('Vazgeç') }}
                     </button>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    // --- VARIABLES & ELEMENTS ---
+    // Book Search Elements
+    const searchInput = document.getElementById('smart_book_search_desktop');
+    const resultsContainer = document.getElementById('smart-search-results-desktop');
+    const hiddenBookId = document.getElementById('selected_book_id_desktop');
+    const newBookForm = document.getElementById('new-book-form-desktop');
+    let debounceTimer;
+
+    // Student Search Elements
+    const studentSearchInput = document.getElementById('smart_student_search_desktop');
+    const studentResultsContainer = document.getElementById('smart-student-results-desktop');
+    const hiddenStudentId = document.getElementById('selected_student_id_desktop');
+    const newStudentForm = document.getElementById('new-student-form-desktop');
+    let debounceStudentTimer;
+
+    // --- HELPER FUNCTIONS ---
+
+    // Bootstrap Modal Instance
+    let addBookModal;
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('addBookModal');
+        if (modalEl) addBookModal = new bootstrap.Modal(modalEl);
+    });
+
+    // Open Add Book Modal
+    window.openAddBookModal = function () {
+        // Clear previous values
+        document.getElementById('modal_book_isbn').value = '';
+        document.getElementById('modal_book_title').value = '';
+        document.getElementById('modal_book_author').value = '';
+        document.getElementById('modal_book_page_count').value = '';
+
+        // Clear Search
+        searchInput.value = '';
+        hiddenBookId.value = '';
+        resultsContainer.style.display = 'none';
+
+        if (addBookModal) {
+            addBookModal.show();
+            setTimeout(() => document.getElementById('modal_book_isbn').focus(), 500);
+        } else {
+            console.error("Modal definition not found");
+        }
+    };
+
+    // Keep old name for compatibility if called elsewhere
+    window.toggleSearchModeDesktop = window.openAddBookModal;
+
+    // Fetch in Modal
+    window.fetchBookInfoModal = function () {
+        const isbn = document.getElementById('modal_book_isbn').value;
+        if (isbn.length < 3) return;
+
+        const btn = event.target.closest('button');
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        btn.disabled = true;
+
+        fetch(`/api/get-book-details?isbn=${isbn}`)
+            .then(r => r.json())
+            .then(data => {
+                if (data.title) {
+                    document.getElementById('modal_book_title').value = data.title;
+                    document.getElementById('modal_book_author').value = data.author;
+                    document.getElementById('modal_book_page_count').value = data.page_count;
+                } else {
+                    alert('{{ _("Kitap bilgileri bulunamadı, lütfen manuel giriniz.") }}');
+                }
+            })
+            .catch(err => console.error(err))
+            .finally(() => {
+                btn.innerHTML = originalHtml;
+                btn.disabled = false;
+            });
+    };
+
+    // Submit from Modal
+    window.submitNewBookFromModal = function () {
+        const title = document.getElementById('modal_book_title').value;
+        const isbn = document.getElementById('modal_book_isbn').value;
+        const author = document.getElementById('modal_book_author').value;
+        const pageCount = document.getElementById('modal_book_page_count').value;
+
+        if (!title) {
+            alert('{{ _("Lütfen kitap adını giriniz.") }}');
+            return;
+        }
+
+        // Show Loading State
+        const btn = event.target;
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> {{ _("Kaydediliyor...") }}';
+        btn.disabled = true;
+
+        // Get CSRF Token
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
+
+        // AJAX POST to create book immediately
+        fetch('/api/add-book', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken
+            },
+            body: JSON.stringify({
+                title: title,
+                isbn: isbn,
+                author: author,
+                page_count: pageCount
+            })
+        })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    // Book Created!
+                    if (addBookModal) addBookModal.hide();
+
+                    // Set the book as "Selected" in the main form
+                    searchInput.value = data.title;
+                    hiddenBookId.value = data.id;
+
+                    // Check if student is selected
+                    if (hiddenStudentId.value) {
+                        // Student selected -> Submit immediately to Loan
+                        // We don't need hidden fields anymore since book_id is set
+                        hiddenBookId.closest('form').submit();
+                    } else {
+                        // Student NOT selected
+                        alert('{{ _("Kitap başarıyla kaydedildi! Şimdi lütfen öğrenciyi seçip EMANET VER butonuna basınız.") }}');
+                        document.getElementById('smart_student_search_desktop').focus();
+                    }
+                } else {
+                    alert('{{ _("Hata:") }} ' + (data.error || '{{ _("Kitap eklenemedi.") }}'));
+                }
+            })
+            .catch(err => {
+                console.error('Add Book Error:', err);
+                alert('{{ _("Bir bağlantı hatası oluştu.") }}');
+            })
+            .finally(() => {
+                btn.innerHTML = oldHtml;
+                btn.disabled = false;
+            });
+    };
+
+    /* 
+    // Old Toggle logic removed - replaced by Modal workflow above
+    */
+
+    // Toggle Student Search Mode
+    window.toggleStudentModeDesktop = function () {
+        if (newStudentForm.classList.contains('d-none')) {
+            newStudentForm.classList.remove('d-none');
+            studentResultsContainer.style.display = 'none';
+            studentSearchInput.value = '';
+            hiddenStudentId.value = '';
+            document.getElementById('new_student_name_desktop').disabled = false;
+        } else {
+            newStudentForm.classList.add('d-none');
+            document.getElementById('new_student_name_desktop').disabled = true;
+        }
+    }
+
+    // Live Search Listener
+    searchInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        const query = this.value.trim();
+
+        if (query.length < 2) {
+            resultsContainer.style.display = 'none';
+            return;
+        }
+
+        debounceTimer = setTimeout(() => {
+            fetch(`/api/search/books?q=${encodeURIComponent(query)}`)
+                .then(r => r.json())
+                .then(data => {
+                    resultsContainer.innerHTML = '';
+                    resultsContainer.style.display = 'block';
+
+                    if (data.length > 0) {
+                        data.forEach(book => {
+                            const item = document.createElement('a');
+                            item.className = 'list-group-item list-group-item-action pointer small';
+                            item.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold text-truncate" style="max-width: 200px;">${book.title}</span>
+                                    <span class="badge bg-light text-secondary border">${book.isbn}</span>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.75rem;">${book.author}</div>
+                            `;
+                            item.onclick = () => {
+                                searchInput.value = book.title;
+                                hiddenBookId.value = book.id;
+                                resultsContainer.style.display = 'none';
+                                newBookForm.classList.add('d-none');
+                            };
+                            resultsContainer.appendChild(item);
+                        });
+                    }
+
+                    // Add "Add New" Item
+                    const addNewItem = document.createElement('div');
+                    addNewItem.className = 'list-group-item list-group-item-action bg-primary text-white text-center fw-bold pointer py-2 small';
+                    addNewItem.innerHTML = `<i class="fas fa-plus-circle me-1"></i> "${query}" {{ _("Ekle") }}`;
+                    addNewItem.onclick = () => {
+                        toggleSearchModeDesktop();
+                        document.getElementById('new_book_title_desktop').value = query;
+                        document.getElementById('new_book_title_desktop').focus();
+                    };
+                    resultsContainer.appendChild(addNewItem);
+                });
+        }, 300);
+    });
+
+
+    studentSearchInput.addEventListener('input', function () {
+        clearTimeout(debounceStudentTimer);
+        const query = this.value.trim();
+        if (query.length < 2) {
+            studentResultsContainer.style.display = 'none';
+            return;
+        }
+
+        debounceStudentTimer = setTimeout(() => {
+            fetch(`/api/search/students?q=${encodeURIComponent(query)}`)
+                .then(r => r.json())
+                .then(data => {
+                    studentResultsContainer.innerHTML = '';
+                    studentResultsContainer.style.display = 'block';
+
+                    if (data.length > 0) {
+                        data.forEach(student => {
+                            const item = document.createElement('a');
+                            item.className = 'list-group-item list-group-item-action pointer small';
+                            item.innerHTML = `
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="fw-bold">${student.name} ${student.surname}</span>
+                                    <span class="badge bg-light text-primary border">${student.school_number}</span>
+                                </div>
+                                <div class="text-muted" style="font-size: 0.75rem;">${student.class_name || '-'}</div>
+                            `;
+                            item.onclick = () => {
+                                studentSearchInput.value = `${student.name} ${student.surname}`;
+                                hiddenStudentId.value = student.id;
+                                studentResultsContainer.style.display = 'none';
+                                newStudentForm.classList.add('d-none');
+                            };
+                            studentResultsContainer.appendChild(item);
+                        });
+                    }
+
+
+                    const addNewItem = document.createElement('div');
+                    addNewItem.className = 'list-group-item list-group-item-action bg-primary text-white text-center fw-bold pointer py-2 small';
+                    addNewItem.innerHTML = `<i class="fas fa-user-plus me-1"></i> {{ _("Yeni Öğrenci Ekle") }}`;
+                    addNewItem.onclick = () => {
+                        toggleStudentModeDesktop();
+                        const parts = query.split(' ');
+                        if (parts.length > 1) {
+                            document.getElementById('new_student_name_desktop').value = parts[0];
+                            document.getElementById('new_student_surname_desktop').value = parts.slice(1).join(' ');
+                        } else {
+                            document.getElementById('new_student_name_desktop').value = query;
+                        }
+                        document.getElementById('new_student_name_desktop').focus();
+                    };
+                    studentResultsContainer.appendChild(addNewItem);
+                });
+        }, 300);
+    });
+
+    // Auto-Open Logic
+    // Auto-Open Logic
+    const notFoundIsbn = "{{ not_found_isbn }}";
+    if (notFoundIsbn && notFoundIsbn !== "None") {
+        // Execute immediately since we are at bottom of body
+        if (typeof openAddBookModal === 'function') {
+            openAddBookModal();
+            const modalIsbnInput = document.getElementById('modal_book_isbn');
+            if (modalIsbnInput) {
+                modalIsbnInput.value = notFoundIsbn;
+                fetchBookInfoModal();
+            }
+        } else {
+            console.error("openAddBookModal function not found!");
+        }
+    }
+
+    // Outside Click
+    document.addEventListener('click', function (e) {
+        if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.style.display = 'none';
+        }
+        if (studentSearchInput && !studentSearchInput.contains(e.target) && !studentResultsContainer.contains(e.target)) {
+            studentResultsContainer.style.display = 'none';
+        }
+    });
+</script>
 {% endblock %}

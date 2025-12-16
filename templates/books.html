@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Kitaplar{% endblock %}
+{% block title %}{{ _('Kitaplar') }}{% endblock %}
 
 {% block content %}
 <!-- DESKTOP VIEW -->
@@ -8,9 +8,9 @@
     <div class="card mb-4">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="card-title mb-0"><i class="fas fa-book me-2"></i>Kitap Listesi</h5>
+                <h5 class="card-title mb-0"><i class="fas fa-book me-2"></i>{{ _('Kitap Listesi') }}</h5>
                 <a href="{{ url_for('add_book') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Yeni Kitap
+                    <i class="fas fa-plus me-2"></i>{{ _('Yeni Kitap') }}
                 </a>
             </div>
 
@@ -19,10 +19,10 @@
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0 ps-0 search-input-desktop"
-                        placeholder="Kitap adı, yazar veya ISBN ile ara..." value="{{ search_query }}">
-                    <button class="btn btn-primary" type="submit">Ara</button>
+                        placeholder="{{ _('Kitap adı, yazar veya ISBN ile ara...') }}" value="{{ search_query }}">
+                    <button class="btn btn-primary" type="submit">{{ _('Ara') }}</button>
                     {% if search_query %}
-                    <a href="{{ url_for('books') }}" class="btn btn-outline-secondary">Temizle</a>
+                    <a href="{{ url_for('books') }}" class="btn btn-outline-secondary">{{ _('Temizle') }}</a>
                     {% endif %}
                 </div>
             </form>
@@ -32,11 +32,11 @@
                 <table class="table table-hover align-middle">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4">ISBN</th>
-                            <th>Kitap Adı</th>
-                            <th>Yazar</th>
-                            <th>Durum</th>
-                            <th class="text-end pe-4">İşlemler</th>
+                            <th class="ps-4">{{ _('ISBN') }}</th>
+                            <th>{{ _('Kitap Adı') }}</th>
+                            <th>{{ _('Yazar') }}</th>
+                            <th>{{ _('Durum') }}</th>
+                            <th class="text-end pe-4">{{ _('İşlemler') }}</th>
                         </tr>
                     </thead>
                     <tbody id="desktop-table-body">
@@ -47,23 +47,23 @@
                             <td>{{ book.author }}</td>
                             <td>
                                 {% if book.is_available %}
-                                <span
-                                    class="badge bg-success-subtle text-success border border-success-subtle px-3">RAFTA</span>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3">{{
+                                    _('RAFTA') }}</span>
                                 {% else %}
-                                <span
-                                    class="badge bg-warning-subtle text-warning border border-warning-subtle px-3">EMANETTE</span>
+                                <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3">{{
+                                    _('EMANETTE') }}</span>
                                 {% endif %}
                             </td>
                             <td class="text-end pe-4">
                                 <a href="{{ url_for('book_detail', id=book.id) }}"
                                     class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-eye me-1"></i> Detay
+                                    <i class="fas fa-eye me-1"></i> {{ _('Detay') }}
                                 </a>
                                 <a href="{{ url_for('edit_book', id=book.id) }}" class="btn btn-sm btn-outline-warning">
                                     <i class="fas fa-edit"></i>
                                 </a>
                                 <form action="{{ url_for('delete_book', id=book.id) }}" method="POST" class="d-inline"
-                                    onsubmit="return confirm('Bu kitabı silmek istediğinizden emin misiniz?');">
+                                    onsubmit="return confirm('{{ _('Bu kitabı silmek istediğinizden emin misiniz?') }}');">
                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn btn-sm btn-outline-danger ms-1">
                                         <i class="fas fa-trash"></i>
@@ -75,7 +75,7 @@
                         <tr>
                             <td colspan="5" class="text-center py-5 text-muted">
                                 <i class="fas fa-book-open fa-3x mb-3 d-block opacity-25"></i>
-                                Kayıtlı kitap bulunamadı.
+                                {{ _('Kayıtlı kitap bulunamadı.') }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -85,12 +85,12 @@
 
             <!-- Pagination Desktop -->
             {% if books.pages > 1 %}
-            <nav aria-label="Sayfalama" class="mt-4">
+            <nav aria-label="{{ _('Sayfalama') }}" class="mt-4">
                 <ul class="pagination justify-content-center">
                     {% if books.has_prev %}
                     <li class="page-item">
                         <a class="page-link" href="{{ url_for('books', page=books.prev_num, search=search_query) }}"
-                            aria-label="Önceki">
+                            aria-label="{{ _('Önceki') }}">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -114,7 +114,7 @@
                     {% if books.has_next %}
                     <li class="page-item">
                         <a class="page-link" href="{{ url_for('books', page=books.next_num, search=search_query) }}"
-                            aria-label="Sonraki">
+                            aria-label="{{ _('Sonraki') }}">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -136,11 +136,11 @@
             <div class="d-flex justify-content-between align-items-start mb-2">
                 <h6 class="fw-bold text-dark mb-0 text-truncate pe-2">{{ book.title }}</h6>
                 {% if book.is_available %}
-                <span
-                    class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Rafta</span>
+                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">{{
+                    _('Rafta') }}</span>
                 {% else %}
-                <span
-                    class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">Emanette</span>
+                <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">{{
+                    _('Emanette') }}</span>
                 {% endif %}
             </div>
             <p class="text-muted small mb-2"><i class="fas fa-pen-nib me-1"></i> {{ book.author }}</p>
@@ -149,14 +149,14 @@
 
             <div class="d-flex gap-2">
                 <a href="{{ url_for('book_detail', id=book.id) }}"
-                    class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">Detay</a>
+                    class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">{{ _('Detay') }}</a>
                 <a href="{{ url_for('edit_book', id=book.id) }}"
-                    class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">Düzenle</a>
+                    class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">{{ _('Düzenle') }}</a>
                 <form action="{{ url_for('delete_book', id=book.id) }}" method="POST" class="d-inline flex-fill"
-                    onsubmit="return confirm('Silmek istediğinizden emin misiniz?');">
+                    onsubmit="return confirm('{{ _('Silmek istediğinizden emin misiniz?') }}');">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <button type="submit"
-                        class="btn btn-sm btn-light w-100 rounded-pill fw-bold text-danger">Sil</button>
+                    <button type="submit" class="btn btn-sm btn-light w-100 rounded-pill fw-bold text-danger">{{
+                        _('Sil') }}</button>
                 </form>
             </div>
         </div>
@@ -164,7 +164,7 @@
     {% else %}
     <div class="text-center py-5">
         <i class="fas fa-book-open fa-3x text-muted opacity-25 mb-3"></i>
-        <p class="text-muted">Kitap bulunamadı.</p>
+        <p class="text-muted">{{ _('Kitap bulunamadı.') }}</p>
     </div>
     {% endfor %}
 </div>
@@ -208,13 +208,13 @@
                         if (data.length === 0) {
                             desktopHtml = `<tr><td colspan="5" class="text-center py-5 text-muted">
                                 <i class="fas fa-search fa-3x mb-3 d-block opacity-25"></i>
-                                Sonuç bulunamadı.
+                                {{ _('Sonuç bulunamadı.') }}
                             </td></tr>`;
                         } else {
                             data.forEach(book => {
                                 const statusBadge = book.is_available ?
-                                    '<span class="badge bg-success-subtle text-success border border-success-subtle px-3">RAFTA</span>' :
-                                    '<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3">EMANETTE</span>';
+                                    '<span class="badge bg-success-subtle text-success border border-success-subtle px-3">{{ _("RAFTA") }}</span>' :
+                                    '<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-3">{{ _("EMANETTE") }}</span>';
 
                                 desktopHtml += `
                                     <tr>
@@ -223,9 +223,9 @@
                                         <td>${book.author}</td>
                                         <td>${statusBadge}</td>
                                         <td class="text-end pe-4">
-                                            <a href="/book/${book.id}" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye me-1"></i> Detay</a>
+                                            <a href="/book/${book.id}" class="btn btn-sm btn-outline-primary"><i class="fas fa-eye me-1"></i> {{ _("Detay") }}</a>
                                             <a href="/books/edit/${book.id}" class="btn btn-sm btn-outline-warning"><i class="fas fa-edit"></i></a>
-                                            <form action="/books/delete/${book.id}" method="POST" class="d-inline" onsubmit="return confirm('Bu kitabı silmek istediğinizden emin misiniz?');">
+                                            <form action="/books/delete/${book.id}" method="POST" class="d-inline" onsubmit="return confirm('{{ _("Bu kitabı silmek istediğinizden emin misiniz?") }}');">
                                                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                                 <button type="submit" class="btn btn-sm btn-outline-danger ms-1"><i class="fas fa-trash"></i></button>
                                             </form>
@@ -241,13 +241,13 @@
                         if (data.length === 0) {
                             mobileHtml = `<div class="text-center py-5">
                                 <i class="fas fa-search fa-3x text-muted opacity-25 mb-3"></i>
-                                <p class="text-muted">Sonuç bulunamadı.</p>
+                                <p class="text-muted">{{ _('Sonuç bulunamadı.') }}</p>
                             </div>`;
                         } else {
                             data.forEach(book => {
                                 const statusBadge = book.is_available ?
-                                    '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">Rafta</span>' :
-                                    '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">Emanette</span>';
+                                    '<span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill">{{ _("Rafta") }}</span>' :
+                                    '<span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill">{{ _("Emanette") }}</span>';
 
                                 mobileHtml += `
                                     <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
@@ -260,11 +260,11 @@
                                             <p class="text-muted small mb-3 font-monospace bg-light d-inline-block px-2 py-1 rounded">${book.isbn}</p>
                                             
                                             <div class="d-flex gap-2">
-                                                <a href="/book/${book.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">Detay</a>
-                                                <a href="/books/edit/${book.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">Düzenle</a>
-                                                <form action="/books/delete/${book.id}" method="POST" class="d-inline flex-fill" onsubmit="return confirm('Silmek istediğinizden emin misiniz?');">
+                                                <a href="/book/${book.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">{{ _("Detay") }}</a>
+                                                <a href="/books/edit/${book.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">{{ _("Düzenle") }}</a>
+                                                <form action="/books/delete/${book.id}" method="POST" class="d-inline flex-fill" onsubmit="return confirm('{{ _("Silmek istediğinizden emin misiniz?") }}');">
                                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                                                    <button type="submit" class="btn btn-sm btn-light w-100 rounded-pill fw-bold text-danger">Sil</button>
+                                                    <button type="submit" class="btn btn-sm btn-light w-100 rounded-pill fw-bold text-danger">{{ _("Sil") }}</button>
                                                 </form>
                                             </div>
                                         </div>

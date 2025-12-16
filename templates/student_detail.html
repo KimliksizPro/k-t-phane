@@ -1,6 +1,9 @@
 {% extends 'base.html' %}
 
-{% block title %}Öğrenci Detayı <!-- HIDDEN STUDENT REPORT TEMPLATES -->
+{% block title %}{{ _('Öğrenci Detayı') }}{% endblock %}
+
+{% block content %}
+<!-- HIDDEN STUDENT REPORT TEMPLATES -->
 <div id="hidden-report-container" class="report-hidden">
     <div id="student-detail-report" class="report-container">
         <div class="report-header">
@@ -9,28 +12,28 @@
             </div>
             <div class="report-title">
                 <h1>{{ settings.school_name }}</h1>
-                <h2>ÖĞRENCİ KÜTÜPHANE EKSTRESİ</h2>
+                <h2>{{ _('ÖĞRENCİ KÜTÜPHANE EKSTRESİ') }}</h2>
             </div>
             <div class="report-meta">
-                <p>Tarih: {{ now.strftime('%d.%m.%Y') }}</p>
+                <p>{{ _('Tarih') }}: {{ now.strftime('%d.%m.%Y') }}</p>
             </div>
         </div>
 
         <div class="report-body">
             <div style="margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px;">
-                <strong>Öğrenci Bilgileri:</strong><br>
+                <strong>{{ _('Öğrenci Bilgileri:') }}</strong><br>
                 {{ student.name }} {{ student.surname }} ({{ student.school_number }})<br>
-                Sınıf: {{ student.class_name }}
+                {{ _('Sınıf:') }} {{ student.class_name }}
             </div>
 
-            <h3>İşlem Geçmişi</h3>
+            <h3>{{ _('İşlem Geçmişi') }}</h3>
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 40%;">Kitap Adı</th>
-                        <th style="width: 20%;">Veriliş Tarihi</th>
-                        <th style="width: 20%;">İade Tarihi</th>
-                        <th style="width: 20%;">Durum</th>
+                        <th style="width: 40%;">{{ _('Kitap Adı') }}</th>
+                        <th style="width: 20%;">{{ _('Veriliş Tarihi') }}</th>
+                        <th style="width: 20%;">{{ _('İade Tarihi') }}</th>
+                        <th style="width: 20%;">{{ _('Durum') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -39,11 +42,11 @@
                         <td>{{ loan.book.title }}</td>
                         <td>{{ loan.issue_date.strftime('%d.%m.%Y') }}</td>
                         <td>{{ loan.return_date.strftime('%d.%m.%Y') if loan.return_date else '-' }}</td>
-                        <td>{{ 'EMANETTE' if loan.status == 'active' else 'İADE EDİLDİ' }}</td>
+                        <td>{{ _('EMANETTE') if loan.status == 'active' else _('İADE EDİLDİ') }}</td>
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="4" style="text-align: center;">Kayıt bulunamadı.</td>
+                        <td colspan="4" style="text-align: center;">{{ _('Kayıt bulunamadı.') }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -53,12 +56,12 @@
         <div class="report-footer">
             <div class="signature-box">
                 <div class="signature-line">
-                    Öğrenci İmza
+                    {{ _('Öğrenci İmza') }}
                 </div>
             </div>
             <div class="signature-box">
                 <div class="signature-line">
-                    Kütüphane Sorumlusu
+                    {{ _('Kütüphane Sorumlusu') }}
                 </div>
             </div>
         </div>
@@ -72,8 +75,8 @@
             <!-- Header Strip -->
             <div
                 style="background: rgba(44, 62, 80, 0.9); height: 12mm; display: flex; align-items: center; padding-left: 5mm;">
-                <span style="color: white; font-weight: bold; font-size: 10pt; letter-spacing: 0.5px;">KÜTÜPHANE KİMLİK
-                    KARTI</span>
+                <span style="color: white; font-weight: bold; font-size: 10pt; letter-spacing: 0.5px;">{{ _('KÜTÜPHANE
+                    KİMLİK KARTI') }}</span>
             </div>
 
             <!-- Content -->
@@ -82,7 +85,7 @@
                 <!-- Photo Placeholder -->
                 <div
                     style="width: 22mm; height: 26mm; background: #fff; border: 1px solid #999; display: flex; align-items: center; justify-content: center; font-size: 8pt; color: #ccc;">
-                    FOTO
+                    {{ _('FOTO') }}
                 </div>
 
                 <!-- Info -->
@@ -172,10 +175,68 @@
             document.body.removeChild(clone);
         });
     }
-</script>
-{% endblock %}
 
-{% block content %}
+    async function fetchAiRecommendations() {
+        const btn = document.getElementById('btnAiRec');
+        const container = document.getElementById('ai-rec-body');
+        const studentId = "{{ student.id }}";
+
+        // Loading UI
+        btn.disabled = true;
+        container.innerHTML = `
+            <div class="text-center py-4">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <h6 class="text-muted">{{ _('Yapay zeka analiz yapıyor...') }}</h6>
+                <small class="text-muted">{{ _('Öğrenci geçmişi ve kütüphane arşivi taranıyor') }}</small>
+            </div>
+        `;
+
+        try {
+            const response = await fetch(`/api/ai/recommend/${studentId}`);
+            const data = await response.json();
+
+            if (data.oneriler && Array.isArray(data.oneriler)) {
+                let html = '<div class="row g-3">';
+                data.oneriler.forEach(book => {
+                    html += `
+                        <div class="col-md-4">
+                            <div class="card h-100 border-primary border-opacity-25 shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-book-open text-primary mb-2 fa-lg"></i>
+                                    <h6 class="fw-bold text-dark text-truncate" title="${book}">${book}</h6>
+                                    <a href="/books?q=${encodeURIComponent(book)}" class="btn btn-sm btn-outline-primary mt-2">
+                                        <i class="fas fa-search me-1"></i> {{ _('Kütüphanede Ara') }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                if (data.neden) {
+                    html += `<div class="col-12 mt-3"><div class="alert alert-info small"><i class="fas fa-info-circle me-2"></i>${data.neden}</div></div>`;
+                }
+
+                html += '</div>';
+                container.innerHTML = html;
+            } else if (data.raw_response) {
+                // Fallback for raw text response
+                container.innerHTML = `<div class="p-3 bg-light rounded">${data.raw_response}</div>`;
+            } else {
+                container.innerHTML = '<div class="alert alert-warning">{{ _("Öneri bulunamadı.") }}</div>';
+            }
+
+        } catch (error) {
+            console.error('AI Error:', error);
+            container.innerHTML = '<div class="alert alert-danger">{{ _("Yapay zeka servisine erişilemedi.") }}</div>';
+        } finally {
+            btn.disabled = false;
+        }
+    }
+</script>
+</script>
+
+
 <div class="row g-4">
     <div class="col-lg-4">
         <div class="card border-0 shadow-sm h-100">
@@ -189,7 +250,7 @@
 
                 <div class="d-grid gap-2">
                     <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">
-                        <i class="fas fa-arrow-left me-2"></i> Listeye Dön
+                        <i class="fas fa-arrow-left me-2"></i> {{ _('Listeye Dön') }}
                     </a>
                 </div>
             </div>
@@ -200,15 +261,15 @@
         <div class="card border-0 shadow-sm mb-4">
             <div class="card-header bg-white py-3 border-bottom">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i>ÖĞRENCİ
-                        BİLGİLERİ</h5>
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-info-circle me-2"></i>{{
+                        _('ÖĞRENCİ BİLGİLERİ') }}</h5>
                     <div class="d-flex gap-2">
                         <button onclick="printStudentStatement()" class="btn btn-sm btn-outline-dark">
-                            <i class="fas fa-file-alt me-2"></i>Ekstre Yazdır
+                            <i class="fas fa-file-alt me-2"></i>{{ _('Ekstre Yazdır') }}
                         </button>
                         <a href="{{ url_for('student_id_card', id=student.id) }}" target="_blank"
                             class="btn btn-sm btn-outline-dark">
-                            <i class="fas fa-id-card me-2"></i>Kimlik Kartı
+                            <i class="fas fa-id-card me-2"></i>{{ _('Kimlik Kartı') }}
                         </a>
                     </div>
                 </div>
@@ -216,34 +277,54 @@
             <div class="card-body p-4">
                 <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="small text-muted fw-bold">E-POSTA</label>
+                        <label class="small text-muted fw-bold">{{ _('E-POSTA') }}</label>
                         <div class="fw-medium">{{ student.email or '-' }}</div>
                     </div>
                     <div class="col-md-6">
-                        <label class="small text-muted fw-bold">TELEFON</label>
+                        <label class="small text-muted fw-bold">{{ _('TELEFON') }}</label>
                         <div class="fw-medium">{{ student.phone or '-' }}</div>
                     </div>
                     <div class="col-12">
-                        <label class="small text-muted fw-bold">ADRES</label>
+                        <label class="small text-muted fw-bold">{{ _('ADRES') }}</label>
                         <div class="fw-medium">{{ student.address or '-' }}</div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <!-- AI Recommendations Section -->
+        <div class="card border-0 shadow-sm mb-4" style="background: linear-gradient(to right, #f8f9fa, #e9ecef);">
+            <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0 fw-bold text-primary">
+                    <i class="fas fa-robot me-2 text-warning"></i>{{ _('Akıllı AI Danışmanı') }}
+                </h5>
+                <button class="btn btn-sm btn-primary text-white" onclick="fetchAiRecommendations()" id="btnAiRec">
+                    <i class="fas fa-magic me-2"></i>{{ _('Tavsiye Oluştur') }}
+                </button>
+            </div>
+            <div class="card-body" id="ai-rec-body">
+                <div class="text-center text-muted p-3">
+                    <i class="fas fa-lightbulb fa-2x mb-2 opacity-50"></i><br>
+                    {{ _('Öğrencinin okuma geçmişine göre yapay zeka destekli kitap önerileri almak için butona
+                    tıklayın.') }}
+                </div>
+            </div>
+        </div>
+
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3 border-bottom">
-                <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-history me-2"></i>EMANET GEÇMİŞİ</h5>
+                <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-history me-2"></i>{{ _('EMANET
+                    GEÇMİŞİ') }}</h5>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle mb-0">
                         <thead class="bg-light">
                             <tr>
-                                <th class="ps-4">Kitap Adı</th>
-                                <th>Veriliş Tarihi</th>
-                                <th>İade Tarihi</th>
-                                <th class="text-end pe-4">Durum</th>
+                                <th class="ps-4">{{ _('Kitap Adı') }}</th>
+                                <th>{{ _('Veriliş Tarihi') }}</th>
+                                <th>{{ _('İade Tarihi') }}</th>
+                                <th class="text-end pe-4">{{ _('Durum') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -260,9 +341,9 @@
                                 </td>
                                 <td class="text-end pe-4">
                                     {% if loan.status == 'active' %}
-                                    <span class="badge bg-warning text-dark">EMANETTE</span>
+                                    <span class="badge bg-warning text-dark">{{ _('EMANETTE') }}</span>
                                     {% else %}
-                                    <span class="badge bg-success">İADE EDİLDİ</span>
+                                    <span class="badge bg-success">{{ _('İADE EDİLDİ') }}</span>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -270,7 +351,7 @@
                             <tr>
                                 <td colspan="4" class="text-center py-4 text-muted">
                                     <i class="fas fa-history fa-2x mb-2 d-block opacity-25"></i>
-                                    Henüz işlem kaydı bulunmuyor.
+                                    {{ _('Henüz işlem kaydı bulunmuyor.') }}
                                 </td>
                             </tr>
                             {% endfor %}

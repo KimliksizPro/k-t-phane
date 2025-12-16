@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Öğrenci Ekle{% endblock %}
+{% block title %}{{ _('Öğrenci Ekle') }}{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,8 +8,8 @@
         <div class="card border-0 shadow-sm">
             <div class="card-header bg-white py-3 border-bottom">
                 <div class="d-flex justify-content-between align-items-center">
-                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-user-plus me-2"></i>YENİ ÖĞRENCİ
-                        EKLE</h5>
+                    <h5 class="card-title mb-0 fw-bold text-primary"><i class="fas fa-user-plus me-2"></i>{{ _('YENİ
+                        ÖĞRENCİ EKLE') }}</h5>
 
                 </div>
             </div>
@@ -19,46 +19,47 @@
 
                     <div class="row g-3">
                         <div class="col-md-6">
-                            <label for="name" class="form-label fw-bold small text-muted">AD</label>
+                            <label for="name" class="form-label fw-bold small text-muted">{{ _('AD') }}</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="surname" class="form-label fw-bold small text-muted">SOYAD</label>
+                            <label for="surname" class="form-label fw-bold small text-muted">{{ _('SOYAD') }}</label>
                             <input type="text" class="form-control" id="surname" name="surname" required>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="school_number" class="form-label fw-bold small text-muted">OKUL NUMARASI</label>
+                            <label for="school_number" class="form-label fw-bold small text-muted">{{ _('OKUL NUMARASI')
+                                }}</label>
                             <input type="text" class="form-control" id="school_number" name="school_number" required>
                         </div>
                         <div class="col-md-6">
-                            <label for="class_name" class="form-label fw-bold small text-muted">SINIF</label>
+                            <label for="class_name" class="form-label fw-bold small text-muted">{{ _('SINIF') }}</label>
                             <input type="text" class="form-control" id="class_name" name="class_name" required>
                         </div>
 
                         <div class="col-12">
                             <hr class="my-4 text-muted opacity-25">
-                            <h6 class="text-muted mb-3 small fw-bold text-uppercase">İletişim Bilgileri (İsteğe Bağlı)
-                            </h6>
+                            <h6 class="text-muted mb-3 small fw-bold text-uppercase">{{ _('İletişim Bilgileri (İsteğe
+                                Bağlı)') }}</h6>
                         </div>
 
                         <div class="col-md-6">
-                            <label for="email" class="form-label fw-bold small text-muted">E-POSTA</label>
+                            <label for="email" class="form-label fw-bold small text-muted">{{ _('E-POSTA') }}</label>
                             <input type="email" class="form-control" id="email" name="email">
                         </div>
                         <div class="col-md-6">
-                            <label for="phone" class="form-label fw-bold small text-muted">TELEFON</label>
+                            <label for="phone" class="form-label fw-bold small text-muted">{{ _('TELEFON') }}</label>
                             <input type="text" class="form-control" id="phone" name="phone">
                         </div>
                         <div class="col-12">
-                            <label for="address" class="form-label fw-bold small text-muted">ADRES</label>
+                            <label for="address" class="form-label fw-bold small text-muted">{{ _('ADRES') }}</label>
                             <textarea class="form-control" id="address" name="address" rows="3"></textarea>
                         </div>
                     </div>
 
                     <div class="d-grid gap-2 mt-5">
                         <button type="submit" class="btn btn-primary py-2 fw-bold">
-                            <i class="fas fa-save me-2"></i> KAYDET
+                            <i class="fas fa-save me-2"></i> {{ _('KAYDET') }}
                         </button>
                     </div>
                 </form>

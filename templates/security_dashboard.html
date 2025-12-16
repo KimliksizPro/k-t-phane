@@ -1,260 +1,230 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% block title %}Güvenlik Merkezi{% endblock %}
+{% block title %}{{ _('Güvenlik') }}{% endblock %}
 
 {% block content %}
-<div class="row g-4 mb-4">
-    <!-- Header -->
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="h3 fw-bold text-gray-800">Güvenlik Merkezi (WAF) 🛡️</h1>
-                <p class="text-muted mb-0">Titanium Koruma Kalkanı Durumu ve İstatistikleri</p>
-            </div>
-            <button onclick="location.reload()" class="btn btn-light rounded-circle shadow-sm">
-                <i class="fas fa-sync-alt text-muted"></i>
-            </button>
+<div class="container-fluid pb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-0">{{ _('Güvenlik Merkezi') }}</h1>
+            <p class="text-muted small mb-0">{{ _('Titanium Koruma Kalkanı Durumu ve İstatistikleri') }}</p>
+        </div>
+        <div>
+            <span class="badge bg-success rounded-pill px-3 py-2 shadow-sm">
+                <i class="fas fa-shield-alt me-2"></i>{{ _('Sistem Korumada') }}
+            </span>
         </div>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="bg-primary bg-opacity-10 p-3 rounded-4">
-                        <i class="fas fa-shield-virus text-primary fa-lg"></i>
+    <!-- Stats Row -->
+    <div class="row g-4 mb-4">
+        <!-- Total Threats -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <p class="text-muted small fw-bold text-uppercase mb-1">{{ _('Toplam') }}</p>
+                            <h2 class="display-6 fw-bold text-dark mb-0">{{ total_logs }}</h2>
+                        </div>
+                        <div class="bg-primary bg-opacity-10 text-primary p-3 rounded-3">
+                            <i class="fas fa-database fa-lg"></i>
+                        </div>
                     </div>
-                    <span
-                        class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill small fw-bold">Toplam</span>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-primary" style="width: 70%"></div>
+                    </div>
                 </div>
-                <div>
-                    <h2 class="display-5 fw-bold mb-1">{{ stats.total_threats }}</h2>
-                    <p class="text-muted small mb-0">Engellenen Tehdit</p>
+            </div>
+        </div>
+
+        <!-- Blocked Threats -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <p class="text-muted small fw-bold text-uppercase mb-1">{{ _('Engellenen Tehdit') }}</p>
+                            <h2 class="display-6 fw-bold text-danger mb-0">{{ threat_logs }}</h2>
+                        </div>
+                        <div class="bg-danger bg-opacity-10 text-danger p-3 rounded-3">
+                            <i class="fas fa-ban fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="progress" style="height: 4px;">
+                        <div class="progress-bar bg-danger"
+                            style="width: {{ (threat_logs / total_logs * 100) if total_logs > 0 else 0 }}%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banned IPs -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 rounded-4 overflow-hidden">
+                <div class="card-body p-4 position-relative">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <p class="text-muted small fw-bold text-uppercase mb-1">{{ _('Yasaklı') }}</p>
+                            <h2 class="display-6 fw-bold text-dark mb-0">{{ banned_ips|length }}</h2>
+                        </div>
+                        <div class="bg-dark bg-opacity-10 text-dark p-3 rounded-3">
+                            <i class="fas fa-user-slash fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="small text-muted mt-2">{{ _('Banlanan IP Adresi') }}</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Status -->
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm h-100 rounded-4 bg-success text-white overflow-hidden"
+                style="background: linear-gradient(145deg, #198754, #157347);">
+                <div class="card-body p-4 position-relative">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <div>
+                            <p class="text-white-50 small fw-bold text-uppercase mb-1">{{ _('Durum') }}</p>
+                            <h2 class="display-6 fw-bold mb-0">{{ _('AKTİF') }}</h2>
+                        </div>
+                        <div class="bg-white bg-opacity-25 text-white p-3 rounded-3">
+                            <i class="fas fa-check-circle fa-lg"></i>
+                        </div>
+                    </div>
+                    <div class="small text-white-50 mt-2">{{ _('Paranoid Seviye') }}</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="bg-danger bg-opacity-10 p-3 rounded-4">
-                        <i class="fas fa-ban text-danger fa-lg"></i>
+
+    <div class="row g-4">
+        <!-- Live Log Table -->
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0 fw-bold text-dark"><i
+                                class="fas fa-satellite-dish me-2 text-primary"></i>{{ _('Son Saldırı Girişimleri') }}
+                        </h5>
+                        <small class="text-muted">{{ _('Son 100 Kayıt') }}</small>
                     </div>
-                    <span
-                        class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill small fw-bold">Yasaklı</span>
+                    <button class="btn btn-sm btn-outline-secondary rounded-pill" onclick="location.reload()">
+                        <i class="fas fa-sync-alt me-1"></i>{{ _('Yenile') }}
+                    </button>
                 </div>
-                <div>
-                    <h2 class="display-5 fw-bold mb-1">{{ stats.banned_count }}</h2>
-                    <p class="text-muted small mb-0">Banlanan IP Adresi</p>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">{{ _('Zaman') }}</th>
+                                    <th>{{ _('IP Adresi') }}</th>
+                                    <th>{{ _('İşlem') }}</th>
+                                    <th>{{ _('Bulgu') }}</th>
+                                    <th class="text-end pe-4">{{ _('Yönet') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for log in recent_logs %}
+                                <tr>
+                                    <td class="ps-4 text-muted small">{{ log.timestamp.strftime('%H:%M:%S') }}</td>
+                                    <td class="font-monospace fw-bold">{{ log.ip_address }}</td>
+                                    <td>
+                                        {% if log.risk_level == 'critical' %}
+                                        <span class="badge bg-danger">{{ _('BAN') }}</span>
+                                        {% elif log.risk_level == 'high' %}
+                                        <span class="badge bg-warning text-dark">{{ _('BLOCK') }}</span>
+                                        {% else %}
+                                        <span class="badge bg-info text-dark">{{ _('LOG') }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="small text-muted">{{ log.endpoint or 'N/A' }}
+                                        {% if log.details %}<br><span class="text-danger" style="font-size:0.75em;">{{
+                                            log.details[:30] }}...</span>{% endif %}
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        {% if log.ip_address in banned_ips %}
+                                        <form method="POST" action="{{ url_for('security_dashboard') }}"
+                                            class="d-inline">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="ip_unban" value="{{ log.ip_address }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-success rounded-circle"
+                                                title="{{ _('Temize Çıkar') }}">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <form method="POST" action="{{ url_for('security_dashboard') }}"
+                                            class="d-inline">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="ip_ban" value="{{ log.ip_address }}">
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-circle"
+                                                title="{{ _('Yasakla') }}">
+                                                <i class="fas fa-ban"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fas fa-shield-alt fa-3x mb-3 text-secondary opacity-25"></i>
+                                        <p class="mb-0">{{ _('Henüz tehdit kaydı bulunmuyor.') }}</p>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="bg-success bg-opacity-10 p-3 rounded-4">
-                        <i class="fas fa-server text-success fa-lg"></i>
+        <!-- Banned IPs List -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-header bg-white py-3 border-bottom d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="card-title mb-0 fw-bold text-danger"><i class="fas fa-list me-2"></i>{{ _('Kara
+                            Liste') }}</h5>
+                        <small class="text-muted">{{ _('Yasaklı IP Adresleri') }}</small>
                     </div>
-                    <span
-                        class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill small fw-bold">Durum</span>
                 </div>
-                <div>
-                    <h2 class="h3 fw-bold mb-1 text-success">AKTİF</h2>
-                    <p class="text-muted small mb-0">Sistem Korumada</p>
+                <div class="card-body p-0">
+                    <ul class="list-group list-group-flush">
+                        {% for ip in banned_ips %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center py-3 px-3">
+                            <span class="font-monospace fw-bold">{{ ip }}</span>
+                            <form method="POST" action="{{ url_for('security_dashboard') }}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <input type="hidden" name="ip_unban" value="{{ ip }}">
+                                <button type="submit" class="btn btn-sm btn-light text-danger border-0">
+                                    <i class="fas fa-trash-alt"></i> {{ _('Kaldır') }}
+                                </button>
+                            </form>
+                        </li>
+                        {% else %}
+                        <li class="list-group-item text-center py-5 text-muted">
+                            {{ _('Yasaklı IP yok.') }}
+                        </li>
+                        {% endfor %}
+                    </ul>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-xl-3 col-md-6">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-body p-4">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="bg-warning bg-opacity-10 p-3 rounded-4">
-                        <i class="fas fa-layer-group text-warning fa-lg"></i>
-                    </div>
-                    <span
-                        class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill small fw-bold">Mod</span>
+                {% if banned_ips %}
+                <div class="card-footer bg-light p-3 border-top">
+                    <form method="POST" action="{{ url_for('security_dashboard') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="hidden" name="clear_bans" value="1">
+                        <button type="submit" class="btn btn-outline-danger w-100 btn-sm fw-bold">
+                            <i class="fas fa-trash me-2"></i>{{ _('Tüm Yasakları Kaldır') }}
+                        </button>
+                    </form>
                 </div>
-                <div>
-                    <h2 class="h3 fw-bold mb-1 text-primary">TITANIUM</h2>
-                    <p class="text-muted small mb-0">Paranoid Seviye</p>
-                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
-
-<div class="row g-4">
-    <!-- Recent Logs -->
-    <div class="col-xl-8">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0 text-gray-800"><i class="fas fa-file-contract text-secondary me-2"></i>Son
-                    Saldırı Girişimleri</h5>
-                <span class="badge bg-light text-dark border">Son 100 Kayıt</span>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light sticky-top">
-                            <tr>
-                                <th class="ps-4 py-3">Zaman</th>
-                                <th>IP Adresi</th>
-                                <th>İşlem</th>
-                                <th>Bulgu</th>
-                                <th>Yönet</th>
-                                <th class="text-end pe-4">Risk</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for log in logs %}
-                            <tr>
-                                <td class="ps-4 text-muted small" style="white-space:nowrap;">{{
-                                    log.zaman_damgasi[:19].replace('T', ' ') }}</td>
-                                <td class="fw-bold font-monospace text-primary">{{ log.kaynak.ip }}</td>
-                                <td>
-                                    {% if log.analiz.aksiyon == 'BAN' %}
-                                    <span class="badge bg-danger rounded-pill px-3">BAN</span>
-                                    {% elif log.analiz.aksiyon == 'BLOCK' %}
-                                    <span class="badge bg-warning text-dark rounded-pill px-3">BLOKE</span>
-                                    {% else %}
-                                    <span class="badge bg-info text-dark rounded-pill px-3">LOG</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    {% if log.analiz.bulgular %}
-                                    <span class="text-dark small">{{ log.analiz.bulgular|join(', ')|truncate(50)
-                                        }}</span>
-                                    {% else %}
-                                    <span class="text-muted small">-</span>
-                                    {% endif %}
-                                </td>
-                                <td>
-                                    <div class="dropdown">
-                                        <button class="btn btn-sm btn-light border dropdown-toggle py-0" type="button"
-                                            data-bs-toggle="dropdown">
-                                            İşlem
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item text-danger" href="javascript:void(0)"
-                                                    onclick="manageIP('{{ log.kaynak.ip }}', 'ban')"><i
-                                                        class="fas fa-ban me-2"></i>Yasakla</a></li>
-                                            <li><a class="dropdown-item text-success" href="javascript:void(0)"
-                                                    onclick="manageIP('{{ log.kaynak.ip }}', 'unban')"><i
-                                                        class="fas fa-check me-2"></i>Kaldır</a></li>
-                                            <li>
-                                                <hr class="dropdown-divider">
-                                            </li>
-                                            <li><a class="dropdown-item text-secondary" href="javascript:void(0)"
-                                                    onclick="manageIP('{{ log.kaynak.ip }}', 'reset')"><i
-                                                        class="fas fa-broom me-2"></i>Temizle</a></li>
-                                        </ul>
-                                    </div>
-                                </td>
-                                <td class="text-end pe-4 fw-bold">
-                                    {% if log.analiz.risk_skoru >= 100 %}
-                                    <span class="text-danger">{{ log.analiz.risk_skoru }}</span>
-                                    {% elif log.analiz.risk_skoru >= 50 %}
-                                    <span class="text-warning">{{ log.analiz.risk_skoru }}</span>
-                                    {% else %}
-                                    <span class="text-success">{{ log.analiz.risk_skoru }}</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="5" class="text-center py-5 text-muted">
-                                    <i class="fas fa-check-circle text-success fa-2x mb-3 d-block"></i>
-                                    Henüz tehdit kaydı bulunmuyor.
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Banned IPs List -->
-    <div class="col-xl-4">
-        <div class="card border-0 shadow-sm rounded-4 h-100">
-            <div class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-                <h5 class="fw-bold mb-0 text-danger"><i class="fas fa-user-slash me-2"></i>Kara Liste</h5>
-                <span class="badge bg-danger rounded-pill">{{ banned_ips|length }}</span>
-            </div>
-            <div class="card-body p-0">
-                <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="bg-light sticky-top">
-                            <tr>
-                                <th class="ps-4">IP</th>
-                                <th>Sebep</th>
-                                <th>İşlem</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for ip, data in banned_ips.items() %}
-                            <tr>
-                                <td class="ps-4 fw-bold font-monospace">{{ ip }}</td>
-                                <td class="small">{{ data.reason|truncate(20) }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-outline-success border-0"
-                                        onclick="manageIP('{{ ip }}', 'unban')" title="Yasağı Kaldır">
-                                        <i class="fas fa-unlock"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="2" class="text-center py-5 text-muted">
-                                    Yasaklı IP yok.
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function manageIP(ip, action) {
-        let actionText = action === 'ban' ? 'Yasakla' : (action === 'unban' ? 'Yasağı Kaldır' : 'Temize Çıkar');
-        if (!confirm(ip + ' adresi için işlem: ' + actionText + '. Onaylıyor musunuz?')) return;
-
-        const csrfToken = "{{ csrf_token() }}";
-
-        fetch('/api/security/ip-action', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrfToken
-            },
-            body: JSON.stringify({ ip: ip, action: action })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    location.reload();
-                } else {
-                    alert('Hata: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Bir hata oluştu.');
-            });
-    }
-</script>
 {% endblock %}

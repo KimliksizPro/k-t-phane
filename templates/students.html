@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Öğrenciler{% endblock %}
+{% block title %}{{ _('Öğrenciler') }}{% endblock %}
 
 {% block content %}
 <!-- DESKTOP VIEW -->
@@ -8,9 +8,9 @@
     <div class="card mb-4">
         <div class="card-body p-4">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="card-title mb-0"><i class="fas fa-user-graduate me-2"></i>Öğrenci Listesi</h5>
+                <h5 class="card-title mb-0"><i class="fas fa-user-graduate me-2"></i>{{ _('Öğrenci Listesi') }}</h5>
                 <a href="{{ url_for('add_student') }}" class="btn btn-primary">
-                    <i class="fas fa-plus me-2"></i>Yeni Öğrenci
+                    <i class="fas fa-plus me-2"></i>{{ _('Yeni Öğrenci') }}
                 </a>
             </div>
 
@@ -19,10 +19,11 @@
                 <div class="input-group">
                     <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
                     <input type="text" name="search" class="form-control border-start-0 ps-0 search-input-desktop"
-                        placeholder="Öğrenci adı, soyadı veya numarası ile ara..." value="{{ search_query }}">
-                    <button class="btn btn-primary" type="submit">Ara</button>
+                        placeholder="{{ _('Öğrenci adı, soyadı veya numarası ile ara...') }}"
+                        value="{{ search_query }}">
+                    <button class="btn btn-primary" type="submit">{{ _('Ara') }}</button>
                     {% if search_query %}
-                    <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">Temizle</a>
+                    <a href="{{ url_for('students') }}" class="btn btn-outline-secondary">{{ _('Temizle') }}</a>
                     {% endif %}
                 </div>
             </form>
@@ -32,11 +33,11 @@
                 <table class="table table-hover align-middle">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4">No</th>
-                            <th>Ad Soyad</th>
-                            <th>Sınıf</th>
-                            <th>İletişim</th>
-                            <th class="text-end pe-4">İşlemler</th>
+                            <th class="ps-4">{{ _('No') }}</th>
+                            <th>{{ _('Ad Soyad') }}</th>
+                            <th>{{ _('Sınıf') }}</th>
+                            <th>{{ _('İletişim') }}</th>
+                            <th class="text-end pe-4">{{ _('İşlemler') }}</th>
                         </tr>
                     </thead>
                     <tbody id="desktop-table-body">
@@ -66,11 +67,11 @@
                             <td class="text-end pe-4">
                                 <a href="{{ url_for('student_detail', id=student.id) }}"
                                     class="btn btn-sm btn-outline-primary shadow-sm hover-scale me-1">
-                                    <i class="fas fa-eye me-1"></i> Detay
+                                    <i class="fas fa-eye me-1"></i> {{ _('Detay') }}
                                 </a>
                                 <a href="{{ url_for('edit_student', id=student.id) }}"
                                     class="btn btn-sm btn-outline-warning shadow-sm hover-scale">
-                                    <i class="fas fa-edit me-1"></i> Düzenle
+                                    <i class="fas fa-edit me-1"></i> {{ _('Düzenle') }}
                                 </a>
                             </td>
                         </tr>
@@ -78,7 +79,7 @@
                         <tr>
                             <td colspan="5" class="text-center py-5 text-muted">
                                 <i class="fas fa-user-slash fa-3x mb-3 d-block opacity-25"></i>
-                                Kayıtlı öğrenci bulunamadı.
+                                {{ _('Kayıtlı öğrenci bulunamadı.') }}
                             </td>
                         </tr>
                         {% endfor %}
@@ -88,13 +89,13 @@
 
             <!-- Pagination Desktop -->
             {% if students.pages > 1 %}
-            <nav aria-label="Sayfalama" class="mt-4">
+            <nav aria-label="{{ _('Sayfalama') }}" class="mt-4">
                 <ul class="pagination justify-content-center">
                     {% if students.has_prev %}
                     <li class="page-item">
                         <a class="page-link"
                             href="{{ url_for('students', page=students.prev_num, search=search_query) }}"
-                            aria-label="Önceki">
+                            aria-label="{{ _('Önceki') }}">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -120,7 +121,7 @@
                     <li class="page-item">
                         <a class="page-link"
                             href="{{ url_for('students', page=students.next_num, search=search_query) }}"
-                            aria-label="Sonraki">
+                            aria-label="{{ _('Sonraki') }}">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -139,8 +140,8 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 px-1">
         <div>
-            <h1 class="h4 fw-bold text-dark mb-0">Öğrenciler</h1>
-            <p class="text-muted small mb-0">{{ students.total }} Öğrenci Kayıtlı</p>
+            <h1 class="h4 fw-bold text-dark mb-0">{{ _('Öğrenciler') }}</h1>
+            <p class="text-muted small mb-0">{{ students.total }} {{ _('Öğrenci Kayıtlı') }}</p>
         </div>
         <a href="{{ url_for('add_student') }}" class="btn btn-primary rounded-circle shadow-sm"
             style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
@@ -156,7 +157,7 @@
                     <span class="input-group-text bg-white border-0 text-primary ps-3"><i
                             class="fas fa-search"></i></span>
                     <input type="text" name="search" class="form-control border-0 search-input-mobile shadow-none"
-                        placeholder="Öğrenci ara..." value="{{ search_query or '' }}">
+                        placeholder="{{ _('Öğrenci ara...') }}" value="{{ search_query or '' }}">
                 </div>
             </form>
         </div>
@@ -177,23 +178,23 @@
                         <span class="badge bg-light text-dark border rounded-pill">{{ student.class_name }}</span>
                     </div>
                     <div class="ms-auto text-end">
-                        <small class="text-muted d-block small">No</small>
+                        <small class="text-muted d-block small">{{ _('No') }}</small>
                         <span class="fw-bold text-primary font-monospace">{{ student.school_number }}</span>
                     </div>
                 </div>
 
                 <div class="d-flex gap-2 border-top pt-3">
                     <a href="{{ url_for('student_detail', id=student.id) }}"
-                        class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">Detay</a>
+                        class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">{{ _('Detay') }}</a>
                     <a href="{{ url_for('edit_student', id=student.id) }}"
-                        class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">Düzenle</a>
+                        class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">{{ _('Düzenle') }}</a>
                 </div>
             </div>
         </div>
         {% else %}
         <div class="text-center py-5">
             <i class="fas fa-user-slash fa-3x text-muted opacity-25 mb-3"></i>
-            <p class="text-muted">Öğrenci bulunamadı.</p>
+            <p class="text-muted">{{ _('Öğrenci bulunamadı.') }}</p>
         </div>
         {% endfor %}
     </div>
@@ -239,7 +240,7 @@
                         if (data.length === 0) {
                             desktopHtml = `<tr><td colspan="5" class="text-center py-5 text-muted">
                                 <i class="fas fa-search fa-3x mb-3 d-block opacity-25"></i>
-                                Sonuç bulunamadı.
+                                {{ _('Sonuç bulunamadı.') }}
                             </td></tr>`;
                         } else {
                             data.forEach(student => {
@@ -262,10 +263,10 @@
                                         <td>${contactInfo}</td>
                                         <td class="text-end pe-4">
                                             <a href="/student/${student.id}" class="btn btn-sm btn-outline-primary shadow-sm hover-scale me-1">
-                                                <i class="fas fa-eye me-1"></i> Detay
+                                                <i class="fas fa-eye me-1"></i> {{ _('Detay') }}
                                             </a>
                                             <a href="/students/edit/${student.id}" class="btn btn-sm btn-outline-warning shadow-sm hover-scale">
-                                                <i class="fas fa-edit me-1"></i> Düzenle
+                                                <i class="fas fa-edit me-1"></i> {{ _('Düzenle') }}
                                             </a>
                                         </td>
                                     </tr>
@@ -279,7 +280,7 @@
                         if (data.length === 0) {
                             mobileHtml = `<div class="text-center py-5">
                                 <i class="fas fa-search fa-3x text-muted opacity-25 mb-3"></i>
-                                <p class="text-muted">Sonuç bulunamadı.</p>
+                                <p class="text-muted">{{ _('Sonuç bulunamadı.') }}</p>
                             </div>`;
                         } else {
                             data.forEach(student => {
@@ -295,14 +296,14 @@
                                                     <span class="badge bg-light text-dark border rounded-pill">${student.class_name}</span>
                                                 </div>
                                                 <div class="ms-auto text-end">
-                                                    <small class="text-muted d-block small">No</small>
+                                                    <small class="text-muted d-block small">{{ _('No') }}</small>
                                                     <span class="fw-bold text-primary font-monospace">${student.school_number}</span>
                                                 </div>
                                             </div>
                                             
                                             <div class="d-flex gap-2 border-top pt-3">
-                                                <a href="/student/${student.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">Detay</a>
-                                                <a href="/students/edit/${student.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">Düzenle</a>
+                                                <a href="/student/${student.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-primary">{{ _('Detay') }}</a>
+                                                <a href="/students/edit/${student.id}" class="btn btn-sm btn-light flex-fill rounded-pill fw-bold text-warning">{{ _('Düzenle') }}</a>
                                             </div>
                                         </div>
                                     </div>

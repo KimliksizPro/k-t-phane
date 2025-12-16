@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Raporlar{% endblock %}
+{% block title %}{{ _('Raporlar') }}{% endblock %}
 
 {% block content %}
 <!-- DESKTOP VIEW -->
@@ -8,9 +8,11 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h4 class="fw-bold mb-1" style="color: #4a5568;"><i class="fas fa-print me-2 text-primary"></i>Rapor Merkezi
+            <h4 class="fw-bold mb-1" style="color: #4a5568;"><i class="fas fa-print me-2 text-primary"></i>{{ _('Rapor
+                Merkezi') }}
             </h4>
-            <p class="text-muted small mb-0">Sistemdeki kayıtların detaylı dökümlerini görüntüleyin ve yazdırın.</p>
+            <p class="text-muted small mb-0">{{ _('Sistemdeki kayıtların detaylı dökümlerini görüntüleyin ve yazdırın.')
+                }}</p>
         </div>
     </div>
 
@@ -25,13 +27,13 @@
                             <i class="fas fa-users fa-lg"></i>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-0 text-dark">Öğrenci Okuma Listesi</h6>
-                            <small class="text-muted">En çok kitap okuyan öğrencilerin sıralı listesi</small>
+                            <h6 class="fw-bold mb-0 text-dark">{{ _('Öğrenci Okuma Listesi') }}</h6>
+                            <small class="text-muted">{{ _('En çok kitap okuyan öğrencilerin sıralı listesi') }}</small>
                         </div>
                     </div>
                     <button onclick="downloadPDF('student-list')"
                         class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm hover-scale">
-                        <i class="fas fa-file-pdf me-2"></i>Raporu İndir
+                        <i class="fas fa-file-pdf me-2"></i>{{ _('Raporu İndir') }}
                     </button>
                 </div>
                 <div class="card-body p-0" id="student-list">
@@ -39,10 +41,10 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light text-secondary">
                                 <tr>
-                                    <th class="ps-4 py-3 border-0 rounded-start-2">NO</th>
-                                    <th class="py-3 border-0">AD SOYAD</th>
-                                    <th class="py-3 border-0">SINIF</th>
-                                    <th class="py-3 border-0 rounded-end-2 text-center">OKUNAN</th>
+                                    <th class="ps-4 py-3 border-0 rounded-start-2">{{ _('NO') }}</th>
+                                    <th class="py-3 border-0">{{ _('AD SOYAD') }}</th>
+                                    <th class="py-3 border-0">{{ _('SINIF') }}</th>
+                                    <th class="py-3 border-0 rounded-end-2 text-center">{{ _('OKUNAN') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="border-top-0">
@@ -56,7 +58,7 @@
                                     <td class="text-center">
                                         <span
                                             class="badge rounded-pill bg-primary bg-opacity-10 text-primary px-3 py-2">{{
-                                            read_count }} Kitap</span>
+                                            read_count }} {{ _('Kitap') }}</span>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -77,13 +79,13 @@
                             <i class="fas fa-book fa-lg"></i>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-0 text-dark">Kitap Envanteri</h6>
-                            <small class="text-muted">Kütüphanedeki tüm kitapların güncel durumu</small>
+                            <h6 class="fw-bold mb-0 text-dark">{{ _('Kitap Envanteri') }}</h6>
+                            <small class="text-muted">{{ _('Kütüphanedeki tüm kitapların güncel durumu') }}</small>
                         </div>
                     </div>
                     <button onclick="downloadPDF('book-list')"
                         class="btn btn-outline-success rounded-pill px-4 fw-bold shadow-sm hover-scale">
-                        <i class="fas fa-file-pdf me-2"></i>Listeyi İndir
+                        <i class="fas fa-file-pdf me-2"></i>{{ _('Listeyi İndir') }}
                     </button>
                 </div>
                 <div class="card-body p-0" id="book-list">
@@ -91,10 +93,10 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light text-secondary">
                                 <tr>
-                                    <th class="ps-4 py-3 border-0 rounded-start-2">ISBN</th>
-                                    <th class="py-3 border-0">KİTAP ADI</th>
-                                    <th class="py-3 border-0">YAZAR</th>
-                                    <th class="py-3 border-0 rounded-end-2">DURUM</th>
+                                    <th class="ps-4 py-3 border-0 rounded-start-2">{{ _('ISBN') }}</th>
+                                    <th class="py-3 border-0">{{ _('KİTAP ADI') }}</th>
+                                    <th class="py-3 border-0">{{ _('YAZAR') }}</th>
+                                    <th class="py-3 border-0 rounded-end-2">{{ _('DURUM') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="border-top-0">
@@ -107,12 +109,12 @@
                                         {% if book.is_available %}
                                         <span
                                             class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3">
-                                            <i class="fas fa-check-circle me-1"></i>MEVCUT
+                                            <i class="fas fa-check-circle me-1"></i>{{ _('MEVCUT') }}
                                         </span>
                                         {% else %}
                                         <span
                                             class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-3">
-                                            <i class="fas fa-clock me-1"></i>EMANETTE
+                                            <i class="fas fa-clock me-1"></i>{{ _('EMANETTE') }}
                                         </span>
                                         {% endif %}
                                     </td>
@@ -136,14 +138,14 @@
                             <i class="fas fa-history fa-lg"></i>
                         </div>
                         <div>
-                            <h6 class="fw-bold mb-0 text-dark">Detaylı Hareket Geçmişi</h6>
-                            <small class="text-muted">Tüm zamanların ödünç alma ve iade işlemleri</small>
+                            <h6 class="fw-bold mb-0 text-dark">{{ _('Detaylı Hareket Geçmişi') }}</h6>
+                            <small class="text-muted">{{ _('Tüm zamanların ödünç alma ve iade işlemleri') }}</small>
                         </div>
                     </div>
                     <button onclick="downloadPDF('transaction-list')"
                         class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm hover-scale"
                         style="color: #6f42c1; border-color: #6f42c1;">
-                        <i class="fas fa-file-pdf me-2"></i>Dökümü İndir
+                        <i class="fas fa-file-pdf me-2"></i>{{ _('Dökümü İndir') }}
                     </button>
                 </div>
                 <div class="card-body p-0" id="transaction-list">
@@ -151,10 +153,10 @@
                         <table class="table table-hover align-middle mb-0">
                             <thead class="bg-light text-secondary sticky-top">
                                 <tr>
-                                    <th class="ps-4 py-3 border-0 rounded-start-2">VERİLİŞ TARİHİ</th>
-                                    <th class="py-3 border-0">ÖĞRENCİ</th>
-                                    <th class="py-3 border-0">KİTAP</th>
-                                    <th class="py-3 border-0 rounded-end-2">DURUM / İADE</th>
+                                    <th class="ps-4 py-3 border-0 rounded-start-2">{{ _('VERİLİŞ TARİHİ') }}</th>
+                                    <th class="py-3 border-0">{{ _('ÖĞRENCİ') }}</th>
+                                    <th class="py-3 border-0">{{ _('KİTAP') }}</th>
+                                    <th class="py-3 border-0 rounded-end-2">{{ _('DURUM / İADE') }}</th>
                                 </tr>
                             </thead>
                             <tbody class="border-top-0">
@@ -170,19 +172,19 @@
                                         {% if loan.status == 'returned' %}
                                         <span
                                             class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2">
-                                            <i class="fas fa-check me-1"></i>İade ({{
+                                            <i class="fas fa-check me-1"></i>{{ _('İade') }} ({{
                                             loan.return_date.strftime('%d.%m.%Y')
                                             if loan.return_date else '-' }})
                                         </span>
                                         {% else %}
                                         {% if loan.due_date < now %} <span
                                             class="badge bg-danger bg-opacity-10 text-danger border border-danger border-opacity-25 px-2">
-                                            <i class="fas fa-exclamation-circle me-1"></i>Gecikmiş
+                                            <i class="fas fa-exclamation-circle me-1"></i>{{ _('Gecikmiş') }}
                                             </span>
                                             {% else %}
                                             <span
                                                 class="badge bg-warning bg-opacity-10 text-warning border border-warning border-opacity-25 px-2 text-dark">
-                                                <i class="fas fa-clock me-1"></i>Okunuyor
+                                                <i class="fas fa-clock me-1"></i>{{ _('Okunuyor') }}
                                             </span>
                                             {% endif %}
                                             {% endif %}
@@ -203,21 +205,21 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 pt-2">
         <div>
-            <h1 class="h3 fw-bold text-dark mb-0">Raporlar</h1>
-            <p class="text-muted small mb-0">Sistem Dökümleri</p>
+            <h1 class="h3 fw-bold text-dark mb-0">{{ _('Raporlar') }}</h1>
+            <p class="text-muted small mb-0">{{ _('Sistem Dökümleri') }}</p>
         </div>
     </div>
 
     <!-- Mobile Custom Tabs -->
     <div class="custom-mobile-tabs mb-4">
         <button class="custom-tab active" onclick="switchReportTab('students', this)">
-            <i class="fas fa-user-graduate me-2"></i>Öğrenciler
+            <i class="fas fa-user-graduate me-2"></i>{{ _('Öğrenciler') }}
         </button>
         <button class="custom-tab" onclick="switchReportTab('books', this)">
-            <i class="fas fa-book me-2"></i>Kitaplar
+            <i class="fas fa-book me-2"></i>{{ _('Kitaplar') }}
         </button>
         <button class="custom-tab" onclick="switchReportTab('transactions', this)">
-            <i class="fas fa-history me-2"></i>Geçmiş
+            <i class="fas fa-history me-2"></i>{{ _('Geçmiş') }}
         </button>
     </div>
 
@@ -229,8 +231,8 @@
             <div class="card border-0 shadow-sm rounded-4 mb-3">
                 <div class="card-body p-3 d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="fw-bold mb-0">Öğrenci Listesi (PDF)</h6>
-                        <small class="text-muted">Tüm okuma listesini indir</small>
+                        <h6 class="fw-bold mb-0">{{ _('Öğrenci Listesi (PDF)') }}</h6>
+                        <small class="text-muted">{{ _('Tüm okuma listesini indir') }}</small>
                     </div>
                     <button onclick="downloadPDF('student-list')" class="btn btn-primary rounded-circle shadow-sm"
                         style="width: 40px; height: 40px;">
@@ -251,7 +253,7 @@
                             <small class="text-muted">{{ student.class_name }} • {{ student.school_number }}</small>
                         </div>
                         <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">{{ read_count }}
-                            Kitap</span>
+                            {{ _('Kitap') }}</span>
                     </div>
                 </div>
                 {% endfor %}
@@ -263,8 +265,8 @@
             <div class="card border-0 shadow-sm rounded-4 mb-3">
                 <div class="card-body p-3 d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="fw-bold mb-0">Kitap Envanteri (PDF)</h6>
-                        <small class="text-muted">Tüm kitap listesini indir</small>
+                        <h6 class="fw-bold mb-0">{{ _('Kitap Envanteri (PDF)') }}</h6>
+                        <small class="text-muted">{{ _('Tüm kitap listesini indir') }}</small>
                     </div>
                     <button onclick="downloadPDF('book-list')"
                         class="btn btn-success rounded-circle shadow-sm text-white" style="width: 40px; height: 40px;">
@@ -299,8 +301,8 @@
             <div class="card border-0 shadow-sm rounded-4 mb-3">
                 <div class="card-body p-3 d-flex justify-content-between align-items-center">
                     <div>
-                        <h6 class="fw-bold mb-0">Hareket Dökümü (PDF)</h6>
-                        <small class="text-muted">Tüm işlem geçmişini indir</small>
+                        <h6 class="fw-bold mb-0">{{ _('Hareket Dökümü (PDF)') }}</h6>
+                        <small class="text-muted">{{ _('Tüm işlem geçmişini indir') }}</small>
                     </div>
                     <button onclick="downloadPDF('transaction-list')" class="btn btn-primary rounded-circle shadow-sm"
                         style="width: 40px; height: 40px; background-color: #6f42c1; border-color: #6f42c1;">
@@ -324,14 +326,15 @@
                         <div class="mt-2 text-end">
                             {% if loan.status == 'returned' %}
                             <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3">
-                                İade: {{ loan.return_date.strftime('%d.%m') if loan.return_date else '-' }}
+                                {{ _('İade:') }} {{ loan.return_date.strftime('%d.%m') if loan.return_date else '-' }}
                             </span>
                             {% else %}
                             {% if loan.due_date < now %} <span
-                                class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">Gecikmiş</span>
+                                class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3">{{ _('Gecikmiş')
+                                }}</span>
                                 {% else %}
-                                <span
-                                    class="badge bg-warning bg-opacity-10 text-warning text-dark rounded-pill px-3">Okunuyor</span>
+                                <span class="badge bg-warning bg-opacity-10 text-warning text-dark rounded-pill px-3">{{
+                                    _('Okunuyor') }}</span>
                                 {% endif %}
                                 {% endif %}
                         </div>
@@ -444,11 +447,11 @@
             </div>
             <div class="report-title">
                 <h1>{{ settings.school_name }}</h1>
-                <h2>KÜTÜPHANE HAREKET DÖKÜMÜ</h2>
+                <h2>{{ _('KÜTÜPHANE HAREKET DÖKÜMÜ') }}</h2>
             </div>
             <div class="report-meta">
-                <p>Tarih: {{ now.strftime('%d.%m.%Y') }}</p>
-                <p>Detaylı Arşiv Raporu</p>
+                <p>{{ _('Tarih:') }} {{ now.strftime('%d.%m.%Y') }}</p>
+                <p>{{ _('Detaylı Arşiv Raporu') }}</p>
             </div>
         </div>
 
@@ -456,10 +459,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 15%;">Veriliş</th>
-                        <th style="width: 30%;">Öğrenci</th>
-                        <th style="width: 30%;">Kitap</th>
-                        <th style="width: 25%;">Durum</th>
+                        <th style="width: 15%;">{{ _('Veriliş') }}</th>
+                        <th style="width: 30%;">{{ _('Öğrenci') }}</th>
+                        <th style="width: 30%;">{{ _('Kitap') }}</th>
+                        <th style="width: 25%;">{{ _('Durum') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -470,9 +473,9 @@
                         <td>{{ loan.book.title }}</td>
                         <td>
                             {% if loan.status == 'returned' %}
-                            İADE ({{ loan.return_date.strftime('%d.%m.%Y') if loan.return_date else '-' }})
+                            {{ _('İADE') }} ({{ loan.return_date.strftime('%d.%m.%Y') if loan.return_date else '-' }})
                             {% else %}
-                            OKUNUYOR (Son: {{ loan.due_date.strftime('%d.%m.%Y') }})
+                            {{ _('OKUNUYOR') }} ({{ _('Son:') }} {{ loan.due_date.strftime('%d.%m.%Y') }})
                             {% endif %}
                         </td>
                     </tr>
@@ -484,7 +487,7 @@
         <div class="report-footer">
             <div class="signature-box">
                 <div class="signature-line">
-                    Kütüphane Sorumlusu
+                    {{ _('Kütüphane Sorumlusu') }}
                 </div>
             </div>
         </div>
@@ -497,23 +500,24 @@
             </div>
             <div class="report-title">
                 <h1>{{ settings.school_name }}</h1>
-                <h2>ÖĞRENCİ OKUMA RAPORU</h2>
+                <h2>{{ _('ÖĞRENCİ OKUMA RAPORU') }}</h2>
             </div>
             <div class="report-meta">
-                <p>Tarih: {{ now.strftime('%d.%m.%Y') }}</p>
-                <p>Sistem Raporu</p>
+                <p>{{ _('Tarih:') }} {{ now.strftime('%d.%m.%Y') }}</p>
+                <p>{{ _('Sistem Raporu') }}</p>
             </div>
         </div>
 
         <div class="report-body">
-            <p>Aşağıda, kütüphane sisteminde kayıtlı en çok kitap okuyan öğrencilerin listesi yer almaktadır.</p>
+            <p>{{ _('Aşağıda, kütüphane sisteminde kayıtlı en çok kitap okuyan öğrencilerin listesi yer almaktadır.') }}
+            </p>
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 15%;">Numara</th>
-                        <th style="width: 35%;">Ad Soyad</th>
-                        <th style="width: 25%;">Sınıf</th>
-                        <th style="width: 25%;">Okunan Kitap</th>
+                        <th style="width: 15%;">{{ _('Numara') }}</th>
+                        <th style="width: 35%;">{{ _('Ad Soyad') }}</th>
+                        <th style="width: 25%;">{{ _('Sınıf') }}</th>
+                        <th style="width: 25%;">{{ _('Okunan Kitap') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -531,15 +535,15 @@
 
         <div class="report-footer">
             <div class="signature-box">
-                <p>Raporu Alan</p>
+                <p>{{ _('Raporu Alan') }}</p>
                 <div class="signature-line">
                     {{ current_user.username }}
                 </div>
             </div>
             <div class="signature-box">
-                <p>Okul Müdürü / Yetkili</p>
+                <p>{{ _('Okul Müdürü / Yetkili') }}</p>
                 <div class="signature-line">
-                    İmza / Kaşe
+                    {{ _('İmza / Kaşe') }}
                 </div>
             </div>
         </div>
@@ -553,10 +557,10 @@
             </div>
             <div class="report-title">
                 <h1>{{ settings.school_name }}</h1>
-                <h2>KÜTÜPHANE ENVANTER LİSTESİ</h2>
+                <h2>{{ _('KÜTÜPHANE ENVANTER LİSTESİ') }}</h2>
             </div>
             <div class="report-meta">
-                <p>Tarih: {{ now.strftime('%d.%m.%Y') }}</p>
+                <p>{{ _('Tarih:') }} {{ now.strftime('%d.%m.%Y') }}</p>
             </div>
         </div>
 
@@ -564,10 +568,10 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width: 20%;">ISBN</th>
-                        <th style="width: 40%;">Kitap Adı</th>
-                        <th style="width: 25%;">Yazar</th>
-                        <th style="width: 15%;">Durum</th>
+                        <th style="width: 20%;">{{ _('ISBN') }}</th>
+                        <th style="width: 40%;">{{ _('Kitap Adı') }}</th>
+                        <th style="width: 25%;">{{ _('Yazar') }}</th>
+                        <th style="width: 15%;">{{ _('Durum') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -576,7 +580,7 @@
                         <td>{{ book.isbn }}</td>
                         <td>{{ book.title }}</td>
                         <td>{{ book.author }}</td>
-                        <td>{{ 'MEVCUT' if book.is_available else 'EMANETTE' }}</td>
+                        <td>{{ _('MEVCUT') if book.is_available else _('EMANETTE') }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>
@@ -586,7 +590,7 @@
         <div class="report-footer">
             <div class="signature-box">
                 <div class="signature-line">
-                    Kütüphane Sorumlusu
+                    {{ _('Kütüphane Sorumlusu') }}
                 </div>
             </div>
         </div>

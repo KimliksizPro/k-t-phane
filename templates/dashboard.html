@@ -6,7 +6,7 @@
 <!-- Easy Mode Dashboard (Visible only in Easy Mode) -->
 <div class="easy-mode-dashboard d-none h-100 flex-column justify-content-center align-items-center"
     style="min-height: 80vh;">
-    <h1 class="display-4 fw-bold text-primary mb-5">Hızlı İşlemler</h1>
+    <h1 class="display-4 fw-bold text-primary mb-5">{{ _('Hızlı İşlemler') }}</h1>
     <div class="row g-4 w-100 justify-content-center" style="max-width: 1200px;">
         <div class="col-md-4">
             <a href="{{ url_for('add_student', next='index') }}"
@@ -14,7 +14,7 @@
                 style="background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);">
                 <div class="card-body">
                     <i class="fas fa-user-plus fa-6x mb-4"></i>
-                    <h2 class="fw-bold">ÖĞRENCİ EKLE</h2>
+                    <h2 class="fw-bold">{{ _('ÖĞRENCİ EKLE') }}</h2>
                 </div>
             </a>
         </div>
@@ -24,7 +24,7 @@
                 style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
                 <div class="card-body">
                     <i class="fas fa-book-medical fa-6x mb-4"></i>
-                    <h2 class="fw-bold">KİTAP EKLE</h2>
+                    <h2 class="fw-bold">{{ _('KİTAP EKLE') }}</h2>
                 </div>
             </a>
         </div>
@@ -34,14 +34,14 @@
                 style="background: linear-gradient(135deg, #fce38a 0%, #f38181 100%);">
                 <div class="card-body">
                     <i class="fas fa-hand-holding fa-6x mb-4"></i>
-                    <h2 class="fw-bold">EMANET VER</h2>
+                    <h2 class="fw-bold">{{ _('EMANET VER') }}</h2>
                 </div>
             </a>
         </div>
     </div>
     <div class="mt-5">
         <a href="{{ url_for('settings') }}" class="btn btn-light btn-lg rounded-pill shadow-sm text-secondary"><i
-                class="fas fa-cog me-2"></i>Ayarlar / Çıkış</a>
+                class="fas fa-cog me-2"></i>{{ _('Ayarlar / Çıkış') }}</a>
     </div>
 </div>
 
@@ -50,8 +50,8 @@
     <!-- Welcome Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="h3 fw-bold text-gray-800">Hoş Geldiniz, Yönetici 👋</h1>
-            <p class="text-muted mb-0">Bugün: {{ now.strftime('%d %B %Y') }}</p>
+            <h1 class="h3 fw-bold text-gray-800">{{ _('Hoş Geldiniz, Yönetici 👋') }}</h1>
+            <p class="text-muted mb-0">{{ _('Bugün') }}: {{ now.strftime('%d %B %Y') }}</p>
         </div>
         <div>
             <button onclick="window.location.reload()" class="btn btn-light rounded-circle shadow-sm">
@@ -71,11 +71,12 @@
                             <i class="fas fa-user-graduate text-primary fa-lg"></i>
                         </div>
                         <span
-                            class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill small fw-bold">Öğrenci</span>
+                            class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill small fw-bold">{{
+                            _('Öğrenci') }}</span>
                     </div>
                     <div>
                         <h2 class="display-5 fw-bold mb-1">{{ stats.total_students }}</h2>
-                        <p class="text-muted small mb-0">Toplam Kayıtlı</p>
+                        <p class="text-muted small mb-0">{{ _('Toplam Kayıtlı') }}</p>
                     </div>
                 </div>
             </div>
@@ -90,11 +91,12 @@
                             <i class="fas fa-book text-success fa-lg"></i>
                         </div>
                         <span
-                            class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill small fw-bold">Kitap</span>
+                            class="badge bg-success bg-opacity-10 text-success px-3 py-2 rounded-pill small fw-bold">{{
+                            _('Kitap') }}</span>
                     </div>
                     <div>
                         <h2 class="display-5 fw-bold mb-1">{{ stats.total_books }}</h2>
-                        <p class="text-muted small mb-0">Kütüphane Envanteri</p>
+                        <p class="text-muted small mb-0">{{ _('Kütüphane Envanteri') }}</p>
                     </div>
                 </div>
             </div>
@@ -109,11 +111,12 @@
                             <i class="fas fa-hand-holding text-warning fa-lg"></i>
                         </div>
                         <span
-                            class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill small fw-bold">Emanet</span>
+                            class="badge bg-warning bg-opacity-10 text-warning px-3 py-2 rounded-pill small fw-bold">{{
+                            _('Emanet') }}</span>
                     </div>
                     <div>
                         <h2 class="display-5 fw-bold mb-1">{{ stats.active_loans }}</h2>
-                        <p class="text-muted small mb-0">Okunan Kitaplar</p>
+                        <p class="text-muted small mb-0">{{ _('Okunan Kitaplar') }}</p>
                     </div>
                 </div>
             </div>
@@ -127,12 +130,12 @@
                         <div class="bg-danger bg-opacity-10 p-3 rounded-4">
                             <i class="fas fa-clock text-danger fa-lg"></i>
                         </div>
-                        <span
-                            class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill small fw-bold">Gecikmiş</span>
+                        <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2 rounded-pill small fw-bold">{{
+                            _('Gecikmiş') }}</span>
                     </div>
                     <div>
                         <h2 class="display-5 fw-bold mb-1">{{ stats.overdue_loans }}</h2>
-                        <p class="text-muted small mb-0">Acil İade Bekleyen</p>
+                        <p class="text-muted small mb-0">{{ _('Acil İade Bekleyen') }}</p>
                     </div>
                 </div>
             </div>
@@ -146,19 +149,19 @@
                 style="background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);">
                 <div class="card-body p-4">
                     <div class="d-flex flex-wrap gap-3 align-items-center justify-content-between">
-                        <h5 class="fw-bold mb-0 text-white"><i class="fas fa-bolt me-2"></i>Hızlı Erişim</h5>
+                        <h5 class="fw-bold mb-0 text-white"><i class="fas fa-bolt me-2"></i>{{ _('Hızlı Erişim') }}</h5>
                         <div class="d-flex gap-3 flex-wrap">
                             <a href="{{ url_for('loans') }}"
                                 class="btn btn-light border-0 px-4 py-2 fw-bold text-primary shadow-sm hover-scale">
-                                <i class="fas fa-plus-circle me-2"></i>Emanet Ver
+                                <i class="fas fa-plus-circle me-2"></i>{{ _('Emanet Ver') }}
                             </a>
                             <a href="{{ url_for('add_student') }}"
                                 class="btn btn-outline-light border-2 px-4 py-2 fw-bold">
-                                <i class="fas fa-user-plus me-2"></i>Öğrenci Kayıt
+                                <i class="fas fa-user-plus me-2"></i>{{ _('Öğrenci Kayıt') }}
                             </a>
                             <a href="{{ url_for('add_book') }}"
                                 class="btn btn-outline-light border-2 px-4 py-2 fw-bold">
-                                <i class="fas fa-book-medical me-2"></i>Kitap Kayıt
+                                <i class="fas fa-book-medical me-2"></i>{{ _('Kitap Kayıt') }}
                             </a>
                         </div>
                     </div>
@@ -177,21 +180,21 @@
                     <div class="card border-0 shadow-sm rounded-4">
                         <div
                             class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-                            <h5 class="fw-bold mb-0 text-gray-800"><i class="fas fa-history text-secondary me-2"></i>Son
-                                Hareketler</h5>
-                            <a href="{{ url_for('loans') }}" class="btn btn-sm btn-light rounded-pill px-3">Tümünü
-                                Gör</a>
+                            <h5 class="fw-bold mb-0 text-gray-800"><i class="fas fa-history text-secondary me-2"></i>{{
+                                _('Son Hareketler') }}</h5>
+                            <a href="{{ url_for('loans') }}" class="btn btn-sm btn-light rounded-pill px-3">{{ _('Tümünü
+                                Gör') }}</a>
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th class="ps-4 py-3">Öğrenci</th>
-                                            <th class="py-3">Kitap</th>
-                                            <th class="py-3">Tarih</th>
-                                            <th class="py-3">Durum</th>
-                                            <th class="text-end pe-4 py-3">Detay</th>
+                                            <th class="ps-4 py-3">{{ _('Öğrenci') }}</th>
+                                            <th class="py-3">{{ _('Kitap') }}</th>
+                                            <th class="py-3">{{ _('Tarih') }}</th>
+                                            <th class="py-3">{{ _('Durum') }}</th>
+                                            <th class="text-end pe-4 py-3">{{ _('Detay') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -206,10 +209,12 @@
                                             <td>
                                                 {% if transaction.status == 'active' %}
                                                 <span
-                                                    class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill small">Emanet</span>
+                                                    class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1 rounded-pill small">{{
+                                                    _('Emanet') }}</span>
                                                 {% else %}
                                                 <span
-                                                    class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill small">İade</span>
+                                                    class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1 rounded-pill small">{{
+                                                    _('İade') }}</span>
                                                 {% endif %}
                                             </td>
                                             <td class="text-end pe-4">
@@ -221,7 +226,8 @@
                                         </tr>
                                         {% else %}
                                         <tr>
-                                            <td colspan="5" class="text-center py-4 text-muted">İşlem yok.</td>
+                                            <td colspan="5" class="text-center py-4 text-muted">{{ _('İşlem yok.') }}
+                                            </td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
@@ -236,8 +242,8 @@
                     <div class="card border-0 shadow-sm rounded-4 h-100">
                         <div
                             class="card-header bg-white border-0 py-3 px-4 d-flex justify-content-between align-items-center">
-                            <h5 class="fw-bold mb-0 text-danger"><i class="fas fa-exclamation-circle me-2"></i>Gecikmiş
-                                İadeler</h5>
+                            <h5 class="fw-bold mb-0 text-danger"><i class="fas fa-exclamation-circle me-2"></i>{{
+                                _('Gecikmiş İadeler') }}</h5>
                             <span class="badge bg-danger rounded-pill">{{ overdue_loans|length }}</span>
                         </div>
                         <div class="card-body p-0">
@@ -245,10 +251,10 @@
                                 <table class="table table-hover align-middle mb-0">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th class="ps-4 py-3">Öğrenci</th>
-                                            <th>Kitap</th>
-                                            <th>Teslim Tarihi</th>
-                                            <th class="text-end pe-4">İşlem</th>
+                                            <th class="ps-4 py-3">{{ _('Öğrenci') }}</th>
+                                            <th>{{ _('Kitap') }}</th>
+                                            <th>{{ _('Teslim Tarihi') }}</th>
+                                            <th class="text-end pe-4">{{ _('İşlem') }}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -265,15 +271,16 @@
                                                     method="POST" class="d-inline">
                                                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                                     <button type="submit"
-                                                        class="btn btn-sm btn-outline-danger rounded-pill px-3">İade
-                                                        Al</button>
+                                                        class="btn btn-sm btn-outline-danger rounded-pill px-3">{{
+                                                        _('İade Al') }}</button>
                                                 </form>
                                             </td>
                                         </tr>
                                         {% else %}
                                         <tr>
                                             <td colspan="4" class="text-center py-4 text-muted">
-                                                <i class="fas fa-check-circle text-success me-2"></i>Sorun yok!
+                                                <i class="fas fa-check-circle text-success me-2"></i>{{ _('Sorun yok!')
+                                                }}
                                             </td>
                                         </tr>
                                         {% endfor %}
@@ -301,13 +308,13 @@
 
                     <div
                         class="calendar-weekdays d-flex justify-content-between mb-2 text-primary small fw-bold text-uppercase">
-                        <div>Pzt</div>
-                        <div>Sal</div>
-                        <div>Çar</div>
-                        <div>Per</div>
-                        <div>Cum</div>
-                        <div>Cmt</div>
-                        <div>Paz</div>
+                        <div>{{ _('Pzt') }}</div>
+                        <div>{{ _('Sal') }}</div>
+                        <div>{{ _('Çar') }}</div>
+                        <div>{{ _('Per') }}</div>
+                        <div>{{ _('Cum') }}</div>
+                        <div>{{ _('Cmt') }}</div>
+                        <div>{{ _('Paz') }}</div>
                     </div>
 
                     <div id="calendarDays" class="calendar-days d-flex flex-wrap">
@@ -406,14 +413,14 @@
                 <div class="card-footer bg-white border-0 pt-0 pb-3">
                     <div class="d-flex flex-column gap-2 text-xs ps-1 mt-2 border-top pt-2">
                         <div class="d-flex align-items-center justify-content-between">
-                            <small class="text-muted">Bugün</small>
+                            <small class="text-muted">{{ _('Bugün') }}</small>
                             <span class="badge bg-primary rounded-pill">{{ now.strftime('%d.%m') }}</span>
                         </div>
                         <div class="d-flex gap-3 justify-content-center mt-1">
                             <div class="d-flex align-items-center"><span class="event-dot dot-red me-1"></span> <small
-                                    class="text-muted">Acil/Gecikmiş</small></div>
+                                    class="text-muted">{{ _('Acil/Gecikmiş') }}</small></div>
                             <div class="d-flex align-items-center"><span class="event-dot dot-yellow me-1"></span>
-                                <small class="text-muted">Yaklaşan</small>
+                                <small class="text-muted">{{ _('Yaklaşan') }}</small>
                             </div>
                         </div>
                     </div>
@@ -431,13 +438,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="text-muted small mb-3">Bu tarihte iadesi beklenen kitaplar:</p>
+                    <p class="text-muted small mb-3">{{ _('Bu tarihte iadesi beklenen kitaplar:') }}</p>
                     <div id="modalEventList" class="d-flex flex-column gap-2">
                         <!-- Events injected here -->
                     </div>
                 </div>
                 <div class="modal-footer border-0 pt-0">
-                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Kapat</button>
+                    <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">{{ _('Kapat')
+                        }}</button>
                 </div>
             </div>
         </div>
@@ -450,7 +458,7 @@
     <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 px-1">
         <div>
-            <h1 class="h4 fw-bold text-dark mb-0">Merhaba, Yönetici 👋</h1>
+            <h1 class="h4 fw-bold text-dark mb-0">{{ _('Merhaba, Yönetici 👋') }}</h1>
             <p class="text-muted small mb-0">{{ now.strftime('%d %B %Y') }}</p>
         </div>
         <a href="{{ url_for('settings') }}" class="btn btn-light rounded-circle shadow-sm"
@@ -469,7 +477,7 @@
                         style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-user-graduate text-primary"></i>
                     </div>
-                    <span class="fw-bold text-dark small">Öğrenci</span>
+                    <span class="fw-bold text-dark small">{{ _('Öğrenci') }}</span>
                 </div>
                 <h3 class="fw-bold mb-0 text-primary">{{ stats.total_students }}</h3>
             </div>
@@ -482,7 +490,7 @@
                         style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-book text-success"></i>
                     </div>
-                    <span class="fw-bold text-dark small">Kitap</span>
+                    <span class="fw-bold text-dark small">{{ _('Kitap') }}</span>
                 </div>
                 <h3 class="fw-bold mb-0 text-success">{{ stats.total_books }}</h3>
             </div>
@@ -495,7 +503,7 @@
                         style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-hand-holding text-warning"></i>
                     </div>
-                    <span class="fw-bold text-dark small">Emanet</span>
+                    <span class="fw-bold text-dark small">{{ _('Emanet') }}</span>
                 </div>
                 <h3 class="fw-bold mb-0 text-warning">{{ stats.active_loans }}</h3>
             </div>
@@ -508,7 +516,7 @@
                         style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-clock text-danger"></i>
                     </div>
-                    <span class="fw-bold text-dark small">Gecikmiş</span>
+                    <span class="fw-bold text-dark small">{{ _('Gecikmiş') }}</span>
                 </div>
                 <h3 class="fw-bold mb-0 text-danger">{{ stats.overdue_loans }}</h3>
             </div>
@@ -516,14 +524,14 @@
     </div>
 
     <!-- Quick Actions Grid -->
-    <h5 class="fw-bold mb-3 px-1">Hızlı İşlemler</h5>
+    <h5 class="fw-bold mb-3 px-1">{{ _('Hızlı İşlemler') }}</h5>
     <div class="row g-3 mb-4">
         <div class="col-6">
             <a href="{{ url_for('add_book') }}"
                 class="card border-0 shadow-sm rounded-4 text-decoration-none bg-primary text-white h-100">
                 <div class="card-body p-3 d-flex flex-column align-items-center justify-content-center text-center">
                     <i class="fas fa-book-medical fa-2x mb-2"></i>
-                    <span class="fw-bold small">Kitap Ekle</span>
+                    <span class="fw-bold small">{{ _('Kitap Ekle') }}</span>
                 </div>
             </a>
         </div>
@@ -532,7 +540,7 @@
                 class="card border-0 shadow-sm rounded-4 text-decoration-none bg-dark text-white h-100">
                 <div class="card-body p-3 d-flex flex-column align-items-center justify-content-center text-center">
                     <i class="fas fa-exchange-alt fa-2x mb-2"></i>
-                    <span class="fw-bold small">Emanet Ver</span>
+                    <span class="fw-bold small">{{ _('Emanet Ver') }}</span>
                 </div>
             </a>
         </div>
@@ -541,7 +549,7 @@
                 class="card border-0 shadow-sm rounded-4 text-decoration-none bg-white text-dark h-100">
                 <div class="card-body p-3 d-flex flex-column align-items-center justify-content-center text-center">
                     <i class="fas fa-user-plus fa-2x mb-2 text-primary"></i>
-                    <span class="fw-bold small">Öğrenci Ekle</span>
+                    <span class="fw-bold small">{{ _('Öğrenci Ekle') }}</span>
                 </div>
             </a>
         </div>
@@ -550,7 +558,7 @@
                 class="card border-0 shadow-sm rounded-4 text-decoration-none bg-white text-dark h-100">
                 <div class="card-body p-3 d-flex flex-column align-items-center justify-content-center text-center">
                     <i class="fas fa-chart-pie fa-2x mb-2 text-success"></i>
-                    <span class="fw-bold small">İstatistikler</span>
+                    <span class="fw-bold small">{{ _('İstatistikler') }}</span>
                 </div>
             </a>
         </div>
@@ -558,8 +566,8 @@
 
     <!-- Recent Activity List (Mobile) -->
     <div class="d-flex justify-content-between align-items-center mb-3 px-1">
-        <h5 class="fw-bold mb-0">Son Hareketler</h5>
-        <a href="{{ url_for('loans') }}" class="text-decoration-none small fw-bold">Tümü</a>
+        <h5 class="fw-bold mb-0">{{ _('Son Hareketler') }}</h5>
+        <a href="{{ url_for('loans') }}" class="text-decoration-none small fw-bold">{{ _('Tümü') }}</a>
     </div>
 
     <div class="d-flex flex-column gap-3">
@@ -578,15 +586,15 @@
                 <div class="text-end">
                     <span class="d-block small fw-bold text-muted">{{ transaction.issue_date.strftime('%d.%m') }}</span>
                     {% if transaction.status == 'active' %}
-                    <span class="badge bg-warning text-dark" style="font-size: 0.6rem;">Emanet</span>
+                    <span class="badge bg-warning text-dark" style="font-size: 0.6rem;">{{ _('Emanet') }}</span>
                     {% else %}
-                    <span class="badge bg-success" style="font-size: 0.6rem;">İade</span>
+                    <span class="badge bg-success" style="font-size: 0.6rem;">{{ _('İade') }}</span>
                     {% endif %}
                 </div>
             </div>
         </div>
         {% else %}
-        <div class="text-center py-4 text-muted small">Herhangi bir işlem yok.</div>
+        <div class="text-center py-4 text-muted small">{{ _('Herhangi bir işlem yok.') }}</div>
         {% endfor %}
     </div>
 

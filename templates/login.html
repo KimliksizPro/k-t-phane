@@ -47,15 +47,16 @@
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <div class="input-group-custom mb-4">
-                        <label for="username">Kullanıcı Adı</label>
+                        <label for="username">{{ _('Kullanıcı Adı') }}</label>
                         <div class="input-field">
                             <i class="fas fa-user icon"></i>
-                            <input type="text" id="username" name="username" placeholder="Örn: admin" required>
+                            <input type="text" id="username" name="username" placeholder="{{ _('Örn: admin') }}"
+                                required>
                         </div>
                     </div>
 
                     <div class="input-group-custom mb-4">
-                        <label for="password">Şifre</label>
+                        <label for="password">{{ _('Şifre') }}</label>
                         <div class="input-field">
                             <i class="fas fa-lock icon"></i>
                             <input type="password" id="password" name="password" placeholder="••••••••" required>
@@ -67,25 +68,28 @@
                     <div class="form-actions d-flex justify-content-between align-items-center mb-4">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="remember">
-                            <label class="form-check-label small text-muted" for="remember">Beni hatırla</label>
+                            <label class="form-check-label small text-muted" for="remember">{{ _('Beni hatırla')
+                                }}</label>
                         </div>
                         <div class="d-flex align-items-center gap-2">
                             <a href="#" class="small text-secondary text-decoration-none fw-bold"
                                 onclick="showQRModal(event)">
-                                <i class="fas fa-qrcode me-1"></i> Hızlı Giriş
+                                <i class="fas fa-qrcode me-1"></i> {{ _('Hızlı Giriş') }}
                             </a>
                             <span class="text-muted small">|</span>
-                            <a href="#" class="small text-primary text-decoration-none fw-bold">Şifremi Unuttum?</a>
+                            <a href="#" class="small text-primary text-decoration-none fw-bold">{{ _('Şifremi Unuttum?')
+                                }}</a>
                         </div>
                     </div>
 
                     <button class="btn-login" type="submit">
-                        <span>Giriş Yap</span>
+                        <span>{{ _('Giriş Yap') }}</span>
                         <i class="fas fa-arrow-right"></i>
                     </button>
 
                     <div class="text-center mt-4">
-                        <small class="text-muted">Demo Giriş: <span class="badge bg-light text-dark border">admin /
+                        <small class="text-muted">{{ _('Demo Giriş:') }} <span
+                                class="badge bg-light text-dark border">admin /
                                 admin123</span></small>
                     </div>
                 </form>

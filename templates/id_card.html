@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Kimlik Kartı - {{ student.name }} {{ student.surname }}</title>
+    <title>{{ _('Kimlik Kartı') }} - {{ student.name }} {{ student.surname }}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
@@ -145,14 +145,14 @@
 <body>
 
     <div class="no-print">
-        <h1>Kimlik Kartı Önizleme</h1>
-        <p>Kartı gördükten sonra indir butonuna basınız.</p>
+        <h1>{{ _('Kimlik Kartı Önizleme') }}</h1>
+        <p>{{ _('Kartı gördükten sonra indir butonuna basınız.') }}</p>
         <div style="display: flex; gap: 10px; justify-content: center;">
             <a href="/student/{{ student.id }}" class="btn btn-back">
-                <i class="fas fa-arrow-left"></i> Geri Dön
+                <i class="fas fa-arrow-left"></i> {{ _('Geri Dön') }}
             </a>
             <button onclick="downloadPDF()" class="btn">
-                <i class="fas fa-download"></i> PDF İndir
+                <i class="fas fa-download"></i> {{ _('PDF İndir') }}
             </button>
         </div>
     </div>
@@ -161,7 +161,7 @@
     <div id="card-container">
         <div class="id-card">
             <div class="header-strip">
-                KÜTÜPHANE KİMLİK
+                {{ _('KÜTÜPHANE KİMLİK') }}
             </div>
             <!-- School Name watermark if needed -->
             <!-- <div class="school-name">ATATÜRK LİSESİ</div> -->

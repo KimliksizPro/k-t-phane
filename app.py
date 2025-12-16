@@ -15,6 +15,13 @@ from flask_login import LoginManager, login_user, login_required, logout_user, c
 from werkzeug.security import generate_password_hash, check_password_hash
 from guvenlik import guardian # Import Security Guardian
 from book_api import get_book_details # Import Book API Helper
+from ai_service import GeminiService  # [AI MODUL]
+
+# --- AI INIT ---
+gemini_service = GeminiService()
+
+# Flask-Babel for Internationalization
+from flask_babel import Babel, gettext as _
 
 
 app = Flask(__name__)
@@ -92,6 +99,36 @@ app.config['SECRET_KEY'] = 'cok_gizli_ve_guclu_bir_anahtar_12345'
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+
+# Flask-Babel Configuration
+app.config['BABEL_DEFAULT_LOCALE'] = 'tr'
+app.config['BABEL_SUPPORTED_LOCALES'] = ['tr', 'en', 'de', 'es']
+
+def get_locale():
+    # 1. Session Priority
+    if 'lang' in session:
+        return session['lang']
+    # 2. Browser Priority
+    return request.accept_languages.best_match(app.config['BABEL_SUPPORTED_LOCALES'])
+
+# Initialize Babel
+babel = Babel(app, locale_selector=get_locale)
+
+# Language Switcher
+@app.route('/set-language/<lang>')
+def set_language(lang):
+    if lang in app.config['BABEL_SUPPORTED_LOCALES']:
+        session['lang'] = lang
+    # Redirect back to where they came from
+    return redirect(request.referrer or url_for('dashboard'))
+
+# Context Processor for Templates
+@app.context_processor
+def inject_conf_var():
+    return dict(
+        get_locale=get_locale,
+        supported_locales=app.config['BABEL_SUPPORTED_LOCALES']
+    )
 
 db.init_app(app)
 guardian.init_app(app) # Initialize Firewall
@@ -292,7 +329,7 @@ def login():
                 return render_template('verify_2fa.html', request_id=new_request.id, client_token=client_token)
 
         else:
-            flash('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.', 'danger')
+            flash(_('Giriş başarısız. Lütfen bilgilerinizi kontrol edin.'), 'danger')
             
     return render_template('login.html')
 
@@ -406,7 +443,7 @@ def submit_2fa_code():
         resp.set_cookie('device_token', req.request_token, max_age=31536000)
         return resp
     else:
-        return jsonify({'success': False, 'message': 'Hatalı Kod!'})
+        return jsonify({'success': False, 'message': _('Hatalı Kod!')})
 
 @app.route('/api/qr/generate')
 def generate_qr():
@@ -512,7 +549,7 @@ def check_concurrent_watcher():
         settings = Settings.query.first()
         if settings and settings.active_watcher_id and settings.active_watcher_id != current_user.id:
             logout_user()
-            flash('Başka bir nöbetçi giriş yaptığı için oturumunuz sonlandırıldı.', 'warning')
+            flash(_('Başka bir nöbetçi giriş yaptığı için oturumunuz sonlandırıldı.'), 'warning')
             return redirect(url_for('login'))
 
 @app.route('/logout')
@@ -534,7 +571,7 @@ def logout():
 def register():
     # SUPER ADMIN CHECK (Security)
     if current_user.username != 'admin':
-        flash('Yetkisiz işlem! Sadece Süper Admin yeni hesap oluşturabilir.', 'danger')
+        flash(_('Yetkisiz işlem! Sadece Süper Admin yeni hesap oluşturabilir.'), 'danger')
         return redirect(url_for('settings'))
 
     if request.method == 'POST':
@@ -543,7 +580,7 @@ def register():
         
         # Check existing
         if User.query.filter_by(username=username).first():
-            flash('Bu kullanıcı adı zaten kullanılıyor!', 'danger')
+            flash(_('Bu kullanıcı adı zaten kullanılıyor!'), 'danger')
             return redirect(url_for('register'))
             
         new_user = User(username=username, role='admin') # Teacher has full access
@@ -551,7 +588,7 @@ def register():
         db.session.add(new_user)
         db.session.commit()
         
-        flash(f'{username} adında YENİ ÖĞRETMEN hesabı başarıyla oluşturuldu!', 'success')
+        flash(_('%(username)s adında YENİ ÖĞRETMEN hesabı başarıyla oluşturuldu!', username=username), 'success')
         return redirect(url_for('settings'))
         
     return render_template('register.html')
@@ -561,7 +598,7 @@ def register():
 def create_watcher():
     # SUPER ADMIN CHECK
     if current_user.username != 'admin':
-        flash('Yetkisiz işlem! Sadece Süper Admin nöbetçi hesabı oluşturabilir.', 'danger')
+        flash(_('Yetkisiz işlem! Sadece Süper Admin nöbetçi hesabı oluşturabilir.'), 'danger')
         return redirect(url_for('index'))
 
     if request.method == 'POST':
@@ -569,7 +606,7 @@ def create_watcher():
         password = request.form.get('password')
         
         if User.query.filter_by(username=username).first():
-            flash('Bu kullanıcı adı zaten kullanılıyor!', 'danger')
+            flash(_('Bu kullanıcı adı zaten kullanılıyor!'), 'danger')
             return redirect(url_for('create_watcher'))
             
         # Create user with 'watcher' role
@@ -578,7 +615,7 @@ def create_watcher():
         db.session.add(new_user)
         db.session.commit()
         
-        flash(f'{username} adında NÖBETÇİ ÖĞRENCİ hesabı oluşturuldu.', 'warning')
+        flash(_('%(username)s adında NÖBETÇİ ÖĞRENCİ hesabı oluşturuldu.', username=username), 'warning')
         return redirect(url_for('index'))
 
     return render_template('create_watcher.html')
@@ -667,7 +704,7 @@ def add_student():
         # Check if student already exists
         existing_student = Student.query.filter_by(school_number=school_number).first()
         if existing_student:
-             flash(f'Hata: {school_number} numaralı öğrenci ({existing_student.name} {existing_student.surname}) zaten kayıtlı!', 'danger')
+             flash(_('Hata: %(number)s numaralı öğrenci (%(name)s) zaten kayıtlı!', number=school_number, name=f"{existing_student.name} {existing_student.surname}"), 'danger')
              return render_template('add_student.html', 
                                     name=name, surname=surname, school_number=school_number, 
                                     class_name=class_name, email=email, phone=phone, address=address)
@@ -677,7 +714,7 @@ def add_student():
         try:
             db.session.add(new_student)
             db.session.commit()
-            flash('Öğrenci başarıyla eklendi!', 'success')
+            flash(_('Öğrenci başarıyla eklendi!'), 'success')
             
             next_page = request.args.get('next')
             if next_page == 'index':
@@ -685,7 +722,7 @@ def add_student():
             return redirect(url_for('students'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Kayıt sırasında bir hata oluştu: {str(e)}', 'danger')
+            flash(_('Kayıt sırasında bir hata oluştu: %(error)s', error=str(e)), 'danger')
             return render_template('add_student.html')
             
     return render_template('add_student.html')
@@ -704,7 +741,7 @@ def edit_student(id):
         student.address = request.form.get('address')
         
         db.session.commit()
-        flash('Öğrenci bilgileri güncellendi.', 'success')
+        flash(_('Öğrenci bilgileri güncellendi.'), 'success')
         return redirect(url_for('students'))
     return render_template('edit_student.html', student=student)
 
@@ -714,7 +751,7 @@ def delete_student(id):
     student = Student.query.get_or_404(id)
     db.session.delete(student)
     db.session.commit()
-    flash('Öğrenci başarıyla silindi.', 'success')
+    flash(_('Öğrenci başarıyla silindi.'), 'success')
     return redirect(url_for('students'))
 
 @app.route('/books')
@@ -722,16 +759,18 @@ def delete_student(id):
 def books():
     page = request.args.get('page', 1, type=int)
     per_page = 20
-    search_query = request.args.get('search', '')
+    search_query = request.args.get('search', '').strip() # Strip whitespace
     
     query = Book.query
     
     if search_query:
+        # Case-insensitive search using func.lower()
+        search_term = f"%{search_query.lower()}%"
         query = query.filter(
             or_(
-                Book.title.contains(search_query),
-                Book.author.contains(search_query),
-                Book.isbn.contains(search_query)
+                func.lower(Book.title).like(search_term),
+                func.lower(Book.author).like(search_term),
+                Book.isbn.contains(search_query) # ISBN usually exact or containment is fine
             )
         )
     
@@ -763,7 +802,7 @@ def add_book():
         # Check if book already exists
         existing_book = Book.query.filter_by(isbn=isbn).first()
         if existing_book:
-            flash(f'Hata: {isbn} ISBN numaralı kitap ({existing_book.title}) zaten kayıtlı!', 'danger')
+            flash(_('Hata: %(isbn)s ISBN numaralı kitap (%(title)s) zaten kayıtlı!', isbn=isbn, title=existing_book.title), 'danger')
             return render_template('add_book.html', 
                                    title=title, author=author, isbn=isbn, 
                                    publication_year=publication_year, publisher=publisher, 
@@ -774,7 +813,7 @@ def add_book():
         try:
             db.session.add(new_book)
             db.session.commit()
-            flash('Kitap başarıyla eklendi!', 'success')
+            flash(_('Kitap başarıyla eklendi!'), 'success')
             
             next_page = request.args.get('next')
             if next_page == 'index':
@@ -782,7 +821,7 @@ def add_book():
             return redirect(url_for('books'))
         except Exception as e:
             db.session.rollback()
-            flash(f'Kayıt sırasında bir hata oluştu: {str(e)}', 'danger')
+            flash(_('Kayıt sırasında bir hata oluştu: %(error)s', error=str(e)), 'danger')
             return render_template('add_book.html')
             
     return render_template('add_book.html')
@@ -801,7 +840,7 @@ def edit_book(id):
         book.description = request.form.get('description')
         
         db.session.commit()
-        flash('Kitap bilgileri güncellendi.', 'success')
+        flash(_('Kitap bilgileri güncellendi.'), 'success')
         return redirect(url_for('books'))
     return render_template('edit_book.html', book=book)
 
@@ -811,25 +850,115 @@ def delete_book(id):
     book = Book.query.get_or_404(id)
     db.session.delete(book)
     db.session.commit()
-    flash('Kitap başarıyla silindi.', 'success')
+    flash(_('Kitap başarıyla silindi.'), 'success')
     return redirect(url_for('books'))
 
 @app.route('/loans', methods=['GET', 'POST'])
 @login_required
 def loans():
     if request.method == 'POST':
-        student_id = request.form['student_id']
-        book_id = request.form['book_id']
+        student_id = request.form.get('student_id')
+        book_id = request.form.get('book_id')
         
-        book = Book.query.get(book_id)
+        # --- FALLBACK SEARCH (FOR SCANNERS / TYPING) ---
+        # If ID is missing but search text exists (Scanner hit Enter)
+        if not book_id and request.form.get('search_book_input'):
+             search_val = request.form.get('search_book_input').strip()
+             if search_val:
+                 # 1. Try exact ISBN match
+                 found_book = Book.query.filter_by(isbn=search_val).first()
+                 if found_book:
+                     book_id = found_book.id
+                 else:
+                     # 2. Try Title match (Contains + Case Insensitive) - Pick first AVAILABLE one preferably
+                     # First priority: Available books matching the query
+                     found_book = Book.query.filter(
+                         func.lower(Book.title).contains(search_val.lower()), 
+                         Book.is_available == True
+                     ).first()
+                     
+                     # If no available book found, just find any to show "Unavailable" message correctly?
+                     # No, let's just try to find ANY book to set the ID.
+                     if not found_book:
+                        found_book = Book.query.filter(func.lower(Book.title).contains(search_val.lower())).first()
+                        
+                     if found_book:
+                         book_id = found_book.id
+                     else:
+                         flash(_("Kitap veritabanında bulunamadı. Lütfen yeni ekleyin: '%(val)s'", val=search_val), 'warning')
+                         # RE-RENDER with not_found_isbn to trigger auto-open form
+                         active_loans = Transaction.query.options(joinedload(Transaction.student), joinedload(Transaction.book)).filter_by(status='active').all()
+                         students = Student.query.all()
+                         books = Book.query.filter_by(is_available=True).all()
+                         return render_template('loans.html', loans=active_loans, students=students, books=books, not_found_isbn=search_val)
+
+        if not student_id and request.form.get('search_student_input'):
+             search_val = request.form.get('search_student_input').strip()
+             if search_val:
+                 # Try exact School Number match
+                 found_student = Student.query.filter_by(school_number=search_val).first()
+                 if not found_student:
+                     # Try Name contains
+                     found_student = Student.query.filter(func.lower(Student.name).contains(search_val.lower())).first()
+                     
+                 if found_student:
+                     student_id = found_student.id
+                 else:
+                     flash(_("Girilen bilgiyle öğrenci bulunamadı: '%(val)s'", val=search_val), 'warning')
+                     return redirect(url_for('loans'))
+
+        # 1. NEW BOOK HANDLE (If ID is Empty)
+        if not book_id and request.form.get('new_book_title'):
+             # Create new book on the fly
+             new_isbn = request.form.get('new_book_isbn') or 'NO-ISBN-' + datetime.now().strftime('%M%S')
+             new_book = Book(
+                 title=request.form['new_book_title'],
+                 author=request.form.get('new_book_author', 'Bilinmiyor'),
+                 isbn=new_isbn,
+                 page_count=int(request.form.get('new_book_page_count') or 100),
+                 is_available=True
+             )
+             db.session.add(new_book)
+             db.session.flush() # Get ID
+             book_id = new_book.id
+             book = new_book
+        else:
+             book = Book.query.get(book_id) if book_id else None
+
+        # 2. NEW STUDENT HANDLE (If ID is Empty)
+        if not student_id and request.form.get('new_student_name'):
+             # Create new student on the fly
+             new_student = Student(
+                 name=request.form['new_student_name'],
+                 surname=request.form.get('new_student_surname', ''),
+                 school_number=request.form.get('new_student_no') or 'NO-' + datetime.now().strftime('%M%S'),
+                 class_name=request.form.get('new_student_class', '9-A')
+             )
+             try:
+                db.session.add(new_student)
+                db.session.flush()
+                student_id = new_student.id
+             except Exception as e:
+                db.session.rollback()
+                flash(_('Öğrenci oluşturulurken hata: Okul Numarası kullanılıyor olabilir.'), 'danger')
+                return redirect(url_for('loans'))
         
+        # FINAL SAFETY CHECK
+        if not book_id:
+            flash(_('Lütfen bir kitap seçin veya barkodu okutun!'), 'warning')
+            return redirect(url_for('loans'))
+            
+        if not student_id:
+            flash(_('Lütfen bir öğrenci seçin!'), 'warning')
+            return redirect(url_for('loans'))
+
         # WATCHER RESTRICTION CHECK
         if getattr(current_user, 'role', 'admin') == 'watcher':
             restricted_number = session.get('watcher_restricted_student')
             if restricted_number:
                 student = Student.query.get(student_id)
                 if student and str(student.school_number).strip() == restricted_number:
-                     flash('Erişim Engellendi! Kendi numaranıza işlem yapamazsınız.', 'danger')
+                     flash(_('Erişim Engellendi! Kendi numaranıza işlem yapamazsınız.'), 'danger')
                      return redirect(url_for('loans'))
 
         if book and book.is_available:
@@ -841,13 +970,13 @@ def loans():
             book.is_available = False
             db.session.add(new_loan)
             db.session.commit()
-            flash('Kitap emanet verildi!', 'success')
+            flash(_('Kitap emanet verildi!'), 'success')
             
             next_page = request.args.get('next')
             if next_page == 'index':
                 return redirect(url_for('index'))
         else:
-            flash('Kitap şu anda müsait değil!', 'danger')
+            flash(_('Kitap şu anda müsait değil!'), 'danger')
         return redirect(url_for('loans'))
         
     active_loans = Transaction.query.options(
@@ -869,7 +998,7 @@ def return_book(transaction_id):
         if restricted_number:
             student = transaction.student
             if student and str(student.school_number).strip() == restricted_number: # Changed student_number to school_number
-                 flash('Erişim Engellendi! Kendi numaranıza işlem yapamazsınız.', 'danger')
+                 flash(_('Erişim Engellendi! Kendi numaranıza işlem yapamazsınız.'), 'danger')
                  return redirect(url_for('loans'))
                  
     book = transaction.book
@@ -878,7 +1007,7 @@ def return_book(transaction_id):
     transaction.status = 'returned'
     
     db.session.commit()
-    flash('Kitap iade alındı!', 'success')
+    flash(_('Kitap iade alındı!'), 'success')
     return redirect(url_for('loans'))
 
 @app.route('/istatistikler')
@@ -886,7 +1015,7 @@ def return_book(transaction_id):
 def statistics():
     # ACCESS CONTROL: WATCHER CANNOT ACCESS
     if getattr(current_user, 'role', 'admin') == 'watcher':
-        flash('Nöbetçi hesaplarının bu sayfaya erişim yetkisi yoktur.', 'danger')
+        flash(_('Nöbetçi hesaplarının bu sayfaya erişim yetkisi yoktur.'), 'danger')
         return redirect(url_for('index'))
     return render_template('statistics.html')
 
@@ -988,6 +1117,49 @@ def get_class_details(class_name):
         'total': s.total
     } for s in students])
 
+@app.route('/api/search/books')
+def api_search_books():
+    query = request.args.get('q', '').lower()
+    if len(query) < 2:
+        return jsonify([])
+    
+    books = Book.query.filter(
+        or_(
+            func.lower(Book.title).contains(query),
+            func.lower(Book.author).contains(query),
+            Book.isbn.contains(query)
+        ),
+        Book.is_available == True
+    ).limit(10).all()
+    
+    return jsonify([{
+        'id': b.id,
+        'title': b.title,
+        'author': b.author,
+        'isbn': b.isbn
+    } for b in books])
+
+@app.route('/api/search/students')
+def api_search_students():
+    query = request.args.get('q', '').lower()
+    if len(query) < 2:
+        return jsonify([])
+    
+    students = Student.query.filter(
+        or_(
+            func.lower(Student.name + ' ' + Student.surname).contains(query),
+            Student.school_number.contains(query)
+        )
+    ).limit(10).all()
+    
+    return jsonify([{
+        'id': s.id,
+        'name': s.name,
+        'surname': s.surname,
+        'school_number': s.school_number,
+        'class_name': s.class_name
+    } for s in students])
+
 @app.route('/api/stats/popular')
 @login_required
 def get_popular_books():
@@ -1008,7 +1180,7 @@ def get_popular_books():
 def api_get_book_details():
     isbn = request.args.get('isbn')
     if not isbn:
-        return jsonify({'error': 'ISBN required'}), 400
+        return jsonify({'error': _('ISBN gerekli')}), 400
     
     # Use the helper function
     book_info = get_book_details(isbn)
@@ -1016,7 +1188,7 @@ def api_get_book_details():
     if book_info:
         return jsonify(book_info)
     else:
-        return jsonify({'error': 'Book not found'}), 404
+        return jsonify({'error': _('Kitap bulunamadı')}), 404
 
 @app.route('/ayarlar', methods=['GET', 'POST'])
 @login_required
@@ -1031,7 +1203,7 @@ def settings():
     if request.method == 'POST':
         # SECURITY CHECK: WATCHERS CANNOT CHANGE SETTINGS
         if getattr(current_user, 'role', 'admin') == 'watcher':
-             flash('Yetkisiz işlem! Nöbetçi hesapları ayarları değiştiremez.', 'danger')
+             flash(_('Yetkisiz işlem! Nöbetçi hesapları ayarları değiştiremez.'), 'danger')
              return redirect(url_for('settings'))
 
         # --- PASSWORD CHANGE LOGIC ---
@@ -1041,13 +1213,13 @@ def settings():
             confirm_password = request.form.get('confirm_password')
             
             if not current_user.check_password(current_password):
-                flash('Mevcut şifre hatalı!', 'danger')
+                flash(_('Mevcut şifre hatalı!'), 'danger')
             elif new_password != confirm_password:
-                flash('Yeni şifreler uyuşmuyor!', 'danger')
+                flash(_('Yeni şifreler uyuşmuyor!'), 'danger')
             else:
                 current_user.set_password(new_password)
                 db.session.commit()
-                flash('Şifreniz başarıyla güncellendi.', 'success')
+                flash(_('Şifreniz başarıyla güncellendi.'), 'success')
             return redirect(url_for('settings'))
 
         # --- BOOK IMPORT LOGIC ---
@@ -1114,12 +1286,12 @@ def settings():
                             skipped_count += 1
                             
                     db.session.commit()
-                    flash(f'Kitap aktarımı tamamlandı: {added_count} kitap eklendi, {skipped_count} kayıt atlandı.', 'success')
+                    flash(_('Kitap aktarımı tamamlandı: %(added)d kitap eklendi, %(skipped)d kayıt atlandı.', added=added_count, skipped=skipped_count), 'success')
                     
                 except Exception as e:
-                    flash(f'Kitap dosyası işlenirken hata oluştu: {str(e)}', 'danger')
+                    flash(_('Kitap dosyası işlenirken hata oluştu: %(error)s', error=str(e)), 'danger')
             else:
-                 flash('Lütfen geçerli bir Excel dosyası (.xlsx) yükleyin.', 'warning')
+                 flash(_('Lütfen geçerli bir Excel dosyası (.xlsx) yükleyin.'), 'warning')
             return redirect(url_for('settings'))
 
         # --- STUDENT IMPORT LOGIC (Existing) ---
@@ -1175,12 +1347,12 @@ def settings():
                             skipped_count += 1
                             
                     db.session.commit()
-                    flash(f'Toplu aktarım tamamlandı: {added_count} öğrenci eklendi, {skipped_count} kayıt atlandı (zaten var veya hatalı).', 'success')
+                    flash(_('Toplu aktarım tamamlandı: %(added)d öğrenci eklendi, %(skipped)d kayıt atlandı (zaten var veya hatalı).', added=added_count, skipped=skipped_count), 'success')
                     
                 except Exception as e:
-                    flash(f'Dosya işlenirken hata oluştu: {str(e)}', 'danger')
+                    flash(_('Dosya işlenirken hata oluştu: %(error)s', error=str(e)), 'danger')
             else:
-                 flash('Lütfen geçerli bir Excel dosyası (.xlsx) yükleyin.', 'warning')
+                 flash(_('Lütfen geçerli bir Excel dosyası (.xlsx) yükleyin.'), 'warning')
                  
         # --- SETTINGS UPDATE LOGIC ---
         elif 'school_name' in request.form:
@@ -1199,7 +1371,7 @@ def settings():
                      current_user.device_verification_enabled = False
 
             db.session.commit()
-            flash('Ayarlar güncellendi!', 'success')
+            flash(_('Ayarlar güncellendi!'), 'success')
             
         return redirect(url_for('settings'))
         
@@ -1266,16 +1438,24 @@ def security_dashboard():
     except:
         pass
 
-    # 2. Read Logs (Last 100)
+    # 2. Read Logs
     logs = []
-    total_threats = 0
+    total_threats = 0 # Total lines (TOTAL REQUESTS)
+    threat_logs = 0   # Total BLOCK/BAN
+    
     try:
         log_file = 'titanium_defense.log'
         if os.path.exists(log_file):
             with open(log_file, 'r') as f:
                 lines = f.readlines()
                 total_threats = len(lines)
-                # Parse last 100 lines reverse
+                
+                # Calculate threat count (This might be slow for huge files, but for now ok)
+                for line in lines:
+                    if '"risk_level": "critical"' in line or '"risk_level": "high"' in line:
+                         threat_logs += 1
+                
+                # Parse last 100 lines reverse for display
                 for line in reversed(lines[-100:]):
                     try:
                         logs.append(json.loads(line))
@@ -1284,12 +1464,11 @@ def security_dashboard():
     except:
         pass
         
-    stats = {
-        'total_threats': total_threats,
-        'banned_count': len(banned_data)
-    }
-    
-    return render_template('security_dashboard.html', logs=logs, banned_ips=banned_data, stats=stats)
+    return render_template('security_dashboard.html', 
+                         recent_logs=logs, 
+                         banned_ips=banned_data, 
+                         total_logs=total_threats,
+                         threat_logs=threat_logs)
 
 
 @app.route('/api/security/ip-action', methods=['POST'])
@@ -1297,14 +1476,14 @@ def security_dashboard():
 def security_ip_action():
     # Only Admin (or authorized role) should do this
     if getattr(current_user, 'role', 'admin') == 'watcher':
-         return jsonify({'success': False, 'message': 'Yetkisiz işlem.'}), 403
+         return jsonify({'success': False, 'message': _('Yetkisiz işlem.')}), 403
 
     data = request.get_json()
     ip = data.get('ip')
     action = data.get('action') # 'ban', 'unban', 'reset'
     
     if not ip or not action:
-        return jsonify({'success': False, 'message': 'Eksik parametre.'}), 400
+        return jsonify({'success': False, 'message': _('Eksik parametre.')}), 400
 
     try:
         if action == 'ban':
@@ -1319,7 +1498,7 @@ def security_ip_action():
             guardian.reset_ip_status(ip)
             message = f"{ip} adresi temize çıkarıldı (Reset)."
         else:
-            return jsonify({'success': False, 'message': 'Geçersiz işlem.'}), 400
+            return jsonify({'success': False, 'message': _('Geçersiz işlem.')}), 400
             
         return jsonify({'success': True, 'message': message})
         
@@ -1453,7 +1632,7 @@ def export_report_pdf(type):
     elif type == 'stats-class-detail':
         class_name = request.args.get('class_name')
         if not class_name:
-            flash('Sınıf adı belirtilmedi.', 'danger')
+            flash(_('Sınıf adı belirtilmedi.'), 'danger')
             return redirect(url_for('statistics'))
             
         title = f"{class_name} Sınıfı Okuma Raporu"
@@ -1463,6 +1642,7 @@ def export_report_pdf(type):
             func.count(Transaction.id).label('read_count')
         ).outerjoin(Transaction, (Student.id == Transaction.student_id) & (Transaction.status == 'returned'))\
          .filter(Student.class_name == class_name)\
+         .filter(Transaction.status == 'returned')\
          .group_by(Student.id)\
          .order_by(desc('read_count')).all()
          
@@ -1470,7 +1650,7 @@ def export_report_pdf(type):
         type = 'student-rank-list' 
 
     else:
-        flash('Geçersiz rapor türü.', 'danger')
+        flash(_('Geçersiz rapor türü.'), 'danger')
         return redirect(url_for('reports'))
 
     return render_template('pdf_report.html', 
@@ -1488,7 +1668,75 @@ def student_id_card(id):
     return render_template('id_card.html', student=student)
 
 
+@app.route('/api/add-book', methods=['POST'])
+@login_required
+def api_add_book():
+    data = request.json
+    try:
+        new_isbn = data.get('isbn')
+        if not new_isbn:
+            return jsonify({'success': False, 'error': _('ISBN gerekli')}), 400
+            
+        existing = Book.query.filter_by(isbn=new_isbn).first()
+        if existing:
+            return jsonify({'success': True, 'id': existing.id, 'title': existing.title, 'exists': True})
+
+        new_book = Book(
+            title=data.get('title'),
+            author=data.get('author', 'Bilinmiyor'),
+            isbn=new_isbn,
+            page_count=int(data.get('page_count') or 100),
+            is_available=True
+        )
+        db.session.add(new_book)
+        db.session.commit()
+        
+        return jsonify({'success': True, 'id': new_book.id, 'title': new_book.title})
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+# --- AI ROUTES ---
+@app.route('/api/ai/recommend/<int:student_id>')
+@login_required
+def ai_recommend_books(student_id):
+    student = Student.query.get_or_404(student_id)
     
+    # Get reading history
+    history = [t.book.title for t in student.transactions if t.status == 'returned']
+    
+    # Get context (random sample of available books)
+    available_books = Book.query.filter_by(is_available=True).limit(50).all()
+    context = [b.title for b in available_books]
+    
+    recommendation = gemini_service.recommend_books(history, context)
+    
+    # Parse JSON if possible, otherwise return raw text
+    try:
+        if isinstance(recommendation, str) and (recommendation.startswith('{') or 'oneriler' in recommendation):
+             # Clean markdown code blocks if any
+             cleaned = recommendation.replace('```json', '').replace('```', '')
+             data = json.loads(cleaned)
+             return jsonify(data)
+    except:
+        pass
+        
+    return jsonify({'raw_response': recommendation})
+
+@app.route('/api/ai/summarize', methods=['POST'])
+@login_required
+def ai_summarize_book():
+    data = request.json
+    title = data.get('title')
+    author = data.get('author')
+    
+    if not title:
+        return jsonify({'error': _('Kitap adı gerekli')}), 400
+        
+    summary = gemini_service.summarize_book(title, author)
+    return jsonify({'summary': summary})
+
 
 if __name__ == '__main__':
     with app.app_context():

@@ -1,0 +1,2009 @@
+
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-12-16 19:16+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: de\n"
+"Language-Team: de <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.17.0\n"
+
+#: app.py:328
+msgid "Giriş başarısız. Lütfen bilgilerinizi kontrol edin."
+msgstr "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldeinformationen."
+
+#: app.py:442
+msgid "Hatalı Kod!"
+msgstr "Ungültiger Code!"
+
+#: app.py:548
+msgid "Başka bir nöbetçi giriş yaptığı için oturumunuz sonlandırıldı."
+msgstr "Sitzung beendet, da sich ein anderer Wächter angemeldet hat."
+
+#: app.py:570
+msgid "Yetkisiz işlem! Sadece Süper Admin yeni hesap oluşturabilir."
+msgstr "Unbefugte Aktion! Nur der Super-Admin kann neue Konten erstellen."
+
+#: app.py:579 app.py:605
+msgid "Bu kullanıcı adı zaten kullanılıyor!"
+msgstr "Dieser Benutzername ist bereits vergeben!"
+
+#: app.py:587
+#, python-format
+msgid "%(username)s adında YENİ ÖĞRETMEN hesabı başarıyla oluşturuldu!"
+msgstr "NEUES LEHRER-Konto namens %(username)s erfolgreich erstellt!"
+
+#: app.py:597
+msgid "Yetkisiz işlem! Sadece Süper Admin nöbetçi hesabı oluşturabilir."
+msgstr "Unbefugte Aktion! Nur der Super-Admin kann Wächterkonten erstellen."
+
+#: app.py:614
+#, python-format
+msgid "%(username)s adında NÖBETÇİ ÖĞRENCİ hesabı oluşturuldu."
+msgstr "WÄCHTER-SCHÜLER-Konto namens %(username)s erstellt."
+
+#: app.py:703
+#, python-format
+msgid "Hata: %(number)s numaralı öğrenci (%(name)s) zaten kayıtlı!"
+msgstr "Fehler: Schülernummer %(number)s (%(name)s) ist bereits registriert!"
+
+#: app.py:713
+msgid "Öğrenci başarıyla eklendi!"
+msgstr "Schüler erfolgreich hinzugefügt!"
+
+#: app.py:721 app.py:820
+#, python-format
+msgid "Kayıt sırasında bir hata oluştu: %(error)s"
+msgstr "Fehler bei der Registrierung: %(error)s"
+
+#: app.py:740
+msgid "Öğrenci bilgileri güncellendi."
+msgstr "Schülerinformationen aktualisiert."
+
+#: app.py:750
+msgid "Öğrenci başarıyla silindi."
+msgstr "Schüler erfolgreich gelöscht."
+
+#: app.py:801
+#, python-format
+msgid "Hata: %(isbn)s ISBN numaralı kitap (%(title)s) zaten kayıtlı!"
+msgstr "Fehler: Buch mit ISBN %(isbn)s (%(title)s) ist bereits registriert!"
+
+#: app.py:812
+msgid "Kitap başarıyla eklendi!"
+msgstr "Buch erfolgreich hinzugefügt!"
+
+#: app.py:839
+msgid "Kitap bilgileri güncellendi."
+msgstr "Buchinformationen aktualisiert."
+
+#: app.py:849
+msgid "Kitap başarıyla silindi."
+msgstr "Buch erfolgreich gelöscht."
+
+#: app.py:884
+#, python-format
+msgid "Kitap veritabanında bulunamadı. Lütfen yeni ekleyin: '%(val)s'"
+msgstr "Buch nicht in Datenbank gefunden. Bitte neu hinzufügen: '%(val)s'"
+
+#: app.py:903
+#, python-format
+msgid "Girilen bilgiyle öğrenci bulunamadı: '%(val)s'"
+msgstr "Schüler mit Info nicht gefunden: '%(val)s'"
+
+#: app.py:939
+msgid "Öğrenci oluşturulurken hata: Okul Numarası kullanılıyor olabilir."
+msgstr "Fehler beim Erstellen des Schülers: Schulnummer wird evtl. verwendet."
+
+#: app.py:944
+msgid "Lütfen bir kitap seçin veya barkodu okutun!"
+msgstr "Bitte wählen Sie ein Buch oder scannen Sie den Barcode!"
+
+#: app.py:948
+msgid "Lütfen bir öğrenci seçin!"
+msgstr "Bitte wählen Sie einen Schüler!"
+
+#: app.py:957 app.py:997
+msgid "Erişim Engellendi! Kendi numaranıza işlem yapamazsınız."
+msgstr "Zugriff verweigert! Sie können Ihre eigene Nummer nicht bearbeiten."
+
+#: app.py:969
+msgid "Kitap emanet verildi!"
+msgstr "Buch erfolgreich ausgeliehen!"
+
+#: app.py:975
+msgid "Kitap şu anda müsait değil!"
+msgstr "Buch ist derzeit nicht verfügbar!"
+
+#: app.py:1006
+msgid "Kitap iade alındı!"
+msgstr "Buch erfolgreich zurückgegeben!"
+
+#: app.py:1014
+msgid "Nöbetçi hesaplarının bu sayfaya erişim yetkisi yoktur."
+msgstr "Wächterkonten haben keinen Zugriff auf diese Seite."
+
+#: app.py:1179 app.py:1674
+msgid "ISBN gerekli"
+msgstr "ISBN erforderlich"
+
+#: app.py:1187
+msgid "Kitap bulunamadı"
+msgstr "Buch nicht gefunden"
+
+#: app.py:1202
+msgid "Yetkisiz işlem! Nöbetçi hesapları ayarları değiştiremez."
+msgstr "Unbefugte Aktion! Wächterkonten können keine Einstellungen ändern."
+
+#: app.py:1212
+msgid "Mevcut şifre hatalı!"
+msgstr "Aktuelles Passwort falsch!"
+
+#: app.py:1214
+msgid "Yeni şifreler uyuşmuyor!"
+msgstr "Neue Passwörter stimmen nicht überein!"
+
+#: app.py:1218
+#, fuzzy
+msgid "Şifreniz başarıyla güncellendi."
+msgstr "Passwort erfolgreich aktualisiert."
+
+#: app.py:1285
+#, python-format
+msgid ""
+"Kitap aktarımı tamamlandı: %(added)d kitap eklendi, %(skipped)d kayıt "
+"atlandı."
+msgstr "Buchimport abgeschlossen: %(added)d hinzugefügt, %(skipped)d übersprungen."
+
+#: app.py:1288
+#, python-format
+msgid "Kitap dosyası işlenirken hata oluştu: %(error)s"
+msgstr "Fehler beim Verarbeiten der Buchdatei: %(error)s"
+
+#: app.py:1290 app.py:1351
+msgid "Lütfen geçerli bir Excel dosyası (.xlsx) yükleyin."
+msgstr "Bitte laden Sie eine gültige Excel-Datei (.xlsx) hoch."
+
+#: app.py:1346
+#, python-format
+msgid ""
+"Toplu aktarım tamamlandı: %(added)d öğrenci eklendi, %(skipped)d kayıt "
+"atlandı (zaten var veya hatalı)."
+msgstr "Massenimport abgeschlossen: %(added)d Schüler hinzugefügt, %(skipped)d übersprungen."
+
+#: app.py:1349
+#, python-format
+msgid "Dosya işlenirken hata oluştu: %(error)s"
+msgstr "Fehler beim Verarbeiten der Datei: %(error)s"
+
+#: app.py:1370
+msgid "Ayarlar güncellendi!"
+msgstr "Einstellungen aktualisiert!"
+
+#: app.py:1475
+msgid "Yetkisiz işlem."
+msgstr "Unbefugte Aktion."
+
+#: app.py:1482
+msgid "Eksik parametre."
+msgstr "Fehlender Parameter."
+
+#: app.py:1497
+msgid "Geçersiz işlem."
+msgstr "Ungültige Aktion."
+
+#: app.py:1631
+msgid "Sınıf adı belirtilmedi."
+msgstr "Klassenname nicht angegeben."
+
+#: app.py:1649
+msgid "Geçersiz rapor türü."
+msgstr "Ungültiger Berichtstyp."
+
+#: templates/add_book.html:3 templates/dashboard.html:534
+#, fuzzy
+msgid "Kitap Ekle"
+msgstr "Bücher"
+
+#: templates/add_book.html:15
+#, fuzzy
+msgid ""
+"YENİ\n"
+"                        KİTAP EKLE"
+msgstr "Datenübertragung"
+
+#: templates/add_book.html:24
+msgid "Barkod Okutun"
+msgstr ""
+
+#: templates/add_book.html:26 templates/base.html:302
+#: templates/dashboard.html:447 templates/pdf_report.html:201
+#, fuzzy
+msgid "Kapat"
+msgstr "Bücher"
+
+#: templates/add_book.html:31
+msgid "Kamera açılamıyor!"
+msgstr ""
+
+#: templates/add_book.html:32
+msgid "Güvenlik gereği kamera sadece <b>HTTPS</b> bağlantısı ile çalışır."
+msgstr ""
+
+#: templates/add_book.html:33
+msgid ""
+"Lütfen adres çubuğundaki adresi <code>http://</code> yerine "
+"<code>https://</code> olarak\n"
+"                        değiştirip tekrar girin."
+msgstr ""
+
+#: templates/add_book.html:38
+msgid "Kamerayı barkoda tutun. Otomatik algılanacaktır."
+msgstr ""
+
+#: templates/add_book.html:47
+msgid "ISBN / BARKOD"
+msgstr ""
+
+#: templates/add_book.html:52
+msgid "Barkod okutun veya ISBN girin..."
+msgstr ""
+
+#: templates/add_book.html:64 templates/add_book.html:249
+msgid "Bilgileri Getir"
+msgstr ""
+
+#: templates/add_book.html:67
+msgid ""
+"Barkodu\n"
+"                            okuttuğunuzda kitap bilgileri otomatik "
+"dolacaktır."
+msgstr ""
+
+#: templates/add_book.html:72 templates/reports.html:97
+#, fuzzy
+msgid "KİTAP ADI"
+msgstr "Bücher"
+
+#: templates/add_book.html:77 templates/reports.html:98
+#, fuzzy
+msgid "YAZAR"
+msgstr "Einstellungen"
+
+#: templates/add_book.html:83
+#, fuzzy
+msgid ""
+"Detaylı Bilgiler (Otomatik\n"
+"                            Dolar)"
+msgstr "Helles Thema (Standard)"
+
+#: templates/add_book.html:88 templates/book_detail.html:47
+msgid "KATEGORİ"
+msgstr ""
+
+#: templates/add_book.html:92 templates/book_detail.html:51
+msgid "YAYINEVİ"
+msgstr ""
+
+#: templates/add_book.html:96 templates/book_detail.html:55
+msgid "BASIM YILI"
+msgstr ""
+
+#: templates/add_book.html:101 templates/book_detail.html:59
+msgid "SAYFA SAYISI"
+msgstr ""
+
+#: templates/add_book.html:106 templates/book_detail.html:65
+msgid "AÇIKLAMA"
+msgstr ""
+
+#: templates/add_book.html:113 templates/add_student.html:62
+msgid "KAYDET"
+msgstr ""
+
+#: templates/add_book.html:208
+msgid "Aranıyor..."
+msgstr ""
+
+#: templates/add_book.html:210
+msgid "Veritabanı taranıyor..."
+msgstr ""
+
+#: templates/add_book.html:233
+msgid "Kitap bulundu ve bilgiler dolduruldu!"
+msgstr ""
+
+#: templates/add_book.html:242
+msgid "Kayıt bulunamadı. Lütfen bilgileri manuel giriniz."
+msgstr ""
+
+#: templates/add_student.html:3 templates/dashboard.html:552
+#, fuzzy
+msgid "Öğrenci Ekle"
+msgstr "Schüler"
+
+#: templates/add_student.html:11
+#, fuzzy
+msgid ""
+"YENİ\n"
+"                        ÖĞRENCİ EKLE"
+msgstr "Allgemeine Einstellungen"
+
+#: templates/add_student.html:22
+msgid "AD"
+msgstr ""
+
+#: templates/add_student.html:26
+msgid "SOYAD"
+msgstr ""
+
+#: templates/add_student.html:31
+#, fuzzy
+msgid "OKUL NUMARASI"
+msgstr "SCHULNAME"
+
+#: templates/add_student.html:36 templates/reports.html:46
+msgid "SINIF"
+msgstr ""
+
+#: templates/add_student.html:42
+#, fuzzy
+msgid ""
+"İletişim Bilgileri (İsteğe\n"
+"                                Bağlı)"
+msgstr "Helles Thema (Standard)"
+
+#: templates/add_student.html:47 templates/student_detail.html:219
+msgid "E-POSTA"
+msgstr ""
+
+#: templates/add_student.html:51 templates/student_detail.html:223
+msgid "TELEFON"
+msgstr ""
+
+#: templates/add_student.html:55 templates/student_detail.html:227
+#, fuzzy
+msgid "ADRES"
+msgstr "IP-Adresse"
+
+#: templates/base.html:7
+msgid "Kütüphane Yönetim Sistemi"
+msgstr ""
+
+#: templates/base.html:7
+#, fuzzy
+msgid "Kütüphane Otomasyonu"
+msgstr "BIBLIOTHEK"
+
+#: templates/base.html:165 templates/base.html:167 templates/verify_2fa.html:70
+msgid "Yükleniyor..."
+msgstr ""
+
+#: templates/base.html:209
+msgid "KÜTÜPHANE"
+msgstr "BIBLIOTHEK"
+
+#: templates/base.html:214
+msgid "Genel Bakış"
+msgstr "Überblick"
+
+#: templates/base.html:218 templates/base.html:436 templates/reports.html:216
+#: templates/students.html:3 templates/students.html:143
+msgid "Öğrenciler"
+msgstr "Schüler"
+
+#: templates/base.html:221 templates/base.html:417 templates/books.html:3
+#: templates/reports.html:219
+msgid "Kitaplar"
+msgstr "Bücher"
+
+#: templates/base.html:224 templates/loans.html:3 templates/loans.html:175
+msgid "Emanet İşlemleri"
+msgstr "Ausleihen"
+
+#: templates/base.html:230 templates/base.html:440 templates/dashboard.html:561
+#: templates/statistics.html:3 templates/statistics.html:273
+msgid "İstatistikler"
+msgstr "Statistiken"
+
+#: templates/base.html:233 templates/base.html:444 templates/reports.html:3
+#: templates/reports.html:208
+msgid "Raporlar"
+msgstr "Berichte"
+
+#: templates/base.html:239 templates/base.html:448 templates/settings.html:3
+msgid "Ayarlar"
+msgstr "Einstellungen"
+
+#: templates/base.html:244 templates/base.html:451
+msgid "Çıkış Yap"
+msgstr "Abmelden"
+
+#: templates/base.html:288
+msgid "Sistem Yöneticisi"
+msgstr ""
+
+#: templates/base.html:312
+msgid "Ana Menüye Dön"
+msgstr ""
+
+#: templates/base.html:343
+#, fuzzy
+msgid "Nöbetçi Girişi"
+msgstr "Wächter"
+
+#: templates/base.html:345
+msgid ""
+"Nöbetçi sistemini aktif etmek için lütfen <strong>Kendi Okul "
+"Numaranızı</strong>\n"
+"                        giriniz."
+msgstr ""
+
+#: templates/base.html:355
+msgid "Örn: 1234"
+msgstr ""
+
+#: templates/base.html:358
+msgid "Sisteme Giriş Yap"
+msgstr ""
+
+#: templates/base.html:390 templates/base.html:684 templates/loans.html:428
+msgid "Hata:"
+msgstr ""
+
+#: templates/base.html:393
+msgid "Bir hata oluştu:"
+msgstr ""
+
+#: templates/base.html:409
+msgid "Ana Sayfa"
+msgstr ""
+
+#: templates/base.html:413 templates/dashboard.html:115
+#: templates/dashboard.html:213 templates/dashboard.html:506
+#: templates/dashboard.html:589
+#, fuzzy
+msgid "Emanet"
+msgstr "THEMA"
+
+#: templates/base.html:422
+msgid "Diğer"
+msgstr ""
+
+#: templates/base.html:430
+msgid "Menü"
+msgstr ""
+
+#: templates/base.html:464
+msgid "YENİ GİRİŞ İSTEĞİ!"
+msgstr ""
+
+#: templates/base.html:466
+msgid "Hesabınıza yeni bir cihazdan giriş yapılmak isteniyor."
+msgstr ""
+
+#: templates/base.html:474
+msgid "GİRİŞ KODU"
+msgstr ""
+
+#: templates/base.html:479
+msgid "Bu kodu yeni cihaza girdiğinizde oturum açılacaktır."
+msgstr ""
+
+#: templates/base.html:483
+msgid "İSTEĞİ REDDET / İPTAL ET"
+msgstr ""
+
+#: templates/base.html:557
+#, fuzzy
+msgid "Yeni cihaz girişi onaylandı!"
+msgstr "Code bei Anmeldung von neuen Geräten anfordern"
+
+#: templates/base.html:587
+msgid "QR Tarayıcı"
+msgstr ""
+
+#: templates/base.html:593
+msgid "Masaüstü ekrandaki QR kodu okutarak hızlı giriş yapabilirsiniz."
+msgstr ""
+
+#: templates/base.html:623
+msgid ""
+"HATA: Güvenlik nedeniyle (HTTPS protokolü gerekli), tarayıcı kamera "
+"erişimini engelliyor."
+msgstr ""
+
+#: templates/base.html:624
+msgid "Çözüm (Chrome/Android):"
+msgstr ""
+
+#: templates/base.html:641
+msgid "Kamera başlatılamadı:"
+msgstr ""
+
+#: templates/base.html:641
+msgid "Lütfen tarayıcı izinlerini kontrol edin."
+msgstr ""
+
+#: templates/base.html:644
+msgid "Kamera cihazı bulunamadı. Lütfen izinlerinizi kontrol edin."
+msgstr ""
+
+#: templates/base.html:648
+msgid "Kamera erişimi reddedildi veya desteklenmiyor."
+msgstr ""
+
+#: templates/base.html:648
+msgid ""
+"Eğer yerel ağdan bağlanıyorsanız, tarayıcı güvenliği kamerayı engellemiş "
+"olabilir."
+msgstr ""
+
+#: templates/base.html:682
+msgid "Giriş Başarıyla Onaylandı!"
+msgstr ""
+
+#: templates/base.html:687
+msgid "Bağlantı hatası:"
+msgstr ""
+
+#: templates/book_detail.html:3
+#, fuzzy
+msgid "Kitap Detayı"
+msgstr "Bücher"
+
+#: templates/book_detail.html:19 templates/books.html:51
+#: templates/books.html:216
+msgid "RAFTA"
+msgstr ""
+
+#: templates/book_detail.html:21 templates/book_detail.html:103
+#: templates/books.html:54 templates/books.html:217
+#: templates/pdf_report.html:281 templates/reports.html:117
+#: templates/reports.html:583 templates/student_detail.html:42
+#: templates/student_detail.html:264
+msgid "EMANETTE"
+msgstr ""
+
+#: templates/book_detail.html:27 templates/student_detail.html:192
+msgid "Listeye Dön"
+msgstr ""
+
+#: templates/book_detail.html:37
+#, fuzzy
+msgid ""
+"KİTAP\n"
+"                    BİLGİLERİ"
+msgstr "Passwort-Operationen"
+
+#: templates/book_detail.html:43 templates/books.html:35
+#: templates/edit_book.html:29 templates/pdf_report.html:265
+#: templates/reports.html:96 templates/reports.html:571
+msgid "ISBN"
+msgstr ""
+
+#: templates/book_detail.html:75
+#, fuzzy
+msgid ""
+"HAREKET\n"
+"                    GEÇMİŞİ"
+msgstr "Passwort-Operationen"
+
+#: templates/book_detail.html:83 templates/dashboard.html:75
+#: templates/dashboard.html:193 templates/dashboard.html:254
+#: templates/dashboard.html:480 templates/loans.html:120
+#: templates/pdf_report.html:294 templates/reports.html:463
+#: templates/statistics.html:108 templates/statistics.html:159
+#, fuzzy
+msgid "Öğrenci"
+msgstr "Schüler"
+
+#: templates/book_detail.html:84 templates/student_detail.html:31
+#: templates/student_detail.html:245
+msgid "Veriliş Tarihi"
+msgstr ""
+
+#: templates/book_detail.html:85 templates/student_detail.html:32
+#: templates/student_detail.html:246
+msgid "İade Tarihi"
+msgstr ""
+
+#: templates/book_detail.html:86 templates/books.html:38
+#: templates/dashboard.html:196 templates/pdf_report.html:268
+#: templates/pdf_report.html:296 templates/reports.html:465
+#: templates/reports.html:574 templates/security_dashboard.html:87
+#: templates/settings.html:180 templates/student_detail.html:33
+#: templates/student_detail.html:247
+msgid "Durum"
+msgstr "Status"
+
+#: templates/book_detail.html:105 templates/student_detail.html:42
+#: templates/student_detail.html:266
+msgid "İADE EDİLDİ"
+msgstr ""
+
+#: templates/book_detail.html:113 templates/student_detail.html:274
+msgid "Henüz işlem kaydı bulunmuyor."
+msgstr ""
+
+#: templates/books.html:11
+#, fuzzy
+msgid "Kitap Listesi"
+msgstr "Schülerliste"
+
+#: templates/books.html:13
+#, fuzzy
+msgid "Yeni Kitap"
+msgstr "Neues Passwort"
+
+#: templates/books.html:22
+msgid "Kitap adı, yazar veya ISBN ile ara..."
+msgstr ""
+
+#: templates/books.html:23 templates/students.html:24
+#, fuzzy
+msgid "Ara"
+msgstr "Einstellungen"
+
+#: templates/books.html:25 templates/students.html:26
+msgid "Temizle"
+msgstr ""
+
+#: templates/books.html:36 templates/edit_book.html:18
+#: templates/pdf_report.html:266 templates/reports.html:572
+#: templates/statistics.html:237 templates/student_detail.html:30
+#: templates/student_detail.html:244
+#, fuzzy
+msgid "Kitap Adı"
+msgstr "Bücher"
+
+#: templates/books.html:37 templates/edit_book.html:23
+#: templates/pdf_report.html:267 templates/reports.html:573
+#: templates/statistics.html:238
+#, fuzzy
+msgid "Yazar"
+msgstr "Einstellungen"
+
+#: templates/books.html:39 templates/students.html:40
+#, fuzzy
+msgid "İşlemler"
+msgstr "Aktion"
+
+#: templates/books.html:60 templates/books.html:152 templates/books.html:226
+#: templates/books.html:263 templates/dashboard.html:197
+#: templates/students.html:70 templates/students.html:188
+#: templates/students.html:266 templates/students.html:305
+msgid "Detay"
+msgstr ""
+
+#: templates/books.html:66 templates/books.html:228
+msgid "Bu kitabı silmek istediğinizden emin misiniz?"
+msgstr ""
+
+#: templates/books.html:78
+msgid "Kayıtlı kitap bulunamadı."
+msgstr ""
+
+#: templates/books.html:88 templates/students.html:92
+#, fuzzy
+msgid "Sayfalama"
+msgstr "Einstellungen"
+
+#: templates/books.html:93 templates/students.html:98
+msgid "Önceki"
+msgstr ""
+
+#: templates/books.html:117 templates/students.html:124
+msgid "Sonraki"
+msgstr ""
+
+#: templates/books.html:140 templates/books.html:249
+msgid "Rafta"
+msgstr ""
+
+#: templates/books.html:143 templates/books.html:250
+msgid "Emanette"
+msgstr ""
+
+#: templates/books.html:154 templates/books.html:264 templates/students.html:74
+#: templates/students.html:190 templates/students.html:269
+#: templates/students.html:306
+msgid "Düzenle"
+msgstr ""
+
+#: templates/books.html:156 templates/books.html:265
+msgid "Silmek istediğinizden emin misiniz?"
+msgstr ""
+
+#: templates/books.html:159 templates/books.html:267
+msgid "Sil"
+msgstr ""
+
+#: templates/books.html:167
+msgid "Kitap bulunamadı."
+msgstr ""
+
+#: templates/books.html:211 templates/books.html:244
+#: templates/students.html:243 templates/students.html:283
+msgid "Sonuç bulunamadı."
+msgstr ""
+
+#: templates/create_watcher.html:3
+msgid "Nöbetçi Öğrenci Oluştur"
+msgstr ""
+
+#: templates/create_watcher.html:14
+#, fuzzy
+msgid "Nöbetçi Hesabı"
+msgstr "Wächter"
+
+#: templates/create_watcher.html:15
+msgid "Kısıtlı yetkilere sahip nöbetçi öğrenci hesabı oluşturun."
+msgstr ""
+
+#: templates/create_watcher.html:22
+msgid "Dikkat:"
+msgstr ""
+
+#: templates/create_watcher.html:22
+msgid ""
+"Bu hesap türü ile <u>İstatistikler</u>,\n"
+"                            <u>Raporlar</u> ve <u>Ayarlar</u> sayfalarına"
+" erişim sağlanamaz."
+msgstr ""
+
+#: templates/create_watcher.html:32 templates/register.html:22
+#, fuzzy
+msgid "KULLANICI ADI"
+msgstr "SCHULNAME"
+
+#: templates/create_watcher.html:38
+msgid "Örn: nobetci_1"
+msgstr ""
+
+#: templates/create_watcher.html:43 templates/register.html:33
+#, fuzzy
+msgid "ŞİFRE"
+msgstr "Neues Passwort"
+
+#: templates/create_watcher.html:54
+#, fuzzy
+msgid "Nöbetçi Oluştur"
+msgstr "Wächter"
+
+#: templates/dashboard.html:9 templates/dashboard.html:527
+#, fuzzy
+msgid "Hızlı İşlemler"
+msgstr "Ausleihen"
+
+#: templates/dashboard.html:17
+#, fuzzy
+msgid "ÖĞRENCİ EKLE"
+msgstr "Schüler"
+
+#: templates/dashboard.html:27
+#, fuzzy
+msgid "KİTAP EKLE"
+msgstr "Bücher"
+
+#: templates/dashboard.html:37 templates/loans.html:101
+#, fuzzy
+msgid "EMANET VER"
+msgstr "Ausleihen"
+
+#: templates/dashboard.html:44
+#, fuzzy
+msgid "Ayarlar / Çıkış"
+msgstr "Einstellungen"
+
+#: templates/dashboard.html:53
+msgid "Hoş Geldiniz, Yönetici 👋"
+msgstr ""
+
+#: templates/dashboard.html:54 templates/dashboard.html:416
+msgid "Bugün"
+msgstr ""
+
+#: templates/dashboard.html:79
+msgid "Toplam Kayıtlı"
+msgstr ""
+
+#: templates/dashboard.html:95 templates/dashboard.html:194
+#: templates/dashboard.html:255 templates/dashboard.html:493
+#: templates/loans.html:121 templates/pdf_report.html:295
+#: templates/reports.html:61 templates/reports.html:256
+#: templates/reports.html:464 templates/statistics.html:110
+#: templates/statistics.html:161 templates/statistics.html:211
+#: templates/statistics.html:382
+#, fuzzy
+msgid "Kitap"
+msgstr "Bücher"
+
+#: templates/dashboard.html:99
+#, fuzzy
+msgid "Kütüphane Envanteri"
+msgstr "BIBLIOTHEK"
+
+#: templates/dashboard.html:119
+#, fuzzy
+msgid "Okunan Kitaplar"
+msgstr "Bücher"
+
+#: templates/dashboard.html:134 templates/dashboard.html:519
+#: templates/loans.html:201 templates/reports.html:182
+#: templates/reports.html:333
+msgid "Gecikmiş"
+msgstr ""
+
+#: templates/dashboard.html:138
+msgid "Acil İade Bekleyen"
+msgstr ""
+
+#: templates/dashboard.html:152
+msgid "Hızlı Erişim"
+msgstr ""
+
+#: templates/dashboard.html:156 templates/dashboard.html:543
+#, fuzzy
+msgid "Emanet Ver"
+msgstr "Ausleihen"
+
+#: templates/dashboard.html:160
+#, fuzzy
+msgid "Öğrenci Kayıt"
+msgstr "Schülerliste"
+
+#: templates/dashboard.html:164
+#, fuzzy
+msgid "Kitap Kayıt"
+msgstr "Bücher"
+
+#: templates/dashboard.html:184 templates/dashboard.html:569
+msgid "Son Hareketler"
+msgstr ""
+
+#: templates/dashboard.html:185
+#, fuzzy
+msgid ""
+"Tümünü\n"
+"                                Gör"
+msgstr "AUSLEIHFRIST (TAGE)"
+
+#: templates/dashboard.html:195 templates/pdf_report.html:293
+#: templates/student_detail.html:15
+msgid "Tarih"
+msgstr ""
+
+#: templates/dashboard.html:217 templates/dashboard.html:591
+#: templates/loans.html:148 templates/reports.html:175
+msgid "İade"
+msgstr ""
+
+#: templates/dashboard.html:229
+#, fuzzy
+msgid "İşlem yok."
+msgstr "Aktion"
+
+#: templates/dashboard.html:246
+msgid "Gecikmiş İadeler"
+msgstr ""
+
+#: templates/dashboard.html:256
+msgid "Teslim Tarihi"
+msgstr ""
+
+#: templates/dashboard.html:257 templates/loans.html:124
+#: templates/security_dashboard.html:123 templates/settings.html:181
+#: templates/statistics.html:239
+msgid "İşlem"
+msgstr "Aktion"
+
+#: templates/dashboard.html:275
+msgid "İade Al"
+msgstr ""
+
+#: templates/dashboard.html:282
+msgid "Sorun yok!"
+msgstr ""
+
+#: templates/dashboard.html:311
+msgid "Pzt"
+msgstr ""
+
+#: templates/dashboard.html:312
+msgid "Sal"
+msgstr ""
+
+#: templates/dashboard.html:313
+msgid "Çar"
+msgstr ""
+
+#: templates/dashboard.html:314
+msgid "Per"
+msgstr ""
+
+#: templates/dashboard.html:315
+msgid "Cum"
+msgstr ""
+
+#: templates/dashboard.html:316
+msgid "Cmt"
+msgstr ""
+
+#: templates/dashboard.html:317
+msgid "Paz"
+msgstr ""
+
+#: templates/dashboard.html:421
+msgid "Acil/Gecikmiş"
+msgstr ""
+
+#: templates/dashboard.html:423
+msgid "Yaklaşan"
+msgstr ""
+
+#: templates/dashboard.html:441
+msgid "Bu tarihte iadesi beklenen kitaplar:"
+msgstr ""
+
+#: templates/dashboard.html:461
+msgid "Merhaba, Yönetici 👋"
+msgstr ""
+
+#: templates/dashboard.html:570
+msgid "Tümü"
+msgstr ""
+
+#: templates/dashboard.html:597
+msgid "Herhangi bir işlem yok."
+msgstr ""
+
+#: templates/edit_book.html:3
+msgid "Kitap Düzenle"
+msgstr ""
+
+#: templates/edit_book.html:10
+msgid "Kitap Bilgilerini Düzenle"
+msgstr ""
+
+#: templates/edit_book.html:34
+msgid "Kategori"
+msgstr ""
+
+#: templates/edit_book.html:40
+msgid "Yayınevi"
+msgstr ""
+
+#: templates/edit_book.html:45
+msgid "Yayın Yılı"
+msgstr ""
+
+#: templates/edit_book.html:51
+msgid "Açıklama"
+msgstr ""
+
+#: templates/edit_book.html:58 templates/edit_student.html:63
+#: templates/edit_student.html:89 templates/loans.html:45
+#: templates/register.html:47
+msgid "İptal"
+msgstr ""
+
+#: templates/edit_book.html:60 templates/edit_student.html:65
+#: templates/settings.html:76
+msgid "Değişiklikleri Kaydet"
+msgstr "Änderungen speichern"
+
+#: templates/edit_student.html:3
+#, fuzzy
+msgid "Öğrenci Düzenle"
+msgstr "Schüler"
+
+#: templates/edit_student.html:10
+msgid "Öğrenci Bilgilerini Düzenle"
+msgstr ""
+
+#: templates/edit_student.html:19 templates/loans.html:50
+msgid "Ad"
+msgstr ""
+
+#: templates/edit_student.html:24 templates/loans.html:54
+msgid "Soyad"
+msgstr ""
+
+#: templates/edit_student.html:30
+msgid "Okul Numarası"
+msgstr ""
+
+#: templates/edit_student.html:35 templates/pdf_report.html:245
+#: templates/reports.html:519 templates/statistics.html:109
+#: templates/statistics.html:160 templates/statistics.html:200
+#: templates/students.html:38
+msgid "Sınıf"
+msgstr ""
+
+#: templates/edit_student.html:41
+msgid "E-posta"
+msgstr ""
+
+#: templates/edit_student.html:46
+msgid "Telefon"
+msgstr ""
+
+#: templates/edit_student.html:51
+#, fuzzy
+msgid "Adres"
+msgstr "IP-Adresse"
+
+#: templates/edit_student.html:60
+#, fuzzy
+msgid "Öğrenciyi Sil"
+msgstr "Schülerliste"
+
+#: templates/edit_student.html:79
+#, fuzzy
+msgid "Öğrenci Silinecek"
+msgstr "Schülerliste"
+
+#: templates/edit_student.html:83
+msgid ""
+"isimli öğrenciyi silmek\n"
+"                    istediğinizden emin misiniz?"
+msgstr ""
+
+#: templates/edit_student.html:85
+msgid ""
+"Bu işlem geri\n"
+"                    alınamaz ve öğrenciye ait tüm geçmiş kayıtlar da "
+"silinebilir."
+msgstr ""
+
+#: templates/edit_student.html:92
+msgid "Evet, Sil"
+msgstr ""
+
+#: templates/id_card.html:6 templates/student_detail.html:211
+msgid "Kimlik Kartı"
+msgstr ""
+
+#: templates/id_card.html:148
+msgid "Kimlik Kartı Önizleme"
+msgstr ""
+
+#: templates/id_card.html:149
+msgid "Kartı gördükten sonra indir butonuna basınız."
+msgstr ""
+
+#: templates/id_card.html:152
+msgid "Geri Dön"
+msgstr ""
+
+#: templates/id_card.html:155
+msgid "PDF İndir"
+msgstr ""
+
+#: templates/id_card.html:164
+#, fuzzy
+msgid "KÜTÜPHANE KİMLİK"
+msgstr "BIBLIOTHEK"
+
+#: templates/loans.html:14
+#, fuzzy
+msgid "EMANET VERME"
+msgstr "Ausleihen"
+
+#: templates/loans.html:21
+msgid "ÖĞRENCİ SEÇİNİZ VEYA EKLEYİNİZ"
+msgstr ""
+
+#: templates/loans.html:30
+msgid "Öğrenci Ara veya Okul No..."
+msgstr ""
+
+#: templates/loans.html:43 templates/students.html:13
+#, fuzzy
+msgid "Yeni Öğrenci"
+msgstr "Schüler"
+
+#: templates/loans.html:60
+#, fuzzy
+msgid "Okul No"
+msgstr "SCHULNAME"
+
+#: templates/loans.html:65
+msgid "Sınıf (Örn: 9-A)"
+msgstr ""
+
+#: templates/loans.html:72
+msgid "KİTAP SEÇİNİZ VEYA EKLEYİNİZ"
+msgstr ""
+
+#: templates/loans.html:81
+msgid "Kitap Ara veya Barkod Okut..."
+msgstr ""
+
+#: templates/loans.html:112
+#, fuzzy
+msgid ""
+"AKTİF\n"
+"                        EMANET LİSTESİ"
+msgstr "Bücherliste"
+
+#: templates/loans.html:122 templates/loans.html:211 templates/reports.html:462
+msgid "Veriliş"
+msgstr ""
+
+#: templates/loans.html:123
+#, fuzzy
+msgid "Teslim"
+msgstr "THEMA"
+
+#: templates/loans.html:145 templates/loans.html:215
+msgid "Bu iadeyi geri almak istediğinize emin misiniz?"
+msgstr ""
+
+#: templates/loans.html:157
+msgid "Aktif emanet kaydı bulunmamaktadır."
+msgstr ""
+
+#: templates/loans.html:176
+#, fuzzy
+msgid "Aktif İşlem"
+msgstr "Aktion"
+
+#: templates/loans.html:219
+msgid "İade Et"
+msgstr ""
+
+#: templates/loans.html:230
+msgid "Henüz emanet kaydı yok"
+msgstr ""
+
+#: templates/loans.html:231
+msgid "Hemen sağ üstteki + butonuna basarak ekleyin."
+msgstr ""
+
+#: templates/loans.html:242
+msgid "Yeni Emanet Ver"
+msgstr ""
+
+#: templates/loans.html:250
+#, fuzzy
+msgid ""
+"ÖĞRENCİ\n"
+"                            SEÇİNİZ"
+msgstr "AUSLEIHFRIST (TAGE)"
+
+#: templates/loans.html:257
+msgid "Bir öğrenci seçin..."
+msgstr ""
+
+#: templates/loans.html:267
+#, fuzzy
+msgid ""
+"KİTAP\n"
+"                            SEÇİNİZ"
+msgstr "Bücherliste"
+
+#: templates/loans.html:273
+msgid "Bir kitap seçin..."
+msgstr ""
+
+#: templates/loans.html:283
+msgid "EMANETİ ONAYLA"
+msgstr ""
+
+#: templates/loans.html:287
+msgid "Vazgeç"
+msgstr ""
+
+#: templates/loans.html:362
+msgid "Kitap bilgileri bulunamadı, lütfen manuel giriniz."
+msgstr ""
+
+#: templates/loans.html:380
+msgid "Lütfen kitap adını giriniz."
+msgstr ""
+
+#: templates/loans.html:387
+msgid "Kaydediliyor..."
+msgstr ""
+
+#: templates/loans.html:424
+msgid ""
+"Kitap başarıyla kaydedildi! Şimdi lütfen öğrenciyi seçip EMANET VER "
+"butonuna basınız."
+msgstr ""
+
+#: templates/loans.html:428
+msgid "Kitap eklenemedi."
+msgstr ""
+
+#: templates/loans.html:433
+msgid "Bir bağlantı hatası oluştu."
+msgstr ""
+
+#: templates/loans.html:500
+#, fuzzy
+msgid "Ekle"
+msgstr "Hochladen"
+
+#: templates/loans.html:551
+#, fuzzy
+msgid "Yeni Öğrenci Ekle"
+msgstr "Schüler"
+
+#: templates/login.html:50
+msgid "Kullanıcı Adı"
+msgstr ""
+
+#: templates/login.html:53
+msgid "Örn: admin"
+msgstr ""
+
+#: templates/login.html:59
+#, fuzzy
+msgid "Şifre"
+msgstr "Neues Passwort"
+
+#: templates/login.html:71
+msgid "Beni hatırla"
+msgstr ""
+
+#: templates/login.html:77
+msgid "Hızlı Giriş"
+msgstr ""
+
+#: templates/login.html:80
+msgid "Şifremi Unuttum?"
+msgstr ""
+
+#: templates/login.html:86
+msgid "Giriş Yap"
+msgstr ""
+
+#: templates/login.html:91
+msgid "Demo Giriş:"
+msgstr ""
+
+#: templates/pdf_report.html:6
+msgid "Rapor Önizleme"
+msgstr ""
+
+#: templates/pdf_report.html:207
+msgid "İndir / Yazdır"
+msgstr ""
+
+#: templates/pdf_report.html:223
+msgid "OKUL KÜTÜPHANESİ - ÖĞRENCİ OKUMA RAPORU"
+msgstr ""
+
+#: templates/pdf_report.html:225
+msgid "OKUL KÜTÜPHANESİ - KİTAP ENVANTER LİSTESİ"
+msgstr ""
+
+#: templates/pdf_report.html:227
+msgid "OKUL KÜTÜPHANESİ - DETAYLI HAREKET DÖKÜMÜ"
+msgstr ""
+
+#: templates/pdf_report.html:233 templates/reports.html:453
+#: templates/reports.html:506 templates/reports.html:563
+msgid "Tarih:"
+msgstr ""
+
+#: templates/pdf_report.html:234
+msgid "Saat:"
+msgstr ""
+
+#: templates/pdf_report.html:243 templates/students.html:36
+#: templates/students.html:181 templates/students.html:299
+msgid "No"
+msgstr ""
+
+#: templates/pdf_report.html:244
+msgid "Öğrenci Adı Soyadı"
+msgstr ""
+
+#: templates/pdf_report.html:246 templates/reports.html:520
+#: templates/statistics.html:84
+msgid "Okunan Kitap"
+msgstr ""
+
+#: templates/pdf_report.html:279 templates/reports.html:112
+#: templates/reports.html:583
+#, fuzzy
+msgid "MEVCUT"
+msgstr "Aktuelles Passwort"
+
+#: templates/pdf_report.html:308 templates/reports.html:476
+msgid "İADE"
+msgstr ""
+
+#: templates/pdf_report.html:310 templates/reports.html:478
+msgid "OKUNUYOR"
+msgstr ""
+
+#: templates/pdf_report.html:323 templates/reports.html:538
+#, fuzzy
+msgid "Raporu Alan"
+msgstr "Berichte"
+
+#: templates/pdf_report.html:327 templates/reports.html:490
+#: templates/reports.html:593 templates/student_detail.html:61
+#, fuzzy
+msgid "Kütüphane Sorumlusu"
+msgstr "BIBLIOTHEK"
+
+#: templates/pdf_report.html:328
+msgid "İmza"
+msgstr ""
+
+#: templates/pdf_report.html:331
+#, fuzzy
+msgid "Okul Müdürü"
+msgstr "SCHULNAME"
+
+#: templates/pdf_report.html:332
+msgid "Onay / Kaşe"
+msgstr ""
+
+#: templates/register.html:3
+msgid "Öğretmen Hesabı Ekle"
+msgstr ""
+
+#: templates/register.html:14
+#, fuzzy
+msgid "Öğretmen Ekle"
+msgstr "Lehrer"
+
+#: templates/register.html:15
+msgid "Sistemi kullanacak yeni bir yetkili hesabı oluşturun."
+msgstr ""
+
+#: templates/register.html:28
+msgid "Örn: ahmet_hoca"
+msgstr ""
+
+#: templates/register.html:44
+msgid "Hesabı Oluştur"
+msgstr ""
+
+#: templates/reports.html:11
+#, fuzzy
+msgid ""
+"Rapor\n"
+"                Merkezi"
+msgstr "Passwort-Operationen"
+
+#: templates/reports.html:14
+msgid "Sistemdeki kayıtların detaylı dökümlerini görüntüleyin ve yazdırın."
+msgstr ""
+
+#: templates/reports.html:30
+#, fuzzy
+msgid "Öğrenci Okuma Listesi"
+msgstr "Schülerliste"
+
+#: templates/reports.html:31
+msgid "En çok kitap okuyan öğrencilerin sıralı listesi"
+msgstr ""
+
+#: templates/reports.html:36
+msgid "Raporu İndir"
+msgstr ""
+
+#: templates/reports.html:44
+msgid "NO"
+msgstr ""
+
+#: templates/reports.html:45
+msgid "AD SOYAD"
+msgstr ""
+
+#: templates/reports.html:47 templates/statistics.html:295
+msgid "OKUNAN"
+msgstr ""
+
+#: templates/reports.html:82
+#, fuzzy
+msgid "Kitap Envanteri"
+msgstr "Bücher"
+
+#: templates/reports.html:83
+msgid "Kütüphanedeki tüm kitapların güncel durumu"
+msgstr ""
+
+#: templates/reports.html:88
+msgid "Listeyi İndir"
+msgstr ""
+
+#: templates/reports.html:99
+#, fuzzy
+msgid "DURUM"
+msgstr "Status"
+
+#: templates/reports.html:141
+msgid "Detaylı Hareket Geçmişi"
+msgstr ""
+
+#: templates/reports.html:142
+msgid "Tüm zamanların ödünç alma ve iade işlemleri"
+msgstr ""
+
+#: templates/reports.html:148
+msgid "Dökümü İndir"
+msgstr ""
+
+#: templates/reports.html:156
+msgid "VERİLİŞ TARİHİ"
+msgstr ""
+
+#: templates/reports.html:157 templates/statistics.html:282
+#, fuzzy
+msgid "ÖĞRENCİ"
+msgstr "Schüler"
+
+#: templates/reports.html:158 templates/statistics.html:288
+#, fuzzy
+msgid "KİTAP"
+msgstr "Bücher"
+
+#: templates/reports.html:159
+msgid "DURUM / İADE"
+msgstr ""
+
+#: templates/reports.html:187 templates/reports.html:337
+msgid "Okunuyor"
+msgstr ""
+
+#: templates/reports.html:209
+msgid "Sistem Dökümleri"
+msgstr ""
+
+#: templates/reports.html:222
+msgid "Geçmiş"
+msgstr ""
+
+#: templates/reports.html:234
+#, fuzzy
+msgid "Öğrenci Listesi (PDF)"
+msgstr "Schülerliste"
+
+#: templates/reports.html:235
+msgid "Tüm okuma listesini indir"
+msgstr ""
+
+#: templates/reports.html:268
+msgid "Kitap Envanteri (PDF)"
+msgstr ""
+
+#: templates/reports.html:269
+msgid "Tüm kitap listesini indir"
+msgstr ""
+
+#: templates/reports.html:304
+msgid "Hareket Dökümü (PDF)"
+msgstr ""
+
+#: templates/reports.html:305
+msgid "Tüm işlem geçmişini indir"
+msgstr ""
+
+#: templates/reports.html:329
+msgid "İade:"
+msgstr ""
+
+#: templates/reports.html:450
+msgid "KÜTÜPHANE HAREKET DÖKÜMÜ"
+msgstr ""
+
+#: templates/reports.html:454
+msgid "Detaylı Arşiv Raporu"
+msgstr ""
+
+#: templates/reports.html:478
+msgid "Son:"
+msgstr ""
+
+#: templates/reports.html:503
+msgid "ÖĞRENCİ OKUMA RAPORU"
+msgstr ""
+
+#: templates/reports.html:507
+#, fuzzy
+msgid "Sistem Raporu"
+msgstr "Systemeinstellungen"
+
+#: templates/reports.html:512
+msgid ""
+"Aşağıda, kütüphane sisteminde kayıtlı en çok kitap okuyan öğrencilerin "
+"listesi yer almaktadır."
+msgstr ""
+
+#: templates/reports.html:517
+msgid "Numara"
+msgstr ""
+
+#: templates/reports.html:518 templates/students.html:37
+msgid "Ad Soyad"
+msgstr ""
+
+#: templates/reports.html:544
+msgid "Okul Müdürü / Yetkili"
+msgstr ""
+
+#: templates/reports.html:546
+msgid "İmza / Kaşe"
+msgstr ""
+
+#: templates/reports.html:560
+msgid "KÜTÜPHANE ENVANTER LİSTESİ"
+msgstr ""
+
+#: templates/security_dashboard.html:3
+msgid "Güvenlik"
+msgstr ""
+
+#: templates/security_dashboard.html:9
+#, fuzzy
+msgid "Güvenlik Merkezi"
+msgstr "Sicherheitseinstellungen"
+
+#: templates/security_dashboard.html:10
+msgid "Titanium Koruma Kalkanı Durumu ve İstatistikleri"
+msgstr ""
+
+#: templates/security_dashboard.html:14
+#, fuzzy
+msgid "Sistem Korumada"
+msgstr "Systemeinstellungen"
+
+#: templates/security_dashboard.html:27
+msgid "Toplam"
+msgstr ""
+
+#: templates/security_dashboard.html:47
+#, fuzzy
+msgid "Engellenen Tehdit"
+msgstr "Blockiert"
+
+#: templates/security_dashboard.html:68
+msgid "Yasaklı"
+msgstr ""
+
+#: templates/security_dashboard.html:75
+#, fuzzy
+msgid "Banlanan IP Adresi"
+msgstr "IP-Adresse"
+
+#: templates/security_dashboard.html:88
+msgid "AKTİF"
+msgstr ""
+
+#: templates/security_dashboard.html:94
+msgid "Paranoid Seviye"
+msgstr ""
+
+#: templates/security_dashboard.html:108
+msgid "Son Saldırı Girişimleri"
+msgstr ""
+
+#: templates/security_dashboard.html:110
+msgid "Son 100 Kayıt"
+msgstr ""
+
+#: templates/security_dashboard.html:113
+#, fuzzy
+msgid "Yenile"
+msgstr "Schüler"
+
+#: templates/security_dashboard.html:121
+msgid "Zaman"
+msgstr ""
+
+#: templates/security_dashboard.html:122 templates/settings.html:179
+msgid "IP Adresi"
+msgstr "IP-Adresse"
+
+#: templates/security_dashboard.html:124
+msgid "Bulgu"
+msgstr ""
+
+#: templates/security_dashboard.html:125
+msgid "Yönet"
+msgstr ""
+
+#: templates/security_dashboard.html:135
+msgid "BAN"
+msgstr ""
+
+#: templates/security_dashboard.html:137
+msgid "BLOCK"
+msgstr ""
+
+#: templates/security_dashboard.html:139
+msgid "LOG"
+msgstr ""
+
+#: templates/security_dashboard.html:153
+msgid "Temize Çıkar"
+msgstr ""
+
+#: templates/security_dashboard.html:163
+msgid "Yasakla"
+msgstr ""
+
+#: templates/security_dashboard.html:174
+msgid "Henüz tehdit kaydı bulunmuyor."
+msgstr ""
+
+#: templates/security_dashboard.html:190
+#, fuzzy
+msgid ""
+"Kara\n"
+"                            Liste"
+msgstr "Bücherliste"
+
+#: templates/security_dashboard.html:192
+#, fuzzy
+msgid "Yasaklı IP Adresleri"
+msgstr "IP-Adresse"
+
+#: templates/security_dashboard.html:204 templates/settings.html:190
+msgid "Kaldır"
+msgstr "Entfernen"
+
+#: templates/security_dashboard.html:210
+msgid "Yasaklı IP yok."
+msgstr ""
+
+#: templates/security_dashboard.html:221
+msgid "Tüm Yasakları Kaldır"
+msgstr ""
+
+#: templates/settings.html:8
+msgid "Sistem Ayarları"
+msgstr "Systemeinstellungen"
+
+#: templates/settings.html:9
+msgid "Genel yapılandırma ve güvenlik tercihleri"
+msgstr "Allgemeine Konfiguration und Sicherheitspräferenzen"
+
+#: templates/settings.html:17
+msgid ""
+"Genel\n"
+"                        Ayarlar"
+msgstr "Allgemeine Einstellungen"
+
+#: templates/settings.html:26
+msgid "Güvenlik Tercihleri"
+msgstr "Sicherheitseinstellungen"
+
+#: templates/settings.html:30
+msgid "Farklı Cihaz Doğrulaması"
+msgstr "Verifizierung neuer Geräte"
+
+#: templates/settings.html:31
+msgid "Yeni cihazlardan girişte kod iste"
+msgstr "Code bei Anmeldung von neuen Geräten anfordern"
+
+#: templates/settings.html:42
+msgid "OKUL ADI"
+msgstr "SCHULNAME"
+
+#: templates/settings.html:49
+msgid ""
+"ÖDÜNÇ SÜRESİ\n"
+"                                (GÜN)"
+msgstr "AUSLEIHFRIST (TAGE)"
+
+#: templates/settings.html:56
+msgid "TEMA"
+msgstr "THEMA"
+
+#: templates/settings.html:58
+msgid ""
+"Açık Tema\n"
+"                                    (Varsayılan)"
+msgstr "Helles Thema (Standard)"
+
+#: templates/settings.html:67
+msgid "Kolay Mod"
+msgstr "Einfacher Modus"
+
+#: templates/settings.html:68
+msgid "Basitleştirilmiş arayüz"
+msgstr "Vereinfachte Oberfläche"
+
+#: templates/settings.html:81
+msgid "YÖNETİCİ KISAYOLLARI"
+msgstr "ADMIN-VERKNÜPFUNGEN"
+
+#: templates/settings.html:85
+msgid "Öğretmen"
+msgstr "Lehrer"
+
+#: templates/settings.html:88
+msgid "Nöbetçi"
+msgstr "Wächter"
+
+#: templates/settings.html:101
+msgid ""
+"Şifre\n"
+"                        İşlemleri"
+msgstr "Passwort-Operationen"
+
+#: templates/settings.html:110
+msgid "Mevcut Şifre"
+msgstr "Aktuelles Passwort"
+
+#: templates/settings.html:114
+msgid "Yeni Şifre"
+msgstr "Neues Passwort"
+
+#: templates/settings.html:118
+msgid "Yeni Şifre (Tekrar)"
+msgstr "Neues Passwort (Wiederholen)"
+
+#: templates/settings.html:121
+msgid "Şifreyi Güncelle"
+msgstr "Passwort aktualisieren"
+
+#: templates/settings.html:129
+msgid ""
+"Veri\n"
+"                        Aktarımı"
+msgstr "Datenübertragung"
+
+#: templates/settings.html:138 templates/students.html:11
+msgid "Öğrenci Listesi"
+msgstr "Schülerliste"
+
+#: templates/settings.html:144 templates/settings.html:158
+msgid "Yükle"
+msgstr "Hochladen"
+
+#: templates/settings.html:150
+msgid ""
+"Kitap\n"
+"                                    Listesi"
+msgstr "Bücherliste"
+
+#: templates/settings.html:171
+msgid "Yasaklı IP Listesi (Titanium Guardian)"
+msgstr "Gesperrte IP-Liste (Titanium Guardian)"
+
+#: templates/settings.html:188
+msgid "Engellendi"
+msgstr "Blockiert"
+
+#: templates/settings.html:194
+msgid ""
+"Herhangi bir yasaklı\n"
+"                                        IP bulunmuyor. Sistem güvenli."
+msgstr "Keine gesperrten IPs gefunden. System ist sicher."
+
+#: templates/statistics.html:10
+#, fuzzy
+msgid "İstatistik Merkezi"
+msgstr "Statistiken"
+
+#: templates/statistics.html:11
+msgid "Okul genelindeki okuma oranları ve kütüphane verileri"
+msgstr ""
+
+#: templates/statistics.html:30 templates/statistics.html:54
+#, fuzzy
+msgid "Listeyi Görüntüle"
+msgstr "Passwort aktualisieren"
+
+#: templates/statistics.html:36
+msgid "Toplam Öğrenci"
+msgstr ""
+
+#: templates/statistics.html:60
+msgid "Toplam Kitap"
+msgstr ""
+
+#: templates/statistics.html:78
+msgid "Hareketleri Görüntüle"
+msgstr ""
+
+#: templates/statistics.html:98
+msgid "En Çok Okuyanlar"
+msgstr ""
+
+#: templates/statistics.html:99
+msgid "Okul geneli öğrenci sıralaması"
+msgstr ""
+
+#: templates/statistics.html:149
+msgid "Okumaya Teşvik Edilmeli"
+msgstr ""
+
+#: templates/statistics.html:151
+msgid "En az kitap okuyan öğrenciler"
+msgstr ""
+
+#: templates/statistics.html:190
+msgid "Sınıf Sıralaması"
+msgstr ""
+
+#: templates/statistics.html:191
+msgid "Sınıflara göre toplam okuma sayıları"
+msgstr ""
+
+#: templates/statistics.html:201
+msgid "Toplam Okunan"
+msgstr ""
+
+#: templates/statistics.html:228
+#, fuzzy
+msgid "Popüler Kitaplar"
+msgstr "Bücher"
+
+#: templates/statistics.html:229
+msgid "En çok ödünç alınan kitaplar"
+msgstr ""
+
+#: templates/statistics.html:274
+msgid "Genel Durum ve Sıralamalar"
+msgstr ""
+
+#: templates/statistics.html:304
+msgid "Çok Okuyan"
+msgstr ""
+
+#: templates/statistics.html:307
+msgid "Az Okuyan"
+msgstr ""
+
+#: templates/statistics.html:310
+msgid "Sınıflar"
+msgstr ""
+
+#: templates/statistics.html:321
+msgid "En Çok Okuyan Öğrenciler"
+msgstr ""
+
+#: templates/statistics.html:347
+#, fuzzy
+msgid "En Az Okuyan Öğrenciler"
+msgstr "Schüler"
+
+#: templates/statistics.html:370
+msgid "Sınıf Okuma Sıralaması"
+msgstr ""
+
+#: templates/student_detail.html:3
+#, fuzzy
+msgid "Öğrenci Detayı"
+msgstr "Schüler"
+
+#: templates/student_detail.html:12
+#, fuzzy
+msgid "ÖĞRENCİ KÜTÜPHANE EKSTRESİ"
+msgstr "Schülerliste"
+
+#: templates/student_detail.html:21
+#, fuzzy
+msgid "Öğrenci Bilgileri:"
+msgstr "Schülerliste"
+
+#: templates/student_detail.html:23
+msgid "Sınıf:"
+msgstr ""
+
+#: templates/student_detail.html:26
+#, fuzzy
+msgid "İşlem Geçmişi"
+msgstr "Aktion"
+
+#: templates/student_detail.html:46
+msgid "Kayıt bulunamadı."
+msgstr ""
+
+#: templates/student_detail.html:56
+#, fuzzy
+msgid "Öğrenci İmza"
+msgstr "Schülerliste"
+
+#: templates/student_detail.html:75
+#, fuzzy
+msgid ""
+"KÜTÜPHANE\n"
+"                    KİMLİK KARTI"
+msgstr "Passwort-Operationen"
+
+#: templates/student_detail.html:85
+msgid "FOTO"
+msgstr ""
+
+#: templates/student_detail.html:204
+#, fuzzy
+msgid "ÖĞRENCİ BİLGİLERİ"
+msgstr "Schülerliste"
+
+#: templates/student_detail.html:207
+msgid "Ekstre Yazdır"
+msgstr ""
+
+#: templates/student_detail.html:236
+#, fuzzy
+msgid ""
+"EMANET\n"
+"                    GEÇMİŞİ"
+msgstr "Passwort-Operationen"
+
+#: templates/students.html:22
+msgid "Öğrenci adı, soyadı veya numarası ile ara..."
+msgstr ""
+
+#: templates/students.html:39
+#, fuzzy
+msgid "İletişim"
+msgstr "Aktion"
+
+#: templates/students.html:82
+msgid "Kayıtlı öğrenci bulunamadı."
+msgstr ""
+
+#: templates/students.html:144
+#, fuzzy
+msgid "Öğrenci Kayıtlı"
+msgstr "Schüler"
+
+#: templates/students.html:160
+#, fuzzy
+msgid "Öğrenci ara..."
+msgstr "Schüler"
+
+#: templates/students.html:197
+msgid "Öğrenci bulunamadı."
+msgstr ""
+
+#: templates/verify_2fa.html:7
+msgid "Doğrulama Gerekli - Kütüphane Sistemi"
+msgstr ""
+
+#: templates/verify_2fa.html:64
+msgid "Giriş Onayı Bekleniyor"
+msgstr ""
+
+#: templates/verify_2fa.html:65
+msgid ""
+"Lütfen <strong>diğer cihazınızda (Aktif Oturum)</strong> beliren 6 haneli"
+" doğrulama\n"
+"            kodunu giriniz."
+msgstr ""
+
+#: templates/verify_2fa.html:72
+msgid "Diğer cihazdan yanıt bekleniyor..."
+msgstr ""
+
+#: templates/verify_2fa.html:78 templates/verify_2fa.html:146
+#: templates/verify_2fa.html:152
+msgid "Kodu Onayla"
+msgstr ""
+
+#: templates/verify_2fa.html:101
+msgid "Giriş isteği reddedildi!"
+msgstr ""
+
+#: templates/verify_2fa.html:107
+msgid "Kodun süresi doldu."
+msgstr ""
+
+#: templates/verify_2fa.html:125
+msgid "Kontrol Ediliyor..."
+msgstr ""
+
+#: templates/verify_2fa.html:153
+msgid "Bir hata oluştu."
+msgstr ""
+

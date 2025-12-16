@@ -1,192 +1,155 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="{{ session.get('lang', 'tr') }}">
 
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rapor Önizleme - {{ title }}</title>
-    <!-- html2pdf.js library -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <meta charset="UTF-8">
+    <title>{{ _('Rapor Önizleme') }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Base Page Styles */
         body {
+            font-family: 'Inter', sans-serif;
             background-color: #525659;
-            /* PDF viewer grey background */
             margin: 0;
-            padding: 20px;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 0;
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
 
-        /* Toolbar */
         .toolbar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            background-color: #333;
+            height: 56px;
+            background-color: #323639;
             color: white;
-            padding: 10px 20px;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            justify-content: space-between;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             z-index: 1000;
         }
 
         .toolbar-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: 500;
         }
 
-        .btn-download {
-            background-color: #3498db;
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background-color: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            border: none;
-            padding: 8px 20px;
+            padding: 8px 16px;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: bold;
-            font-size: 14px;
+            font-size: 13px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            transition: background 0.2s;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s;
         }
 
-        .btn-download:hover {
-            background-color: #2980b9;
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
         }
 
-        .btn-close {
-            background: transparent;
-            color: #ddd;
+        .btn-primary {
+            background-color: #8ab4f8;
+            color: #202124;
             border: none;
-            cursor: pointer;
-            font-size: 20px;
-            margin-left: 15px;
         }
 
-        /* A4 Paper Styles */
+        .btn-primary:hover {
+            background-color: #a6c5fa;
+        }
+
         .page-container {
-            background-color: white;
+            margin-top: 80px;
+            margin-bottom: 40px;
+            background: white;
             width: 210mm;
             min-height: 297mm;
-            margin: 60px auto 20px auto;
-            /* Top margin for toolbar */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             padding: 20mm;
-            box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
             box-sizing: border-box;
             position: relative;
         }
 
-        /* Print Specifics */
-        @media print {
-            body {
-                background: none;
-                margin: 0;
-                padding: 0;
-            }
-
-            .toolbar {
-                display: none;
-            }
-
-            .page-container {
-                margin: 0;
-                box-shadow: none;
-                width: 100%;
-            }
-        }
-
-        /* Report Content Styles */
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-            border-bottom: 3px double #333;
+        /* Report Styles */
+        .report-header {
+            border-bottom: 2px solid #000;
             padding-bottom: 20px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .header-top {
-            font-size: 12pt;
+        .header-logo {
+            width: 60px;
+            height: 60px;
+            background: #eee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
+            font-size: 24px;
         }
 
-        .header-school {
-            font-size: 18pt;
-            font-weight: bold;
+        .header-info h1 {
+            margin: 0;
+            font-size: 18px;
             text-transform: uppercase;
-            margin-bottom: 5px;
-            color: #000;
         }
 
-        .header-sub {
-            font-size: 12pt;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
+        .header-info h2 {
+            margin: 5px 0 0;
+            font-size: 14px;
+            font-weight: normal;
             color: #555;
         }
 
-        .report-title {
-            font-size: 16pt;
-            font-weight: bold;
-            text-decoration: underline;
-            margin-top: 15px;
-            color: #c0392b;
-            /* A nice red for title */
-        }
-
-        .meta {
+        .report-meta {
             text-align: right;
-            font-size: 9pt;
-            margin-bottom: 20px;
-            font-style: italic;
-            color: #666;
+            font-size: 12px;
+            color: #555;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
-            font-size: 10pt;
-        }
-
-        th,
-        td {
-            border: 1px solid #ccc;
-            padding: 10px 8px;
-            /* More padding */
-            text-align: left;
+            font-size: 12px;
         }
 
         th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-            text-align: center;
-            color: #333;
-            border-bottom: 2px solid #999;
+            background-color: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+            text-align: left;
+            padding: 10px;
+            font-weight: 600;
+        }
+
+        td {
+            border-bottom: 1px solid #dee2e6;
+            padding: 10px;
+            color: #212529;
         }
 
         tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f8f9fa;
         }
 
-        .status-badge {
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 8pt;
-        }
-
-        /* Footer */
-        .report-footer {
-            margin-top: 40px;
+        .footer {
+            margin-top: 50px;
             display: flex;
             justify-content: space-between;
             page-break-inside: avoid;
@@ -197,264 +160,179 @@
             width: 200px;
         }
 
-        .signature-line {
-            margin-top: 50px;
-            border-top: 1px solid #333;
-            padding-top: 5px;
-            font-weight: bold;
+        .signature-title {
+            font-weight: 600;
+            font-size: 12px;
+            margin-bottom: 40px;
         }
 
-        .footer-note {
-            position: absolute;
-            bottom: 10mm;
-            left: 20mm;
-            right: 20mm;
-            text-align: center;
-            font-size: 8pt;
-            color: #999;
-            border-top: 1px solid #eee;
+        .signature-line {
+            border-top: 1px solid #000;
             padding-top: 5px;
+            font-size: 11px;
+        }
+
+        /* Print optimizing */
+        @media print {
+            body {
+                background: white;
+                display: block;
+            }
+
+            .toolbar {
+                display: none;
+            }
+
+            .page-container {
+                margin: 0;
+                box-shadow: none;
+                width: 100%;
+                min-height: auto;
+                padding: 0;
+            }
         }
     </style>
 </head>
 
 <body>
-
-    <!-- Top Toolbar -->
     <div class="toolbar">
-        <div class="toolbar-title">
-            <i class="fas fa-file-pdf me-2"></i> Önizleme Modu
-        </div>
-        <div>
-            <button onclick="exportToPDF()" class="btn-download">
-                <i class="fas fa-download"></i> PDF İndir
-            </button>
-            <button onclick="window.close()" class="btn-close" title="Kapat">
-                <i class="fas fa-times"></i>
+        <div class="toolbar-title">{{ filename }}</div>
+        <div class="toolbar-actions">
+            <button onclick="window.close()" class="btn">{{ _('Kapat') }}</button>
+            <button onclick="window.print()" class="btn btn-primary">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 6px;">
+                    <path
+                        d="M19 8h-1V3H6v5H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zM8 5h8v3H8V5zm8 12v2H8v-4h8v2zm2-2v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45 1 1v4h-2z" />
+                </svg>
+                {{ _('İndir / Yazdır') }}
             </button>
         </div>
     </div>
 
-    <!-- A4 Page Content -->
-    <div id="report-content" class="page-container">
-
-        <div class="header">
-            <div class="header-top">T.C.</div>
-            <div class="header-top">MİLLİ EĞİTİM BAKANLIĞI</div>
-            <div class="header-school">{{ school_name }}</div>
-            <div class="header-sub">KÜTÜPHANE MÜDÜRLÜĞÜ</div>
-            <div class="report-title">{{ title }}</div>
+    <div class="page-container">
+        <!-- Header -->
+        <div class="report-header">
+            <div class="d-flex align-items-center gap-3" style="display: flex; gap: 15px; align-items: center;">
+                <div class="header-logo">
+                    {{ settings.school_name[0] }}
+                </div>
+                <div class="header-info">
+                    <h1>{{ settings.school_name }}</h1>
+                    <h2>
+                        {% if report_type == 'student-list' %}
+                        {{ _('OKUL KÜTÜPHANESİ - ÖĞRENCİ OKUMA RAPORU') }}
+                        {% elif report_type == 'book-list' %}
+                        {{ _('OKUL KÜTÜPHANESİ - KİTAP ENVANTER LİSTESİ') }}
+                        {% elif report_type == 'transaction-list' %}
+                        {{ _('OKUL KÜTÜPHANESİ - DETAYLI HAREKET DÖKÜMÜ') }}
+                        {% endif %}
+                    </h2>
+                </div>
+            </div>
+            <div class="report-meta">
+                <div>{{ _('Tarih:') }} {{ now.strftime('%d.%m.%Y') }}</div>
+                <div>{{ _('Saat:') }} {{ now.strftime('%H:%M') }}</div>
+            </div>
         </div>
 
-        <div class="meta">
-            <strong>Tarih:</strong> {{ date }}<br>
-            <strong>Düzenleyen:</strong> {{ user }}
-        </div>
-
-        <!-- Dynamic Content based on Type -->
+        <!-- Content -->
         {% if report_type == 'student-list' %}
         <table>
             <thead>
                 <tr>
-                    <th width="10%">SIRA</th>
-                    <th width="15%">NO</th>
-                    <th width="35%">AD SOYAD</th>
-                    <th width="20%">SINIF</th>
-                    <th width="20%">OKUNAN KİTAP</th>
+                    <th style="width: 10%">{{ _('No') }}</th>
+                    <th style="width: 40%">{{ _('Öğrenci Adı Soyadı') }}</th>
+                    <th style="width: 25%">{{ _('Sınıf') }}</th>
+                    <th style="width: 25%; text-align: center;">{{ _('Okunan Kitap') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for student, count in data %}
                 <tr>
-                    <td style="text-align: center;">{{ loop.index }}</td>
                     <td>{{ student.school_number }}</td>
                     <td>{{ student.name }} {{ student.surname }}</td>
-                    <td style="text-align: center;">{{ student.class_name }}</td>
-                    <td style="text-align: center;"><strong>{{ count }}</strong></td>
+                    <td>{{ student.class_name }}</td>
+                    <td style="text-align: center;">{{ count }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
         {% elif report_type == 'book-list' %}
         <table>
             <thead>
                 <tr>
-                    <th width="5%">SIRA</th>
-                    <th width="20%">ISBN</th>
-                    <th width="40%">KİTAP ADI</th>
-                    <th width="20%">YAZAR</th>
-                    <th width="15%">DURUM</th>
+                    <th style="width: 15%">{{ _('ISBN') }}</th>
+                    <th style="width: 45%">{{ _('Kitap Adı') }}</th>
+                    <th style="width: 25%">{{ _('Yazar') }}</th>
+                    <th style="width: 15%">{{ _('Durum') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for book in data %}
                 <tr>
-                    <td style="text-align: center;">{{ loop.index }}</td>
-                    <td>{{ book.isbn }}</td>
+                    <td style="font-family: monospace;">{{ book.isbn }}</td>
                     <td>{{ book.title }}</td>
                     <td>{{ book.author }}</td>
-                    <td style="text-align: center;">
+                    <td>
                         {% if book.is_available %}
-                        <span style="color: green; font-weight:bold;">MEVCUT</span>
+                        <span style="color: green">{{ _('MEVCUT') }}</span>
                         {% else %}
-                        <span style="color: red; font-weight:bold;">EMANETTE</span>
+                        <span style="color: red">{{ _('EMANETTE') }}</span>
                         {% endif %}
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+
         {% elif report_type == 'transaction-list' %}
         <table>
             <thead>
                 <tr>
-                    <th width="5%">#</th>
-                    <th width="15%">VERİLİŞ</th>
-                    <th width="30%">ÖĞRENCİ</th>
-                    <th width="30%">KİTAP</th>
-                    <th width="20%">DURUM</th>
+                    <th style="width: 15%">{{ _('Tarih') }}</th>
+                    <th style="width: 30%">{{ _('Öğrenci') }}</th>
+                    <th style="width: 35%">{{ _('Kitap') }}</th>
+                    <th style="width: 20%">{{ _('Durum') }}</th>
                 </tr>
             </thead>
             <tbody>
                 {% for loan in data %}
                 <tr>
-                    <td style="text-align: center;">{{ loop.index }}</td>
                     <td>{{ loan.issue_date.strftime('%d.%m.%Y') }}</td>
-                    <td>
-                        <strong>{{ loan.student.name }} {{ loan.student.surname }}</strong><br>
-                        <span style="font-size:8pt; color:#666;">{{ loan.student.class_name }} - {{
-                            loan.student.school_number }}</span>
-                    </td>
+                    <td>{{ loan.student.name }} {{ loan.student.surname }} <small>({{ loan.student.class_name
+                            }})</small></td>
                     <td>{{ loan.book.title }}</td>
                     <td>
                         {% if loan.status == 'returned' %}
-                        <span style="color: green; font-weight:bold;">İADE EDİLDİ</span><br>
-                        <span style="font-size:8pt;">{{ loan.return_date.strftime('%d.%m.%Y') if loan.return_date
-                            }}</span>
+                        <span style="color: green">{{ _('İADE') }}</span>
                         {% else %}
-                        <span style="color: #e67e22; font-weight:bold;">OKUNUYOR</span><br>
-                        <span style="font-size:8pt;">Son: {{ loan.due_date.strftime('%d.%m.%Y') }}</span>
+                        <span style="color: #ffc107; font-weight: bold; color: black !important;">{{ _('OKUNUYOR')
+                            }}</span>
                         {% endif %}
                     </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% elif report_type == 'student-rank-list' %}
-        <table>
-            <thead>
-                <tr>
-                    <th width="10%">SIRA</th>
-                    <th width="15%">NO</th>
-                    <th width="35%">AD SOYAD</th>
-                    <th width="20%">SINIF</th>
-                    <th width="20%">OKUNAN KİTAP</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for student, count in data %}
-                <tr>
-                    <td style="text-align: center;">{{ loop.index }}</td>
-                    <td>{{ student.school_number }}</td>
-                    <td>{{ student.name }} {{ student.surname }}</td>
-                    <td style="text-align: center;">{{ student.class_name }}</td>
-                    <td style="text-align: center;"><strong>{{ count }}</strong></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {% elif report_type and report_type.startswith('stats-classes') %}
-        <table>
-            <thead>
-                <tr>
-                    <th width="10%">SIRA</th>
-                    <th width="60%">SINIF</th>
-                    <th width="30%">TOPLAM OKUNAN KİTAP</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for class_name, count in data %}
-                <tr>
-                    <td style="text-align: center;">{{ loop.index }}</td>
-                    <td>{{ class_name }}</td>
-                    <td style="text-align: center;"><strong>{{ count }}</strong></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-
-        {% elif report_type == 'stats-books-popular' %}
-        <table>
-            <thead>
-                <tr>
-                    <th width="10%">SIRA</th>
-                    <th width="20%">ISBN</th>
-                    <th width="40%">KİTAP ADI</th>
-                    <th width="20%">YAZAR</th>
-                    <th width="10%">OKUNMA</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for book, count in data %}
-                <tr>
-                    <td style="text-align: center;">{{ loop.index }}</td>
-                    <td>{{ book.isbn }}</td>
-                    <td>{{ book.title }}</td>
-                    <td>{{ book.author }}</td>
-                    <td style="text-align: center;"><strong>{{ count }}</strong></td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
         {% endif %}
 
-        <div class="report-footer">
+        <!-- Footer -->
+        <div class="footer">
             <div class="signature-box">
-                <p>Kütüphane Sorumlusu</p>
-                <div class="signature-line">
-                    {{ user }}
-                </div>
+                <div class="signature-title">{{ _('Raporu Alan') }}</div>
+                <div class="signature-line">{{ current_user.username }}</div>
             </div>
             <div class="signature-box">
-                <p>Okul Müdürü</p>
-                <div class="signature-line">
-                    İmza / Mühür
-                </div>
+                <div class="signature-title">{{ _('Kütüphane Sorumlusu') }}</div>
+                <div class="signature-line">{{ _('İmza') }}</div>
             </div>
-        </div>
-
-        <div class="footer-note">
-            Bu belge {{ date }} tarihinde Kütüphane Otomasyon Sistemi üzerinden oluşturulmuştur.
+            <div class="signature-box">
+                <div class="signature-title">{{ _('Okul Müdürü') }}</div>
+                <div class="signature-line">{{ _('Onay / Kaşe') }}</div>
+            </div>
         </div>
     </div>
-
-    <script>
-        function exportToPDF() {
-            const element = document.getElementById('report-content');
-            const button = document.querySelector('.btn-download');
-
-            // Visual feedback
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Hazırlanıyor...';
-            button.disabled = true;
-
-            const opt = {
-                margin: 0,
-                filename: 'Rapor_' + new Date().toISOString().slice(0, 10) + '.pdf',
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true, logging: false },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            // Generate PDF
-            html2pdf().set(opt).from(element).save().then(() => {
-                // Reset button
-                button.innerHTML = originalText;
-                button.disabled = false;
-            });
-        }
-    </script>
 </body>
 
 </html>
