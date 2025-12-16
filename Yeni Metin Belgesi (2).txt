@@ -1,0 +1,57 @@
+Erasmus+ Geliştirme ve Uygulama Planı
+Hedef
+Yerel kütüphane sistemini, uluslararası, akıllı ve sürdürülebilir bir Erasmus+ proje platformuna dönüştürmek.
+
+1. Uluslararasılaşma (Çoklu Dil Desteği) 🌍
+Neden: Erasmus hareketliliği ve kapsayıcılığı için zorunludur. Teknoloji: Flask-Babel
+
+Yapılacak Değişiklikler
+app.py
+ & config.py
+[YENİ] Babel uygulamasını başlatma.
+[YENİ] get_locale() dil seçici fonksiyonu.
+[GÜNCELLEME] Dil değişimi için yönlendirmeler (Routes).
+Şablonlar (Templates)
+[GÜNCELLEME] Tüm okunabilir metinleri çeviri etiketi içine alma: {{ _('Metin') }}.
+[YENİ] Dil Seçim Menüsü ekleme: 🇹🇷 TR | 🇬🇧 EN | 🇩🇪 DE | 🇪🇸 ES
+2. Yapay Zeka Zekası (Google Gemini) 🤖
+Neden: İnovasyon faktörü. Sağladığınız API Anahtarı kullanılacak. Teknoloji: google-generativeai
+
+Yapılacak Değişiklikler
+.env
+ Dosyası
+[GÜNCELLEME] Gizli anahtarın eklenmesi: GEMINI_API_KEY="AIzaSyD..."
+ai_service.py [YENİ MODÜL]
+recommend_books(ogrenci_gecmisi): Okuma listesini Gemini'ye gönderip benzer kitap önerileri alır.
+summarize_book(kitap_adi): Açıklaması eksik kitaplar için otomatik özet yazar.
+dashboard.html
+[YENİ] "Yapay Zeka Asistanı" bileşeni (Öğrenciye özel öneriler).
+3. Oyunlaştırma (Etkileşim Arttırma) 🏆
+Neden: Aktif katılım ve motivasyon etkisi.
+
+Yapılacak Değişiklikler
+models.py
+[GÜNCELLEME] 
+Student
+ tablosu: puan (sayı) ve rozetler (ilişki) alanları eklenecek.
+Mantık (Logic)
+[YENİ] puan_ver(ogrenci_id, miktar) fonksiyonu:
+Zamanında teslim: +10 Puan.
+Kitap İncelemesi/Özeti: +50 Puan.
+Arayüz (UI)
+[YENİ] leaderboard.html: En çok okuyan ilk 5 öğrenci listesi.
+[GÜNCELLEME] 
+student_detail.html
+: Öğrenci profilinde kazanılan rozetlerin (Örn: "Kitap Kurdu") gösterimi.
+4. Yeşil Kütüphane (Sürdürülebilirlik) 🌿
+Neden: AB Yeşil Mutabakat (Green Deal) uyumu.
+
+Yapılacak Değişiklikler
+Yönetici Paneli (admin_dashboard)
+[YENİ] "Kurtarılan Kağıt" Sayacı: toplam_emanet * 2 (Dijital fiş sayesinde).
+[YENİ] "Karbon Ayak İzi" tasarruf göstergesi.
+Uygulama Sıralaması
+Çoklu Dil: Temel altyapı (Önce bunu yapacağız).
+Yapay Zeka: En yüksek etki yaratacak özellik.
+Oyunlaştırma: Sistemin eğlenceli kısmı.
+Yeşil Kütüphane: Raporlama ve farkındalık kısmı.
